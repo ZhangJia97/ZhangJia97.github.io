@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-04-12T11:37:45.006Z</updated>
+  <updated>2018-04-12T12:14:06.208Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,20 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>这是炮炮的第一篇博客文章</title>
+    <link href="http://yoursite.com/2018/04/12/%E8%BF%99%E6%98%AF%E7%82%AE%E7%82%AE%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2%E6%96%87%E7%AB%A0/"/>
+    <id>http://yoursite.com/2018/04/12/这是炮炮的第一篇博客文章/</id>
+    <published>2018-04-12T12:14:06.000Z</published>
+    <updated>2018-04-12T12:14:06.208Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>my first hexo blog</title>
