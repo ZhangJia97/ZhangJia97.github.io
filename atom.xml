@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Suiwo&#39;s Blog</title>
+  <title>随我的博客</title>
   
-  
+  <subtitle>记录学习的点滴</subtitle>
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
@@ -10,7 +10,7 @@
   <id>http://yoursite.com/</id>
   
   <author>
-    <name>Suiwo</name>
+    <name>随我</name>
     
   </author>
   
