@@ -39,20 +39,6 @@
   </entry>
   
   <entry>
-    <title>my first hexo blog</title>
-    <link href="http://yoursite.com/2018/04/12/my-first-hexo-blog/"/>
-    <id>http://yoursite.com/2018/04/12/my-first-hexo-blog/</id>
-    <published>2018-04-12T11:37:44.000Z</published>
-    <updated>2018-04-12T11:37:45.006Z</updated>
-    
-    <summary type="html">
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
     <title>Hello World</title>
     <link href="http://yoursite.com/2018/04/12/hello-world/"/>
     <id>http://yoursite.com/2018/04/12/hello-world/</id>
