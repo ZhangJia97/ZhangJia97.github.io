@@ -89,6 +89,30 @@
   </entry>
   
   <entry>
+    <title>TensorFlow不同版本引起的错误</title>
+    <link href="http://yoursite.com/2017/11/08/TensorFlow%E4%B8%8D%E5%90%8C%E7%89%88%E6%9C%AC%E5%BC%95%E8%B5%B7%E7%9A%84%E9%94%99%E8%AF%AF/"/>
+    <id>http://yoursite.com/2017/11/08/TensorFlow不同版本引起的错误/</id>
+    <published>2017-11-08T13:55:50.000Z</published>
+    <updated>2018-04-19T15:23:28.191Z</updated>
+    
+    <content type="html"><![CDATA[<p>前4个是 V0.11 的API 用在 V1.0 的错误</p><ol><li><p>AttributeError: ‘module’ object has no attribute ‘merge_all_summaries’</p><blockquote><p>tf.merge_all_summaries() 改为：summary_op = tf.summary.merge_all()</p></blockquote></li><li><p>AttributeError: ‘module’ object has no attribute ‘SummaryWriter’</p><blockquote><p>tf.train.SummaryWriter 改为：tf.summary.FileWriter</p></blockquote></li><li><p>AttributeError: ‘module’ object has no attribute ‘scalar_summary’</p><blockquote><p>tf.scalar_summary 改为：tf.summary.scalar</p></blockquote></li><li><p>AttributeError: ‘module’ object has no attribute ‘histogram_summary’</p><blockquote><p>histogram_summary 改为：tf.summary.histogram</p></blockquote></li></ol><p>下边这个是 V1.0 的API 用在 V0.11 的错误<br>File “dis-alexnet_benchmark.py”, line 110, in alexnet_v2<br>    biases_initializer=tf.zeros_initializer(),<br>TypeError: zeros_initializer() takes at least 1 argument (0 given)</p><blockquote><p>将 biases_initializer=tf.zeros_initializer() 改为：biases_initializer=tf.zeros_initializer</p></blockquote><p>本文章为转载原文章链接为：<a href="http://blog.csdn.net/s_sunnyy/article/details/70999462" target="_blank" rel="noopener">http://blog.csdn.net/s_sunnyy/article/details/70999462</a></p>]]></content>
+    
+    <summary type="html">
+    
+      本文总结了tensorflow由于版本不同所导致的一些报错
+    
+    </summary>
+    
+      <category term="tensorflow" scheme="http://yoursite.com/categories/tensorflow/"/>
+    
+    
+      <category term="python" scheme="http://yoursite.com/tags/python/"/>
+    
+      <category term="tensorflow" scheme="http://yoursite.com/tags/tensorflow/"/>
+    
+  </entry>
+  
+  <entry>
     <title>使用TensorBoard进行数据可视化</title>
     <link href="http://yoursite.com/2017/11/08/%E4%BD%BF%E7%94%A8TensorBoard%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/"/>
     <id>http://yoursite.com/2017/11/08/使用TensorBoard进行数据可视化/</id>
