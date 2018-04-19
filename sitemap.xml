@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2017/11/17/Python%E5%B8%B8%E7%94%A8%E7%9A%84%E7%A8%8B%E5%BA%8F%E8%B0%83%E8%AF%95%E6%96%B9%E6%B3%95/</loc>
+    
+    <lastmod>2018-04-19T15:55:04.081Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2017/11/17/Tensorflow%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%B8%B8%E7%94%A8%E7%BB%93%E6%9E%84/</loc>
     
     <lastmod>2018-04-19T15:52:08.920Z</lastmod>
