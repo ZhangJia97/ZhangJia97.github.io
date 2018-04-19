@@ -81,18 +81,18 @@
 
 
 
-<meta name="description" content="本文总结了tensorflow由于版本不同所导致的一些报错">
+<meta name="description" content="本文使用tensorflow实现CNN进行MNIST数字识别">
 <meta name="keywords" content="python,tensorflow">
 <meta property="og:type" content="article">
-<meta property="og:title" content="TensorFlow不同版本引起的错误">
-<meta property="og:url" content="http://yoursite.com/2017/11/08/TensorFlow不同版本引起的错误/index.html">
+<meta property="og:title" content="使用Tensorflow实现CNN进行MNIST数字识别">
+<meta property="og:url" content="http://yoursite.com/2017/11/18/使用Tensorflow实现CNN进行MNIST数字识别/index.html">
 <meta property="og:site_name" content="随我的博客">
-<meta property="og:description" content="本文总结了tensorflow由于版本不同所导致的一些报错">
+<meta property="og:description" content="本文使用tensorflow实现CNN进行MNIST数字识别">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-04-19T15:23:28.191Z">
+<meta property="og:updated_time" content="2018-04-19T15:56:31.498Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="TensorFlow不同版本引起的错误">
-<meta name="twitter:description" content="本文总结了tensorflow由于版本不同所导致的一些报错">
+<meta name="twitter:title" content="使用Tensorflow实现CNN进行MNIST数字识别">
+<meta name="twitter:description" content="本文使用tensorflow实现CNN进行MNIST数字识别">
 
 
 
@@ -122,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/11/08/TensorFlow不同版本引起的错误/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/11/18/使用Tensorflow实现CNN进行MNIST数字识别/"/>
 
 
 
 
 
-  <title>TensorFlow不同版本引起的错误 | 随我的博客</title>
+  <title>使用Tensorflow实现CNN进行MNIST数字识别 | 随我的博客</title>
   
 
 
@@ -265,7 +265,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/08/TensorFlow不同版本引起的错误/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/18/使用Tensorflow实现CNN进行MNIST数字识别/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="随我">
@@ -282,7 +282,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">TensorFlow不同版本引起的错误</h1>
+          <h1 class="post-title" itemprop="name headline">使用Tensorflow实现CNN进行MNIST数字识别</h1>
         
 
         <div class="post-meta">
@@ -294,8 +294,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-08T21:55:50+08:00">
-                2017-11-08
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-18T20:07:57+08:00">
+                2017-11-18
               </time>
             
 
@@ -341,7 +341,7 @@
 
           
               <div class="post-description">
-                  本文总结了tensorflow由于版本不同所导致的一些报错
+                  本文使用tensorflow实现CNN进行MNIST数字识别
               </div>
           
 
@@ -358,35 +358,7 @@
       
 
       
-        <p>前4个是 V0.11 的API 用在 V1.0 的错误</p>
-<ol>
-<li><p>AttributeError: ‘module’ object has no attribute ‘merge_all_summaries’</p>
-<blockquote>
-<p>tf.merge_all_summaries() 改为：summary_op = tf.summary.merge_all()</p>
-</blockquote>
-</li>
-<li><p>AttributeError: ‘module’ object has no attribute ‘SummaryWriter’</p>
-<blockquote>
-<p>tf.train.SummaryWriter 改为：tf.summary.FileWriter</p>
-</blockquote>
-</li>
-<li><p>AttributeError: ‘module’ object has no attribute ‘scalar_summary’</p>
-<blockquote>
-<p>tf.scalar_summary 改为：tf.summary.scalar</p>
-</blockquote>
-</li>
-<li><p>AttributeError: ‘module’ object has no attribute ‘histogram_summary’</p>
-<blockquote>
-<p>histogram_summary 改为：tf.summary.histogram</p>
-</blockquote>
-</li>
-</ol>
-<p>下边这个是 V1.0 的API 用在 V0.11 的错误<br>File “dis-alexnet_benchmark.py”, line 110, in alexnet_v2<br>    biases_initializer=tf.zeros_initializer(),<br>TypeError: zeros_initializer() takes at least 1 argument (0 given)</p>
-<blockquote>
-<p>将 biases_initializer=tf.zeros_initializer() 改为：biases_initializer=tf.zeros_initializer</p>
-</blockquote>
-<p>本文章为转载原文章链接为：<a href="http://blog.csdn.net/s_sunnyy/article/details/70999462" target="_blank" rel="noopener">http://blog.csdn.net/s_sunnyy/article/details/70999462</a></p>
-
+        <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> print_function</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">from</span> tensorflow.examples.tutorials.mnist <span class="keyword">import</span> input_data</span><br><span class="line"><span class="comment"># number 1 to 10 data</span></span><br><span class="line">mnist = input_data.read_data_sets(<span class="string">'MNIST_data'</span>, one_hot=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">compute_accuracy</span><span class="params">(v_xs, v_ys)</span>:</span><span class="comment">#返回准确度</span></span><br><span class="line">    <span class="keyword">global</span> prediction</span><br><span class="line">    y_pre = sess.run(prediction, feed_dict=&#123;xs: v_xs, keep_prob: <span class="number">1</span>&#125;)</span><br><span class="line">    correct_prediction = tf.equal(tf.argmax(y_pre,<span class="number">1</span>), tf.argmax(v_ys,<span class="number">1</span>))</span><br><span class="line">    accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))</span><br><span class="line">    result = sess.run(accuracy, feed_dict=&#123;xs: v_xs, ys: v_ys, keep_prob: <span class="number">1</span>&#125;)</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">weight_variable</span><span class="params">(shape)</span>:</span><span class="comment">#定义weight</span></span><br><span class="line">    initial = tf.truncated_normal(shape, stddev=<span class="number">0.1</span>)</span><br><span class="line">    <span class="keyword">return</span> tf.Variable(initial)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bias_variable</span><span class="params">(shape)</span>:</span><span class="comment">#定义bias</span></span><br><span class="line">    initial = tf.constant(<span class="number">0.1</span>, shape=shape)</span><br><span class="line">    <span class="keyword">return</span> tf.Variable(initial)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">conv2d</span><span class="params">(x, W)</span>:</span><span class="comment">#定义卷积层</span></span><br><span class="line">    <span class="comment"># stride [1, x_movement, y_movement, 1]</span></span><br><span class="line">    <span class="comment"># Must have strides[0] = strides[3] = 1</span></span><br><span class="line">    <span class="keyword">return</span> tf.nn.conv2d(x, W, strides=[<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>], padding=<span class="string">'SAME'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">max_pool_2x2</span><span class="params">(x)</span>:</span><span class="comment">#定义池化层</span></span><br><span class="line">    <span class="comment"># stride [1, x_movement, y_movement, 1]</span></span><br><span class="line">    <span class="keyword">return</span> tf.nn.max_pool(x, ksize=[<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">1</span>], strides=[<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">1</span>], padding=<span class="string">'SAME'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># define placeholder for inputs to network</span></span><br><span class="line">xs = tf.placeholder(tf.float32, [<span class="keyword">None</span>, <span class="number">784</span>])/<span class="number">255.</span>   <span class="comment"># 28x28</span></span><br><span class="line">ys = tf.placeholder(tf.float32, [<span class="keyword">None</span>, <span class="number">10</span>])</span><br><span class="line">keep_prob = tf.placeholder(tf.float32)</span><br><span class="line">x_image = tf.reshape(xs, [<span class="number">-1</span>, <span class="number">28</span>, <span class="number">28</span>, <span class="number">1</span>])<span class="comment">#-1指将所有图片的例子维度不管他，之后再加上所有的维度，然后将xs图片信息转变成28x28的矩阵，1指只有一个通道，即黑白的图片</span></span><br><span class="line"><span class="comment"># print(x_image.shape)  # [n_samples, 28,28,1]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## conv1 layer ##</span></span><br><span class="line">W_conv1 = weight_variable([<span class="number">5</span>,<span class="number">5</span>, <span class="number">1</span>,<span class="number">32</span>]) <span class="comment"># 指筛选器 5x5, 步数 1, 深度 32</span></span><br><span class="line">b_conv1 = bias_variable([<span class="number">32</span>])</span><br><span class="line">h_conv1 = tf.nn.relu(conv2d(x_image, W_conv1) + b_conv1) <span class="comment"># output size 28x28x32</span></span><br><span class="line">h_pool1 = max_pool_2x2(h_conv1)                                         <span class="comment"># output size 14x14x32</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## conv2 layer ##</span></span><br><span class="line">W_conv2 = weight_variable([<span class="number">5</span>,<span class="number">5</span>, <span class="number">32</span>, <span class="number">64</span>]) <span class="comment"># patch 5x5, in size 32, out size 64</span></span><br><span class="line">b_conv2 = bias_variable([<span class="number">64</span>])</span><br><span class="line">h_conv2 = tf.nn.relu(conv2d(h_pool1, W_conv2) + b_conv2) <span class="comment"># output size 14x14x64，激活去线性化</span></span><br><span class="line">h_pool2 = max_pool_2x2(h_conv2)                                         <span class="comment"># output size 7x7x64</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## fc1 layer ##</span></span><br><span class="line">W_fc1 = weight_variable([<span class="number">7</span>*<span class="number">7</span>*<span class="number">64</span>, <span class="number">1024</span>])</span><br><span class="line">b_fc1 = bias_variable([<span class="number">1024</span>])</span><br><span class="line"><span class="comment"># [n_samples, 7, 7, 64] -&gt;&gt; [n_samples, 7*7*64]</span></span><br><span class="line">h_pool2_flat = tf.reshape(h_pool2, [<span class="number">-1</span>, <span class="number">7</span>*<span class="number">7</span>*<span class="number">64</span>])</span><br><span class="line">h_fc1 = tf.nn.relu(tf.matmul(h_pool2_flat, W_fc1) + b_fc1)</span><br><span class="line">h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob)</span><br><span class="line"></span><br><span class="line"><span class="comment">## fc2 layer ##</span></span><br><span class="line">W_fc2 = weight_variable([<span class="number">1024</span>, <span class="number">10</span>])</span><br><span class="line">b_fc2 = bias_variable([<span class="number">10</span>])</span><br><span class="line">prediction = tf.nn.softmax(tf.matmul(h_fc1_drop, W_fc2) + b_fc2)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># the error between prediction and real data</span></span><br><span class="line">cross_entropy = tf.reduce_mean(-tf.reduce_sum(ys * tf.log(prediction),</span><br><span class="line">                                              reduction_indices=[<span class="number">1</span>]))       <span class="comment"># loss</span></span><br><span class="line">train_step = tf.train.AdamOptimizer(<span class="number">1e-4</span>).minimize(cross_entropy)</span><br><span class="line"></span><br><span class="line">sess = tf.Session()</span><br><span class="line"><span class="comment"># important step</span></span><br><span class="line"><span class="comment"># tf.initialize_all_variables() no long valid from</span></span><br><span class="line"><span class="comment"># 2017-03-02 if using tensorflow &gt;= 0.12</span></span><br><span class="line"><span class="keyword">if</span> int((tf.__version__).split(<span class="string">'.'</span>)[<span class="number">1</span>]) &lt; <span class="number">12</span> <span class="keyword">and</span> int((tf.__version__).split(<span class="string">'.'</span>)[<span class="number">0</span>]) &lt; <span class="number">1</span>:</span><br><span class="line">    init = tf.initialize_all_variables()</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    init = tf.global_variables_initializer()</span><br><span class="line">sess.run(init)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">    batch_xs, batch_ys = mnist.train.next_batch(<span class="number">100</span>)</span><br><span class="line">    sess.run(train_step, feed_dict=&#123;xs: batch_xs, ys: batch_ys, keep_prob: <span class="number">0.5</span>&#125;)</span><br><span class="line">    <span class="keyword">if</span> i % <span class="number">50</span> == <span class="number">0</span>:</span><br><span class="line">        print(compute_accuracy(</span><br><span class="line">            mnist.test.images[:<span class="number">1000</span>], mnist.test.labels[:<span class="number">1000</span>]))</span><br></pre></td></tr></table></figure>
       
     </div>
     
@@ -418,8 +390,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/11/08/使用TensorBoard进行数据可视化/" rel="next" title="使用TensorBoard进行数据可视化">
-                <i class="fa fa-chevron-left"></i> 使用TensorBoard进行数据可视化
+              <a href="/2017/11/17/Python常用的程序调试方法/" rel="next" title="Python常用的程序调试方法">
+                <i class="fa fa-chevron-left"></i> Python常用的程序调试方法
               </a>
             
           </div>
@@ -428,8 +400,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/11/09/Tensorflow中一些常见的函数/" rel="prev" title="Tensorflow中一些常见的函数">
-                Tensorflow中一些常见的函数 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/02/10/Django网站部署前期准备/" rel="prev" title="Django网站部署前期准备">
+                Django网站部署前期准备 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
