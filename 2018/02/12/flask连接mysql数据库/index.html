@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="python," />
+  <meta name="keywords" content="python,flask,数据库," />
 
 
 
@@ -81,18 +81,18 @@
 
 
 
-<meta name="description" content="平时在使用python时经常会看到python字符串前有u和r，本文解释这两个有何区别">
-<meta name="keywords" content="python">
+<meta name="description" content="本文是对使用flask连接mysql数据库的总结">
+<meta name="keywords" content="python,flask,数据库">
 <meta property="og:type" content="article">
-<meta property="og:title" content="python字符串前缀 u和r的区别">
-<meta property="og:url" content="http://yoursite.com/2017/11/09/python字符串前缀-u和r的区别/index.html">
+<meta property="og:title" content="flask连接mysql数据库">
+<meta property="og:url" content="http://yoursite.com/2018/02/12/flask连接mysql数据库/index.html">
 <meta property="og:site_name" content="随我的博客">
-<meta property="og:description" content="平时在使用python时经常会看到python字符串前有u和r，本文解释这两个有何区别">
+<meta property="og:description" content="本文是对使用flask连接mysql数据库的总结">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-04-19T15:34:32.471Z">
+<meta property="og:updated_time" content="2018-04-19T16:15:27.906Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="python字符串前缀 u和r的区别">
-<meta name="twitter:description" content="平时在使用python时经常会看到python字符串前有u和r，本文解释这两个有何区别">
+<meta name="twitter:title" content="flask连接mysql数据库">
+<meta name="twitter:description" content="本文是对使用flask连接mysql数据库的总结">
 
 
 
@@ -122,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/11/09/python字符串前缀-u和r的区别/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/02/12/flask连接mysql数据库/"/>
 
 
 
 
 
-  <title>python字符串前缀 u和r的区别 | 随我的博客</title>
+  <title>flask连接mysql数据库 | 随我的博客</title>
   
 
 
@@ -265,7 +265,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/09/python字符串前缀-u和r的区别/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/12/flask连接mysql数据库/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="随我">
@@ -282,7 +282,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">python字符串前缀 u和r的区别</h1>
+          <h1 class="post-title" itemprop="name headline">flask连接mysql数据库</h1>
         
 
         <div class="post-meta">
@@ -294,8 +294,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-09T23:25:46+08:00">
-                2017-11-09
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-12T20:05:45+08:00">
+                2018-02-12
               </time>
             
 
@@ -317,8 +317,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
+                  <a href="/categories/flask/" itemprop="url" rel="index">
+                    <span itemprop="name">flask</span>
                   </a>
                 </span>
 
@@ -341,7 +341,7 @@
 
           
               <div class="post-description">
-                  平时在使用python时经常会看到python字符串前有u和r，本文解释这两个有何区别
+                  本文是对使用flask连接mysql数据库的总结
               </div>
           
 
@@ -358,7 +358,9 @@
       
 
       
-        <p>在python2里面，u表示unicode string，类型是unicode, 没有u表示byte string，类型是 str。在python3里面，所有字符串都是unicode string, u前缀没有特殊含义了。r都表示raw string. 与特殊字符的escape规则有关，一般用在正则表达式里面。r和u可以搭配使用，例如ur”abc”。</p>
+        <h1 id="在flask所在文件夹中新建一个models-py文件，输入以下代码"><a href="#在flask所在文件夹中新建一个models-py文件，输入以下代码" class="headerlink" title="在flask所在文件夹中新建一个models.py文件，输入以下代码"></a>在flask所在文件夹中新建一个models.py文件，输入以下代码</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pymysql</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_conn</span><span class="params">()</span>:</span></span><br><span class="line">    host = <span class="string">"127.0.0.1"</span></span><br><span class="line">    port = <span class="number">3306</span>     <span class="comment">#注：此处应该使用数字而不是字符串</span></span><br><span class="line">    db = <span class="string">'learn_flask_mysql'</span></span><br><span class="line">    user = <span class="string">'root'</span></span><br><span class="line">    password = <span class="string">''</span></span><br><span class="line">    conn = pymysql.connect(</span><br><span class="line">        host=host,</span><br><span class="line">        user=user,</span><br><span class="line">        password=password,</span><br><span class="line">        port=port,</span><br><span class="line">        db=db,</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">return</span> conn</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,user_id,user_name)</span>:</span></span><br><span class="line">        self.user_id = user_id</span><br><span class="line">        self.user_name = user_name</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">save</span><span class="params">(self)</span>:</span></span><br><span class="line">        conn = get_conn()</span><br><span class="line">        cursor = conn.cursor()</span><br><span class="line">        sql = <span class="string">"INSERT INTO user(user_id, user_name) VALUES (%s,%s)"</span></span><br><span class="line">        cursor.execute(sql,(self.user_id,self.user_name))</span><br><span class="line">        conn.commit()</span><br><span class="line">        cursor.close()</span><br><span class="line">        conn.close()</span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">query_all</span><span class="params">()</span>:</span></span><br><span class="line">        conn = get_conn()</span><br><span class="line">        cursor = conn.cursor()</span><br><span class="line">        sql = <span class="string">"SELECT * from user"</span></span><br><span class="line">        cursor.execute(sql)</span><br><span class="line">        rows = cursor.fetchall()</span><br><span class="line">        users = []</span><br><span class="line">        <span class="keyword">for</span> row <span class="keyword">in</span> rows:</span><br><span class="line">            user = User(row[<span class="number">0</span>],row[<span class="number">1</span>])</span><br><span class="line">            users.append(user)</span><br><span class="line">        conn.commit()</span><br><span class="line">        cursor.close()</span><br><span class="line">        conn.close()</span><br><span class="line">        <span class="keyword">return</span> users</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">"id:&#123;&#125;  name:&#123;&#125;"</span>.format(self.user_id,self.user_name)</span><br></pre></td></tr></table></figure>
+<h1 id="2-在flask新建文件夹中新建一个manage-py，并输入以下代码"><a href="#2-在flask新建文件夹中新建一个manage-py，并输入以下代码" class="headerlink" title="2.在flask新建文件夹中新建一个manage.py，并输入以下代码"></a>2.在flask新建文件夹中新建一个manage.py，并输入以下代码</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask_script <span class="keyword">import</span> Manager</span><br><span class="line"><span class="keyword">from</span> learn_flask_mysql <span class="keyword">import</span> app</span><br><span class="line"><span class="keyword">from</span> models <span class="keyword">import</span> User</span><br><span class="line"></span><br><span class="line">manager = Manager(app)</span><br><span class="line"></span><br><span class="line"><span class="meta">@manager.command</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">save</span><span class="params">()</span>:</span></span><br><span class="line">    user = User(<span class="number">1</span>,<span class="string">'csdn'</span>)</span><br><span class="line">    user.save()</span><br><span class="line"></span><br><span class="line"><span class="meta">@manager.command</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">query_all</span><span class="params">()</span>:</span></span><br><span class="line">    users = User.query_all()</span><br><span class="line">    <span class="keyword">for</span> user <span class="keyword">in</span> users:</span><br><span class="line">        print(user)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    manager.run()</span><br></pre></td></tr></table></figure>
+<p>之后使用<code>python manage.py save</code>即可保存数据，使用<code>python manage.py qurey_all</code>即可查询数据</p>
 
       
     </div>
@@ -378,6 +380,10 @@
           
             <a href="/tags/python/" rel="tag"><i class="fa fa-tag"></i> python</a>
           
+            <a href="/tags/flask/" rel="tag"><i class="fa fa-tag"></i> flask</a>
+          
+            <a href="/tags/数据库/" rel="tag"><i class="fa fa-tag"></i> 数据库</a>
+          
         </div>
       
 
@@ -389,8 +395,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/11/09/python3格式化输出/" rel="next" title="python3格式化输出">
-                <i class="fa fa-chevron-left"></i> python3格式化输出
+              <a href="/2018/02/12/Flask扩展flask-script文档中文翻译/" rel="next" title="Flask扩展flask-script文档中文翻译">
+                <i class="fa fa-chevron-left"></i> Flask扩展flask-script文档中文翻译
               </a>
             
           </div>
@@ -399,8 +405,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/11/09/selenium中如何定位伪元素/" rel="prev" title="selenium中如何定位伪元素">
-                selenium中如何定位伪元素 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/04/12/如何使用github+hexo搭建一个博客/" rel="prev" title="如何使用github+hexo搭建一个博客">
+                如何使用github+hexo搭建一个博客 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -479,8 +485,17 @@ var jiathis_config={
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -572,6 +587,22 @@ var jiathis_config={
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#在flask所在文件夹中新建一个models-py文件，输入以下代码"><span class="nav-number">1.</span> <span class="nav-text">在flask所在文件夹中新建一个models.py文件，输入以下代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-在flask新建文件夹中新建一个manage-py，并输入以下代码"><span class="nav-number">2.</span> <span class="nav-text">2.在flask新建文件夹中新建一个manage.py，并输入以下代码</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
