@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="python,flask," />
+  <meta name="keywords" content="python,flask,数据库," />
 
 
 
@@ -81,20 +81,18 @@
 
 
 
-<meta name="description" content="本文是对flask的外部脚本的使用的总结">
-<meta name="keywords" content="python,flask">
+<meta name="description" content="本文是对flask使用orm连接数据库的总结">
+<meta name="keywords" content="python,flask,数据库">
 <meta property="og:type" content="article">
-<meta property="og:title" content="flask的外部脚本的使用">
-<meta property="og:url" content="http://yoursite.com/2018/02/12/flask的外部脚本的使用/index.html">
+<meta property="og:title" content="flask使用orm连接数据库">
+<meta property="og:url" content="http://yoursite.com/2018/02/12/flask使用orm连接数据库/index.html">
 <meta property="og:site_name" content="随我的博客">
-<meta property="og:description" content="本文是对flask的外部脚本的使用的总结">
+<meta property="og:description" content="本文是对flask使用orm连接数据库的总结">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://img.blog.csdn.net/20180212161135261?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMzg1NDIwODU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
-<meta property="og:updated_time" content="2018-04-19T16:06:41.049Z">
+<meta property="og:updated_time" content="2018-04-19T16:17:15.436Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="flask的外部脚本的使用">
-<meta name="twitter:description" content="本文是对flask的外部脚本的使用的总结">
-<meta name="twitter:image" content="http://img.blog.csdn.net/20180212161135261?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMzg1NDIwODU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta name="twitter:title" content="flask使用orm连接数据库">
+<meta name="twitter:description" content="本文是对flask使用orm连接数据库的总结">
 
 
 
@@ -124,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/02/12/flask的外部脚本的使用/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/02/12/flask使用orm连接数据库/"/>
 
 
 
 
 
-  <title>flask的外部脚本的使用 | 随我的博客</title>
+  <title>flask使用orm连接数据库 | 随我的博客</title>
   
 
 
@@ -267,7 +265,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/12/flask的外部脚本的使用/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/12/flask使用orm连接数据库/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="随我">
@@ -284,7 +282,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">flask的外部脚本的使用</h1>
+          <h1 class="post-title" itemprop="name headline">flask使用orm连接数据库</h1>
         
 
         <div class="post-meta">
@@ -296,7 +294,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-12T16:12:55+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-12T20:14:40+08:00">
                 2018-02-12
               </time>
             
@@ -343,7 +341,7 @@
 
           
               <div class="post-description">
-                  本文是对flask的外部脚本的使用的总结
+                  本文是对flask使用orm连接数据库的总结
               </div>
           
 
@@ -360,11 +358,14 @@
       
 
       
-        <h1 id="1-在flask文件夹中新建一个manage-py文件，在文件中输入以下代码"><a href="#1-在flask文件夹中新建一个manage-py文件，在文件中输入以下代码" class="headerlink" title="1.在flask文件夹中新建一个manage.py文件，在文件中输入以下代码"></a>1.在flask文件夹中新建一个manage.py文件，在文件中输入以下代码</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask_script <span class="keyword">import</span> Manager</span><br><span class="line"><span class="keyword">from</span> learn_flask_script <span class="keyword">import</span> app</span><br><span class="line"></span><br><span class="line">manager = Manager(app)</span><br><span class="line"></span><br><span class="line"><span class="meta">@manager.command</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">()</span>:</span></span><br><span class="line">    print(<span class="string">"hello world"</span>)</span><br></pre></td></tr></table></figure>
+        <p>注：使用前请安装flask_sqlalchemy包，由于python-mysql不适用于python3.6，所以我们使用pymysql进行替代</p>
 <hr>
-<p>在终端中使用<code>python manage.py hello</code>即可运行该脚本<br><img src="http://img.blog.csdn.net/20180212161135261?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMzg1NDIwODU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
-<h1 id="2-在flask文件夹中新建一个manage-py文件，在文件中输入以下代码"><a href="#2-在flask文件夹中新建一个manage-py文件，在文件中输入以下代码" class="headerlink" title="2.在flask文件夹中新建一个manage.py文件，在文件中输入以下代码"></a>2.在flask文件夹中新建一个manage.py文件，在文件中输入以下代码</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask_script <span class="keyword">import</span> Manager</span><br><span class="line"><span class="keyword">from</span> learn_flask_script <span class="keyword">import</span> app</span><br><span class="line"></span><br><span class="line">manager = Manager(app)</span><br><span class="line"></span><br><span class="line"><span class="meta">@manager.option('-m','--msg',dest='msg_val',default='world')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello_world</span><span class="params">(msg_val)</span>:</span></span><br><span class="line">    print(<span class="string">'hello '</span>+msg_val)</span><br></pre></td></tr></table></figure>
-<p>在终端中使用<code>python manage.py hello -m csdn</code>或者<code>python manage.py hello --msg_val=csdn</code>即可运行该脚本<br>运行结果为<code>hello csdn</code></p>
+<h1 id="1-flask的app文件中输入以下代码"><a href="#1-flask的app文件中输入以下代码" class="headerlink" title="1.flask的app文件中输入以下代码"></a>1.flask的app文件中输入以下代码</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">(文件名为：learn_flask_mysql_orm.py)</span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</span><br><span class="line"><span class="keyword">from</span> flask_sqlalchemy <span class="keyword">import</span> SQLAlchemy</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line">app.config[<span class="string">"SQLALCHEMY_DATABASE_URI"</span>]=<span class="string">"mysql+pymysql://root:@127.0.0.1:3306/learn_flask_mysql"</span></span><br><span class="line"><span class="comment">#注：请勿忘记添加'+pymysql'，否则将会出现没有安装mysqldb的报错</span></span><br><span class="line"></span><br><span class="line">db = SQLAlchemy(app)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello_world</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'Hello World!'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    app.run()</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="2-在flask文件夹中新建一个models-py文件，并输入以下代码"><a href="#2-在flask文件夹中新建一个models-py文件，并输入以下代码" class="headerlink" title="2.在flask文件夹中新建一个models.py文件，并输入以下代码"></a>2.在flask文件夹中新建一个models.py文件，并输入以下代码</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> learn_flask_mysql_orm <span class="keyword">import</span> db</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span><span class="params">(db.Model)</span>:</span></span><br><span class="line">    __tablename__ = <span class="string">'user'</span></span><br><span class="line">    user_id = db.Column(db.INT,primary_key=<span class="keyword">True</span>)</span><br><span class="line">    user_name = db.Column(db.TEXT)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,user_id,user_name)</span>:</span></span><br><span class="line">        self.user_id = user_id</span><br><span class="line">        self.user_name = user_name</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">"id:&#123;&#125;    name:&#123;&#125;"</span>.format(self.user_id,self.user_name)</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="3-在flask中新建一个manage-py文件，输入以下代码"><a href="#3-在flask中新建一个manage-py文件，输入以下代码" class="headerlink" title="3.在flask中新建一个manage.py文件，输入以下代码"></a>3.在flask中新建一个manage.py文件，输入以下代码</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask_script <span class="keyword">import</span> Manager</span><br><span class="line"><span class="keyword">from</span> models <span class="keyword">import</span> User</span><br><span class="line"><span class="keyword">from</span> learn_flask_mysql_orm <span class="keyword">import</span> app,db</span><br><span class="line"></span><br><span class="line">manager = Manager(app)</span><br><span class="line"></span><br><span class="line"><span class="meta">@manager.command</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">save</span><span class="params">()</span>:</span></span><br><span class="line">    user = User(<span class="number">11</span>,<span class="string">'zhangjia11'</span>)</span><br><span class="line">    db.session.add(user)</span><br><span class="line">    db.session.commit()</span><br><span class="line"></span><br><span class="line"><span class="meta">@manager.command</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">query_all</span><span class="params">()</span>:</span></span><br><span class="line">    users = User.query.all()</span><br><span class="line">    <span class="keyword">for</span> user <span class="keyword">in</span> users:</span><br><span class="line">        print(user)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    manager.run()</span><br></pre></td></tr></table></figure>
+<p>之后使用<code>python manage.py save</code>即可保存数据，使用<code>python manage.py qurey_all</code>即可查询数据</p>
 
       
     </div>
@@ -386,6 +387,8 @@
           
             <a href="/tags/flask/" rel="tag"><i class="fa fa-tag"></i> flask</a>
           
+            <a href="/tags/数据库/" rel="tag"><i class="fa fa-tag"></i> 数据库</a>
+          
         </div>
       
 
@@ -397,8 +400,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/02/12/flask连接sqlite3数据库/" rel="next" title="flask连接sqlite3数据库">
-                <i class="fa fa-chevron-left"></i> flask连接sqlite3数据库
+              <a href="/2018/02/12/flask连接mysql数据库/" rel="next" title="flask连接mysql数据库">
+                <i class="fa fa-chevron-left"></i> flask连接mysql数据库
               </a>
             
           </div>
@@ -407,8 +410,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/02/12/Flask扩展flask-script文档中文翻译/" rel="prev" title="Flask扩展flask-script文档中文翻译">
-                Flask扩展flask-script文档中文翻译 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/04/12/如何使用github+hexo搭建一个博客/" rel="prev" title="如何使用github+hexo搭建一个博客">
+                如何使用github+hexo搭建一个博客 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -599,7 +602,7 @@ var jiathis_config={
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-在flask文件夹中新建一个manage-py文件，在文件中输入以下代码"><span class="nav-number">1.</span> <span class="nav-text">1.在flask文件夹中新建一个manage.py文件，在文件中输入以下代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-在flask文件夹中新建一个manage-py文件，在文件中输入以下代码"><span class="nav-number">2.</span> <span class="nav-text">2.在flask文件夹中新建一个manage.py文件，在文件中输入以下代码</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-flask的app文件中输入以下代码"><span class="nav-number">1.</span> <span class="nav-text">1.flask的app文件中输入以下代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-在flask文件夹中新建一个models-py文件，并输入以下代码"><span class="nav-number">2.</span> <span class="nav-text">2.在flask文件夹中新建一个models.py文件，并输入以下代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-在flask中新建一个manage-py文件，输入以下代码"><span class="nav-number">3.</span> <span class="nav-text">3.在flask中新建一个manage.py文件，输入以下代码</span></a></li></ol></div>
             
 
           </div>
