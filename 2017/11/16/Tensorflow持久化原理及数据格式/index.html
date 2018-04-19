@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="python,tensorflow," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="随我的博客" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Tensorflow是一个通过图的形式来表述计算的编程系统，Tensorflow中所有的计算都会被表达成计算图上的节点。Tensorflow通过元图（MetaGraph）来记录计算图中的信息，以及运行计算图中节点所需要的元数据。">
+<meta name="keywords" content="python,tensorflow">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tensorflow持久化原理及数据格式">
+<meta property="og:url" content="http://yoursite.com/2017/11/16/Tensorflow持久化原理及数据格式/index.html">
+<meta property="og:site_name" content="随我的博客">
+<meta property="og:description" content="Tensorflow是一个通过图的形式来表述计算的编程系统，Tensorflow中所有的计算都会被表达成计算图上的节点。Tensorflow通过元图（MetaGraph）来记录计算图中的信息，以及运行计算图中节点所需要的元数据。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-04-19T15:50:15.427Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Tensorflow持久化原理及数据格式">
+<meta name="twitter:description" content="Tensorflow是一个通过图的形式来表述计算的编程系统，Tensorflow中所有的计算都会被表达成计算图上的节点。Tensorflow通过元图（MetaGraph）来记录计算图中的信息，以及运行计算图中节点所需要的元数据。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/11/16/Tensorflow持久化原理及数据格式/"/>
+
+
+
+
+
+  <title>Tensorflow持久化原理及数据格式 | 随我的博客</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">随我的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">记录学习的点滴</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-align-left"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/16/Tensorflow持久化原理及数据格式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="随我">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="随我的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Tensorflow持久化原理及数据格式</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-16T19:23:24+08:00">
+                2017-11-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tensorflow/" itemprop="url" rel="index">
+                    <span itemprop="name">tensorflow</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  Tensorflow是一个通过图的形式来表述计算的编程系统，Tensorflow中所有的计算都会被表达成计算图上的节点。Tensorflow通过元图（MetaGraph）来记录计算图中的信息，以及运行计算图中节点所需要的元数据。
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Tensorflow持久化原理及数据格式"><a href="#Tensorflow持久化原理及数据格式" class="headerlink" title="Tensorflow持久化原理及数据格式"></a>Tensorflow持久化原理及数据格式</h1><hr>
+<h4 id="Tensorflow是一个通过图的形式来表述计算的编程系统，Tensorflow中所有的计算都会被表达成计算图上的节点。Tensorflow通过元图（MetaGraph）来记录计算图中的信息，以及运行计算图中节点所需要的元数据。以下代码给出了MetaGraphDef类型的定义"><a href="#Tensorflow是一个通过图的形式来表述计算的编程系统，Tensorflow中所有的计算都会被表达成计算图上的节点。Tensorflow通过元图（MetaGraph）来记录计算图中的信息，以及运行计算图中节点所需要的元数据。以下代码给出了MetaGraphDef类型的定义" class="headerlink" title="Tensorflow是一个通过图的形式来表述计算的编程系统，Tensorflow中所有的计算都会被表达成计算图上的节点。Tensorflow通过元图（MetaGraph）来记录计算图中的信息，以及运行计算图中节点所需要的元数据。以下代码给出了MetaGraphDef类型的定义"></a>Tensorflow是一个通过图的形式来表述计算的编程系统，Tensorflow中所有的计算都会被表达成计算图上的节点。Tensorflow通过元图（MetaGraph）来记录计算图中的信息，以及运行计算图中节点所需要的元数据。以下代码给出了MetaGraphDef类型的定义</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">message MetaGraphDef&#123;</span><br><span class="line">	MeatInfoDef meta_info_def = <span class="number">1</span>;</span><br><span class="line">	GraphDef graph_def = <span class="number">2</span>;</span><br><span class="line">	SaverDef saver_def = <span class="number">3</span>;</span><br><span class="line">	map&lt;string,CollectionDef&gt; collection_def = <span class="number">4</span>;</span><br><span class="line">	map&lt;string,SignatureDef&gt; signature_def = <span class="number">5</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="保存MetaGraphDef信息的文件默认以-meta为后缀名，在之前的例子中文件test-ckpt-meta中存储的就是元图的数据。由于得到的是二进制文件不方便查看。为了方便调试，Tensorflow提供了export-meta-graph函数，这个函数支持以json格式导出MetaGraphDef。下面为实现的代码"><a href="#保存MetaGraphDef信息的文件默认以-meta为后缀名，在之前的例子中文件test-ckpt-meta中存储的就是元图的数据。由于得到的是二进制文件不方便查看。为了方便调试，Tensorflow提供了export-meta-graph函数，这个函数支持以json格式导出MetaGraphDef。下面为实现的代码" class="headerlink" title="保存MetaGraphDef信息的文件默认以.meta为后缀名，在之前的例子中文件test.ckpt.meta中存储的就是元图的数据。由于得到的是二进制文件不方便查看。为了方便调试，Tensorflow提供了export_meta_graph函数，这个函数支持以json格式导出MetaGraphDef。下面为实现的代码"></a>保存MetaGraphDef信息的文件默认以.meta为后缀名，在之前的例子中文件test.ckpt.meta中存储的就是元图的数据。由于得到的是二进制文件不方便查看。为了方便调试，Tensorflow提供了export_meta_graph函数，这个函数支持以json格式导出MetaGraphDef。下面为实现的代码</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line">v1 = tf.Variable(tf.constant(<span class="number">1.0</span>, shape=[<span class="number">1</span>]), name =<span class="string">"v1"</span>)</span><br><span class="line">v2 = tf.Variable(tf.constant(<span class="number">2.0</span>, shape=[<span class="number">1</span>]), name =<span class="string">"v2"</span>)</span><br><span class="line">result1 = v1 + v2</span><br><span class="line"></span><br><span class="line">saver = tf.train.Saver()</span><br><span class="line"><span class="comment">#通过export_meta_graph函数导出Tensorflow的计算图的元图，并保存为json格式</span></span><br><span class="line">saver.export_meta_graph(<span class="string">"test/test.ckpt.json"</span>, as_text=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="meta-info-def-属性"><a href="#meta-info-def-属性" class="headerlink" title="meta_info_def 属性"></a>meta_info_def 属性</h2><h4 id="meta-info-def属性通过MetaInfoDef定义，它记录了Tensorflow计算图中的元数据以及Tensorflow程序中所有使用到的运算方法的信息。下面的MetaInfoDef的定义"><a href="#meta-info-def属性通过MetaInfoDef定义，它记录了Tensorflow计算图中的元数据以及Tensorflow程序中所有使用到的运算方法的信息。下面的MetaInfoDef的定义" class="headerlink" title="meta_info_def属性通过MetaInfoDef定义，它记录了Tensorflow计算图中的元数据以及Tensorflow程序中所有使用到的运算方法的信息。下面的MetaInfoDef的定义"></a>meta_info_def属性通过MetaInfoDef定义，它记录了Tensorflow计算图中的元数据以及Tensorflow程序中所有使用到的运算方法的信息。下面的MetaInfoDef的定义</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">message MetaInfoDef&#123;</span><br><span class="line">	<span class="comment">#saver没有特殊指定，默认属性都为空。meta_info_def属性里只有stripped_op_list属性不能为空。</span></span><br><span class="line">	string meta_graph_version = <span class="number">1</span>;<span class="comment">#该属性不能为空</span></span><br><span class="line">	OpList stripped_op_list = <span class="number">2</span>;<span class="comment">#该属性记录了计算图中使用到的所有运算方法的信息，该函数只记录运算信息，不记录计算的次数</span></span><br><span class="line">	google.protobuf.Any any_info = <span class="number">3</span>;</span><br><span class="line">	repeated string tags = <span class="number">4</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="元数据包括计算图的版本号（meta-graph-version属性）以及用户指定的一些标签（tags属性）。"><a href="#元数据包括计算图的版本号（meta-graph-version属性）以及用户指定的一些标签（tags属性）。" class="headerlink" title="元数据包括计算图的版本号（meta_graph_version属性）以及用户指定的一些标签（tags属性）。"></a>元数据包括计算图的版本号（meta_graph_version属性）以及用户指定的一些标签（tags属性）。</h4><hr>
+<h4 id="OpList类型是一个OpDef类型的列表，以下代码给出OpDef类型的定义："><a href="#OpList类型是一个OpDef类型的列表，以下代码给出OpDef类型的定义：" class="headerlink" title="OpList类型是一个OpDef类型的列表，以下代码给出OpDef类型的定义："></a>OpList类型是一个OpDef类型的列表，以下代码给出OpDef类型的定义：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">message opDef&#123;</span><br><span class="line">	string name = <span class="number">1</span>;<span class="comment">#定义了运算的名称</span></span><br><span class="line">	repeated ArgDef input_arg = <span class="number">2</span>; <span class="comment">#定义了输入，属性是列表</span></span><br><span class="line">	repeated ArgDef output_arg =<span class="number">3</span>; <span class="comment">#定义了输出，属性是列表</span></span><br><span class="line">	repeated AttrDef attr = <span class="number">4</span>;<span class="comment">#给出了其他运算的参数信息</span></span><br><span class="line">	string summary = <span class="number">5</span>;</span><br><span class="line">	string description = <span class="number">6</span>;</span><br><span class="line">	OpDeprecation deprecation = <span class="number">8</span>;</span><br><span class="line">	bool is_commutative = <span class="number">18</span>;</span><br><span class="line">	bool is_aggregate = <span class="number">16</span></span><br><span class="line">	bool is_stateful = <span class="number">17</span>;</span><br><span class="line">	bool allows_uninitialized_input = <span class="number">19</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="下面给出一个比较有代表性的运算来辅助说明OpDef的数据结构。"><a href="#下面给出一个比较有代表性的运算来辅助说明OpDef的数据结构。" class="headerlink" title="下面给出一个比较有代表性的运算来辅助说明OpDef的数据结构。"></a>下面给出一个比较有代表性的运算来辅助说明OpDef的数据结构。</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">op &#123;</span><br><span class="line">	name: <span class="string">"Add"</span></span><br><span class="line">	input_arg&#123;</span><br><span class="line">		name: <span class="string">"x"</span></span><br><span class="line">		type_attr:<span class="string">"T"</span></span><br><span class="line">	&#125;</span><br><span class="line">	input_arg&#123;</span><br><span class="line">		name: <span class="string">"y"</span></span><br><span class="line">		type_attr:<span class="string">"T"</span></span><br><span class="line">	&#125;</span><br><span class="line">	output_arg&#123;</span><br><span class="line">		name: <span class="string">"z"</span></span><br><span class="line">		type_attr:<span class="string">"T"</span></span><br><span class="line">	&#125;</span><br><span class="line">	attr&#123;</span><br><span class="line">		name:<span class="string">"T"</span></span><br><span class="line">		type:<span class="string">"type"</span></span><br><span class="line">		allow_values&#123;</span><br><span class="line">			list&#123;</span><br><span class="line">				type:DT_HALF</span><br><span class="line">				type:DT_FLOAT</span><br><span class="line">				...</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面给出的是名称为Add的运算。这个运算的输入有两个，输出有一个，输入输出属性均指定了属性typr_attr，并且这个属性的值为T。在OpDef的attr的属性中。必须要出现名称（name）为T的属性。以上样例中，这个属性指定了运算输入输出允许的参数类型 （allowed_values）。</p>
+<hr>
+<h2 id="graph-def属性"><a href="#graph-def属性" class="headerlink" title="graph_def属性"></a>graph_def属性</h2><h4 id="graph-def属性主要记录了计算图中的节点信息。Tensorflow计算图中的一个节点对应Tensorflow中的一个运算。因为meta-info-def中已经包含所有运算的具体信息，所以graph-def属性指关注运算的连接结构。GraphDef主要包含了一个NodeDef类型的列表。以下代码给出GraphDef和NodeDef类型中包含的信息："><a href="#graph-def属性主要记录了计算图中的节点信息。Tensorflow计算图中的一个节点对应Tensorflow中的一个运算。因为meta-info-def中已经包含所有运算的具体信息，所以graph-def属性指关注运算的连接结构。GraphDef主要包含了一个NodeDef类型的列表。以下代码给出GraphDef和NodeDef类型中包含的信息：" class="headerlink" title="graph_def属性主要记录了计算图中的节点信息。Tensorflow计算图中的一个节点对应Tensorflow中的一个运算。因为meta_info_def中已经包含所有运算的具体信息，所以graph_def属性指关注运算的连接结构。GraphDef主要包含了一个NodeDef类型的列表。以下代码给出GraphDef和NodeDef类型中包含的信息："></a>graph_def属性主要记录了计算图中的节点信息。Tensorflow计算图中的一个节点对应Tensorflow中的一个运算。因为meta_info_def中已经包含所有运算的具体信息，所以graph_def属性指关注运算的连接结构。GraphDef主要包含了一个NodeDef类型的列表。以下代码给出GraphDef和NodeDef类型中包含的信息：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">message GraphDef&#123;</span><br><span class="line">	<span class="comment">#GraphDef的主要信息存储在node属性中，他记录了Tensorflow计算图上所有的节点信息。</span></span><br><span class="line">	repeated NodeDef node = <span class="number">1</span>;</span><br><span class="line">	VersionDef versions = <span class="number">4</span>; <span class="comment">#主要储存了Tensorflow的版本号</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">message NodeDef&#123;</span><br><span class="line">	<span class="comment">#NodeDef类型中有一个名称属性name，他是一个节点的唯一标识符，在程序中，通过节点的名称来获得相应的节点。</span></span><br><span class="line">	string name = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">	<span class="string">'''</span></span><br><span class="line"><span class="string">	op属性给出了该节点使用的Tensorflow运算方法的名称。</span></span><br><span class="line"><span class="string">	通过这个名称可以在TensorFlow计算图元图的meta_info_def属性中找到该运算的具体信息。</span></span><br><span class="line"><span class="string">	'''</span></span><br><span class="line">	string op = <span class="number">2</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="string">'''</span></span><br><span class="line"><span class="string">	input属性是一个字符串列表，他定义了运算的输入。每个字符串饿的取值格式为弄的：src_output</span></span><br><span class="line"><span class="string">	node部分给出节点名称，src_output表明了这个输入是指定节点的第几个输出。</span></span><br><span class="line"><span class="string">	src_output=0时可以省略src_output部分</span></span><br><span class="line"><span class="string">	'''</span></span><br><span class="line">	repeated string input = <span class="number">3</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">#制定了处理这个运算的设备，可以是本地或者远程的CPU or GPU。属性为空时自动选择</span></span><br><span class="line">	string device = <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">#制定了和当前运算有关的配置信息</span></span><br><span class="line">	map&lt;string, AttrValue&gt; attr = <span class="number">5</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="下面列举test-ckpt-meta-json具体介绍graph-def属性"><a href="#下面列举test-ckpt-meta-json具体介绍graph-def属性" class="headerlink" title="下面列举test.ckpt.meta.json具体介绍graph_def属性"></a>下面列举test.ckpt.meta.json具体介绍graph_def属性</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">graph def &#123;</span><br><span class="line">	node &#123;</span><br><span class="line">		name: <span class="string">"v1"</span></span><br><span class="line">		op: <span class="string">"Variable"</span></span><br><span class="line">		attr &#123;</span><br><span class="line">			key:<span class="string">"_output_shapes"</span></span><br><span class="line">			value &#123;</span><br><span class="line">				list&#123; shape &#123; dim &#123; size: <span class="number">1</span> &#125; &#125; &#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	attr &#123; </span><br><span class="line">		key :<span class="string">"dtype"</span></span><br><span class="line">		value &#123;</span><br><span class="line">			type: DT_FLOAT</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;			</span><br><span class="line">		...</span><br><span class="line">	&#125;</span><br><span class="line">	node &#123;</span><br><span class="line">		name :<span class="string">"add"</span></span><br><span class="line">		op :<span class="string">"Add"</span></span><br><span class="line">		input :<span class="string">"v1/read"</span> <span class="comment">#read指读取变量v1的值</span></span><br><span class="line">		input: <span class="string">"v2/read"</span></span><br><span class="line">		...</span><br><span class="line">	&#125;</span><br><span class="line">	node &#123;</span><br><span class="line">		name: <span class="string">"save/control_dependency"</span> <span class="comment">#指系统在完成tensorflow模型持久化过程中自动生成一个运算。</span></span><br><span class="line">		op:<span class="string">"Identity"</span></span><br><span class="line">		...</span><br><span class="line">	&#125;</span><br><span class="line">	versions &#123;</span><br><span class="line">		producer :<span class="number">9</span> <span class="comment">#给出了文件使用时的Tensorflow版本号。</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="saver-def属性"><a href="#saver-def属性" class="headerlink" title="saver_def属性"></a>saver_def属性</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">message SaverDef &#123;</span><br><span class="line">	string filename_tensor_name = <span class="number">1</span>;</span><br><span class="line">	string save_tensor_name = <span class="number">2</span>;</span><br><span class="line">	string restore_op_name = <span class="number">3</span>;</span><br><span class="line">	int32 max_to_keep = <span class="number">4</span>;</span><br><span class="line">	bool sharded = <span class="number">5</span>;</span><br><span class="line">	float keep_checkpoint_every_n_hours = <span class="number">6</span>;</span><br><span class="line">	enum CheckpointFormatVersion &#123;</span><br><span class="line">		LEGACY = <span class="number">0</span>;</span><br><span class="line">		V1 = <span class="number">1</span>;</span><br><span class="line">		V2 = <span class="number">2</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	CheckpointFormatVersion version = <span class="number">7</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="下面给出test-ckpt-meta-json文件中saver-def属性的内容。"><a href="#下面给出test-ckpt-meta-json文件中saver-def属性的内容。" class="headerlink" title="下面给出test.ckpt.meta.json文件中saver_def属性的内容。"></a>下面给出test.ckpt.meta.json文件中saver_def属性的内容。</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">saver_def &#123;</span><br><span class="line">	filename_tensor_name :<span class="string">"save/Const:0”</span></span><br><span class="line"><span class="string">	#给出了保存文件的张量名，这个张量就是节点save/Const的第一个输出。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">	save_tensor_name :"</span>save/control_dependency: <span class="number">0</span>”</span><br><span class="line">	<span class="comment">#给出了持久化模型运算所对应的节点名称</span></span><br><span class="line">	</span><br><span class="line">	restore_op_name: <span class="string">"save/restore_all"</span></span><br><span class="line">	<span class="comment">#和持久性模型运算对应的是加载模型的运算的名称</span></span><br><span class="line">	</span><br><span class="line">	max_to_keep:<span class="number">5</span></span><br><span class="line">	keep_checkpoint_every_n_hours :<span class="number">10000.0</span></span><br><span class="line">	<span class="string">'''</span></span><br><span class="line"><span class="string">	上面两个属性设定了tf.train.Saver类清理之前保存的模型的策略。比如当max_to_keep为5时，第六次调用</span></span><br><span class="line"><span class="string">	saver.save时，第一次保存的模型就会被自动删除，通过设置keep_checkpoint_every_n_hours，每n小</span></span><br><span class="line"><span class="string">	时可以在max_to_keep的基础上保存一个模型</span></span><br><span class="line"><span class="string">	'''</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="collection-def属性"><a href="#collection-def属性" class="headerlink" title="collection_def属性"></a>collection_def属性</h2><h4 id="collection-def属性是一个集合名称到集合内容的映射，其中集合的名称为字符串，而集合内容为CollectionDef-Protocol-Buffer。以下代码给出CollectionDef类型的定义"><a href="#collection-def属性是一个集合名称到集合内容的映射，其中集合的名称为字符串，而集合内容为CollectionDef-Protocol-Buffer。以下代码给出CollectionDef类型的定义" class="headerlink" title="collection_def属性是一个集合名称到集合内容的映射，其中集合的名称为字符串，而集合内容为CollectionDef Protocol Buffer。以下代码给出CollectionDef类型的定义"></a>collection_def属性是一个集合名称到集合内容的映射，其中集合的名称为字符串，而集合内容为CollectionDef Protocol Buffer。以下代码给出CollectionDef类型的定义</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">message CollectionDef &#123;</span><br><span class="line">	message Nodelist &#123;</span><br><span class="line">	<span class="comment">#用于维护计算图上的节点集合</span></span><br><span class="line">		repeated string value = <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	message BytesList &#123;</span><br><span class="line">	<span class="comment">#维护字符串或者系列化之后的Procotol Buffer的集合。例如张量是通过Protocol Buffer表示的，而张量的集合是通过BytesList维护的。</span></span><br><span class="line">		repeated bytes value = <span class="number">1</span> ;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	message Int64List &#123;</span><br><span class="line">		repeated int64 value = <span class="number">1</span>[packed = true];</span><br><span class="line">	&#125;</span><br><span class="line">	message FloatList &#123;</span><br><span class="line">		repeated float value = <span class="number">1</span>[packed = true] ;</span><br><span class="line">	&#125;</span><br><span class="line">	message AnyList &#123;</span><br><span class="line">		repeated google.protobuf.Any value= <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	oneof kind &#123;</span><br><span class="line">		NodeList node_list = <span class="number">1</span>;</span><br><span class="line">		BytesList bytes_lista = <span class="number">2</span>;</span><br><span class="line">		Int64List int64_list = <span class="number">3</span>;</span><br><span class="line">		Floatlist float_list = <span class="number">4</span>;</span><br><span class="line">		AnyList any_list = <span class="number">5</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="下面给出了test-ckpt-meta-json文件中的collection-def属性的内容"><a href="#下面给出了test-ckpt-meta-json文件中的collection-def属性的内容" class="headerlink" title="下面给出了test.ckpt.meta.json文件中的collection_def属性的内容"></a>下面给出了test.ckpt.meta.json文件中的collection_def属性的内容</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">collection_def &#123;</span><br><span class="line">	<span class="comment">#可训练变量的集合</span></span><br><span class="line">	key: <span class="string">"trainable_variables"</span></span><br><span class="line">	value &#123;</span><br><span class="line">		bytes_list &#123;</span><br><span class="line">			value; <span class="string">"\n\004v1:0\022\tv1/Assign\032\tv1/read:0"</span></span><br><span class="line">			value: <span class="string">"\n\004v2:0\022\tv2/Assign\032\cv2/read:0"</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">collection_def &#123;</span><br><span class="line">	<span class="comment">#所有变量的集合</span></span><br><span class="line">	key: <span class="string">"variables"</span></span><br><span class="line">	value &#123;</span><br><span class="line">		bytes_list &#123;</span><br><span class="line">			value:<span class="string">"\n\004v1:0\022\tv1/Assign\032\tv1/read:0"</span></span><br><span class="line">			value:<span class="string">"\n\004v2:0\022\tv2/Assign\032\tv2/read:0"</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"><i class="fa fa-tag"></i> python</a>
+          
+            <a href="/tags/tensorflow/" rel="tag"><i class="fa fa-tag"></i> tensorflow</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/16/Tensorflow模型持久化的代码实现/" rel="next" title="Tensorflow模型持久化的代码实现">
+                <i class="fa fa-chevron-left"></i> Tensorflow模型持久化的代码实现
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/10/Django网站部署前期准备/" rel="prev" title="Django网站部署前期准备">
+                Django网站部署前期准备 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+<span class="jiathis_txt">分享到：</span>
+<a class="jiathis_button_fav">收藏夹</a>
+<a class="jiathis_button_copy">复制网址</a>
+<a class="jiathis_button_email">邮件</a>
+<a class="jiathis_button_weixin">微信</a>
+<!-- <a class="jiathis_button_qzone">QQ空间</a>
+<a class="jiathis_button_tqq">腾讯微博</a> -->
+<a class="jiathis_button_douban">豆瓣</a>
+<a class="jiathis_button_share">一键分享</a>
+
+<a href="http://www.jiathis.com/share?uid=2140465" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+  data_track_clickback:true,
+  summary:"",
+  shortUrl:false,
+  hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="随我" />
+            
+              <p class="site-author-name" itemprop="name">随我</p>
+              <p class="site-description motion-element" itemprop="description">用心做自己喜欢的事</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+            <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=298 height=52 src="//music.163.com/outchain/player?type=2&id=26624725&auto=0&height=32"></iframe>
+          </nav>
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ZhangJia97" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zhjia97@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/qq_38542085" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-globe"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Tensorflow持久化原理及数据格式"><span class="nav-number">1.</span> <span class="nav-text">Tensorflow持久化原理及数据格式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Tensorflow是一个通过图的形式来表述计算的编程系统，Tensorflow中所有的计算都会被表达成计算图上的节点。Tensorflow通过元图（MetaGraph）来记录计算图中的信息，以及运行计算图中节点所需要的元数据。以下代码给出了MetaGraphDef类型的定义"><span class="nav-number">1.0.0.1.</span> <span class="nav-text">Tensorflow是一个通过图的形式来表述计算的编程系统，Tensorflow中所有的计算都会被表达成计算图上的节点。Tensorflow通过元图（MetaGraph）来记录计算图中的信息，以及运行计算图中节点所需要的元数据。以下代码给出了MetaGraphDef类型的定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#保存MetaGraphDef信息的文件默认以-meta为后缀名，在之前的例子中文件test-ckpt-meta中存储的就是元图的数据。由于得到的是二进制文件不方便查看。为了方便调试，Tensorflow提供了export-meta-graph函数，这个函数支持以json格式导出MetaGraphDef。下面为实现的代码"><span class="nav-number">1.0.0.2.</span> <span class="nav-text">保存MetaGraphDef信息的文件默认以.meta为后缀名，在之前的例子中文件test.ckpt.meta中存储的就是元图的数据。由于得到的是二进制文件不方便查看。为了方便调试，Tensorflow提供了export_meta_graph函数，这个函数支持以json格式导出MetaGraphDef。下面为实现的代码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#meta-info-def-属性"><span class="nav-number">1.1.</span> <span class="nav-text">meta_info_def 属性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#meta-info-def属性通过MetaInfoDef定义，它记录了Tensorflow计算图中的元数据以及Tensorflow程序中所有使用到的运算方法的信息。下面的MetaInfoDef的定义"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">meta_info_def属性通过MetaInfoDef定义，它记录了Tensorflow计算图中的元数据以及Tensorflow程序中所有使用到的运算方法的信息。下面的MetaInfoDef的定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#元数据包括计算图的版本号（meta-graph-version属性）以及用户指定的一些标签（tags属性）。"><span class="nav-number">1.1.0.2.</span> <span class="nav-text">元数据包括计算图的版本号（meta_graph_version属性）以及用户指定的一些标签（tags属性）。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#OpList类型是一个OpDef类型的列表，以下代码给出OpDef类型的定义："><span class="nav-number">1.1.0.3.</span> <span class="nav-text">OpList类型是一个OpDef类型的列表，以下代码给出OpDef类型的定义：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#下面给出一个比较有代表性的运算来辅助说明OpDef的数据结构。"><span class="nav-number">1.1.0.4.</span> <span class="nav-text">下面给出一个比较有代表性的运算来辅助说明OpDef的数据结构。</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#graph-def属性"><span class="nav-number">1.2.</span> <span class="nav-text">graph_def属性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#graph-def属性主要记录了计算图中的节点信息。Tensorflow计算图中的一个节点对应Tensorflow中的一个运算。因为meta-info-def中已经包含所有运算的具体信息，所以graph-def属性指关注运算的连接结构。GraphDef主要包含了一个NodeDef类型的列表。以下代码给出GraphDef和NodeDef类型中包含的信息："><span class="nav-number">1.2.0.1.</span> <span class="nav-text">graph_def属性主要记录了计算图中的节点信息。Tensorflow计算图中的一个节点对应Tensorflow中的一个运算。因为meta_info_def中已经包含所有运算的具体信息，所以graph_def属性指关注运算的连接结构。GraphDef主要包含了一个NodeDef类型的列表。以下代码给出GraphDef和NodeDef类型中包含的信息：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#下面列举test-ckpt-meta-json具体介绍graph-def属性"><span class="nav-number">1.2.0.2.</span> <span class="nav-text">下面列举test.ckpt.meta.json具体介绍graph_def属性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#saver-def属性"><span class="nav-number">1.3.</span> <span class="nav-text">saver_def属性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#下面给出test-ckpt-meta-json文件中saver-def属性的内容。"><span class="nav-number">1.3.0.1.</span> <span class="nav-text">下面给出test.ckpt.meta.json文件中saver_def属性的内容。</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#collection-def属性"><span class="nav-number">1.4.</span> <span class="nav-text">collection_def属性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#collection-def属性是一个集合名称到集合内容的映射，其中集合的名称为字符串，而集合内容为CollectionDef-Protocol-Buffer。以下代码给出CollectionDef类型的定义"><span class="nav-number">1.4.0.1.</span> <span class="nav-text">collection_def属性是一个集合名称到集合内容的映射，其中集合的名称为字符串，而集合内容为CollectionDef Protocol Buffer。以下代码给出CollectionDef类型的定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#下面给出了test-ckpt-meta-json文件中的collection-def属性的内容"><span class="nav-number">1.4.0.2.</span> <span class="nav-text">下面给出了test.ckpt.meta.json文件中的collection_def属性的内容</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">随我</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
