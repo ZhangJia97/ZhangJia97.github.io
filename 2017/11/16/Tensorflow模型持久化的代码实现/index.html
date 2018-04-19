@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="python,tensorflow,matplotlib," />
+  <meta name="keywords" content="python,tensorflow," />
 
 
 
@@ -81,20 +81,21 @@
 
 
 
-<meta name="description" content="本文使用python的matplotlib包将tensorflow对数据的处理过程进行可视化">
-<meta name="keywords" content="python,tensorflow,matplotlib">
+<meta name="description" content="tensorflow模型持久化在实际使用中用处极大，本文对此进行了总结">
+<meta name="keywords" content="python,tensorflow">
 <meta property="og:type" content="article">
-<meta property="og:title" content="通过python的matplotlib包将Tensorflow数据进行可视化">
-<meta property="og:url" content="http://yoursite.com/2017/11/08/通过python的matplotlib包将Tensorflow数据进行可视化/index.html">
+<meta property="og:title" content="Tensorflow模型持久化的代码实现">
+<meta property="og:url" content="http://yoursite.com/2017/11/16/Tensorflow模型持久化的代码实现/index.html">
 <meta property="og:site_name" content="随我的博客">
-<meta property="og:description" content="本文使用python的matplotlib包将tensorflow对数据的处理过程进行可视化">
+<meta property="og:description" content="tensorflow模型持久化在实际使用中用处极大，本文对此进行了总结">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://img.blog.csdn.net/20171108210514694?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMzg1NDIwODU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:updated_time" content="2018-04-19T15:03:28.776Z">
+<meta property="og:image" content="http://img.blog.csdn.net/20171116133008913?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMzg1NDIwODU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20171116133553267?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMzg1NDIwODU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:updated_time" content="2018-04-19T15:47:54.465Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="通过python的matplotlib包将Tensorflow数据进行可视化">
-<meta name="twitter:description" content="本文使用python的matplotlib包将tensorflow对数据的处理过程进行可视化">
-<meta name="twitter:image" content="http://img.blog.csdn.net/20171108210514694?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMzg1NDIwODU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta name="twitter:title" content="Tensorflow模型持久化的代码实现">
+<meta name="twitter:description" content="tensorflow模型持久化在实际使用中用处极大，本文对此进行了总结">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20171116133008913?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMzg1NDIwODU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 
 
 
@@ -124,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/11/08/通过python的matplotlib包将Tensorflow数据进行可视化/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/11/16/Tensorflow模型持久化的代码实现/"/>
 
 
 
 
 
-  <title>通过python的matplotlib包将Tensorflow数据进行可视化 | 随我的博客</title>
+  <title>Tensorflow模型持久化的代码实现 | 随我的博客</title>
   
 
 
@@ -267,7 +268,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/08/通过python的matplotlib包将Tensorflow数据进行可视化/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/16/Tensorflow模型持久化的代码实现/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="随我">
@@ -284,7 +285,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">通过python的matplotlib包将Tensorflow数据进行可视化</h1>
+          <h1 class="post-title" itemprop="name headline">Tensorflow模型持久化的代码实现</h1>
         
 
         <div class="post-meta">
@@ -296,8 +297,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-08T21:06:28+08:00">
-                2017-11-08
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-16T14:01:19+08:00">
+                2017-11-16
               </time>
             
 
@@ -343,7 +344,7 @@
 
           
               <div class="post-description">
-                  本文使用python的matplotlib包将tensorflow对数据的处理过程进行可视化
+                  tensorflow模型持久化在实际使用中用处极大，本文对此进行了总结
               </div>
           
 
@@ -360,10 +361,19 @@
       
 
       
-        <h1 id="使用matplotlib中的一些函数将tensorflow中的数据可视化，更加便于分析"><a href="#使用matplotlib中的一些函数将tensorflow中的数据可视化，更加便于分析" class="headerlink" title="使用matplotlib中的一些函数将tensorflow中的数据可视化，更加便于分析"></a>使用matplotlib中的一些函数将tensorflow中的数据可视化，更加便于分析</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add_layer</span><span class="params">(inputs, in_size, out_size, activation_function=None)</span>:</span></span><br><span class="line">    Weights = tf.Variable(tf.random_normal([in_size, out_size]))</span><br><span class="line">    biases = tf.Variable(tf.zeros([<span class="number">1</span>, out_size]) + <span class="number">0.1</span>)</span><br><span class="line">    Wx_plus_b = tf.matmul(inputs, Weights) + biases</span><br><span class="line">    <span class="keyword">if</span> activation_function <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">        outputs = Wx_plus_b</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        outputs = activation_function(Wx_plus_b)</span><br><span class="line">    <span class="keyword">return</span> outputs</span><br><span class="line"></span><br><span class="line"><span class="comment"># Make up some real data</span></span><br><span class="line">x_data = np.linspace(<span class="number">-1</span>, <span class="number">1</span>, <span class="number">300</span>)[:, np.newaxis]</span><br><span class="line">noise = np.random.normal(<span class="number">0</span>, <span class="number">0.05</span>, x_data.shape)</span><br><span class="line">y_data = np.square(x_data) - <span class="number">0.5</span> + noise</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># define placeholder for inputs to network</span></span><br><span class="line">xs = tf.placeholder(tf.float32, [<span class="keyword">None</span>, <span class="number">1</span>])</span><br><span class="line">ys = tf.placeholder(tf.float32, [<span class="keyword">None</span>, <span class="number">1</span>])</span><br><span class="line"><span class="comment"># add hidden layer</span></span><br><span class="line">l1 = add_layer(xs, <span class="number">1</span>, <span class="number">10</span>, activation_function=tf.nn.relu)</span><br><span class="line"><span class="comment"># add output layer</span></span><br><span class="line">prediction = add_layer(l1, <span class="number">10</span>, <span class="number">1</span>, activation_function=<span class="keyword">None</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># the error between prediction and real data</span></span><br><span class="line">loss = tf.reduce_mean(tf.reduce_sum(tf.square(ys-prediction), reduction_indices=[<span class="number">1</span>]))</span><br><span class="line">train_step = tf.train.GradientDescentOptimizer(<span class="number">0.1</span>).minimize(loss)</span><br><span class="line"><span class="comment"># important step</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#initialize_all_variables已被弃用,使用tf.global_variables_initializer代替。 </span></span><br><span class="line">init = tf.global_variables_initializer()</span><br><span class="line">sess = tf.Session()</span><br><span class="line">sess.run(init)</span><br><span class="line"></span><br><span class="line"><span class="comment"># plot the real data</span></span><br><span class="line">fig = plt.figure()</span><br><span class="line">ax = fig.add_subplot(<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>)</span><br><span class="line">ax.scatter(x_data, y_data)</span><br><span class="line">plt.ion() <span class="comment">#使plt不会在show之后停止而是继续运行</span></span><br><span class="line">plt.show()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">    <span class="comment"># training</span></span><br><span class="line">    sess.run(train_step, feed_dict=&#123;xs: x_data, ys: y_data&#125;)</span><br><span class="line">    <span class="keyword">if</span> i % <span class="number">50</span> == <span class="number">0</span>:</span><br><span class="line">        <span class="comment"># to visualize the result and improvement</span></span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            ax.lines.remove(lines[<span class="number">0</span>]) <span class="comment">#在每一次绘图之前先讲上一次绘图删除，使得画面更加清晰</span></span><br><span class="line">        <span class="keyword">except</span> Exception:</span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">        prediction_value = sess.run(prediction, feed_dict=&#123;xs: x_data&#125;)</span><br><span class="line">        <span class="comment"># plot the prediction</span></span><br><span class="line">        lines = ax.plot(x_data, prediction_value, <span class="string">'r-'</span>, lw=<span class="number">5</span>) <span class="comment">#'r-'指绘制一个红色的线</span></span><br><span class="line">        plt.pause(<span class="number">1</span>) <span class="comment">#指等待一秒钟</span></span><br></pre></td></tr></table></figure>
-<p>运行结果如下：（实际效果应该是动态的，应当使用ipython运行，使用jupyter运行则图片不是动态的）<br><img src="http://img.blog.csdn.net/20171108210514694?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMzg1NDIwODU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
-<p>注意：initialize_all_variables已被弃用,使用tf.global_variables_initializer代替。 </p>
-
+        <h1 id="1-存储模型"><a href="#1-存储模型" class="headerlink" title="1.存储模型"></a>1.存储模型</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line">v1 = tf.Variable(tf.constant(<span class="number">1.0</span>, shape=[<span class="number">1</span>]),name=<span class="string">"v1"</span>)</span><br><span class="line">v2 = tf.Variable(tf.constant(<span class="number">2.0</span>, shape=[<span class="number">1</span>]),name=<span class="string">"v2"</span>)</span><br><span class="line">result = v1 + v2</span><br><span class="line"></span><br><span class="line">init_op = tf.global_variables_initializer()</span><br><span class="line">saver = tf.train.Saver()<span class="comment">#声明tf.train.Saver()类用于保存模型</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">	sess.run(init_op)</span><br><span class="line">	saver.save(sess, <span class="string">"test/test.ckpt"</span>)<span class="comment">#将模型保存于test文件夹中</span></span><br></pre></td></tr></table></figure>
+<h3 id="运行该程序后，将在test文件中出现以下的文件"><a href="#运行该程序后，将在test文件中出现以下的文件" class="headerlink" title="运行该程序后，将在test文件中出现以下的文件"></a>运行该程序后，将在test文件中出现以下的文件</h3><p><img src="http://img.blog.csdn.net/20171116133008913?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMzg1NDIwODU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<hr>
+<h1 id="2-加载模型"><a href="#2-加载模型" class="headerlink" title="2.加载模型"></a>2.加载模型</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line">v1 = tf.Variable(tf.constant(<span class="number">1.0</span>, shape=[<span class="number">1</span>]),name=<span class="string">"v1"</span>)</span><br><span class="line">v2 = tf.Variable(tf.constant(<span class="number">4.0</span>, shape=[<span class="number">1</span>]),name=<span class="string">"v2"</span>)</span><br><span class="line">result = v1 + v2</span><br><span class="line"></span><br><span class="line">saver = tf.train.Saver()</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">	saver.restore(sess, <span class="string">"test/test.ckpt"</span>)<span class="comment">#加载已经保存的模型，并通过已经保存的模型中的变量的值来计算加法</span></span><br><span class="line">	print(sess.run(result))</span><br><span class="line">	</span><br><span class="line">	<span class="comment">#计算输出结果为[3.]不是[5.]是因为该程序加载了之前保存的模型，所以计算的变量也是保存的模型中的变量</span></span><br></pre></td></tr></table></figure>
+<p><img src="http://img.blog.csdn.net/20171116133553267?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMzg1NDIwODU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<hr>
+<h2 id="如果不希望重复定义变量以及运算，可以直接加载已经持久化的图"><a href="#如果不希望重复定义变量以及运算，可以直接加载已经持久化的图" class="headerlink" title="如果不希望重复定义变量以及运算，可以直接加载已经持久化的图"></a>如果不希望重复定义变量以及运算，可以直接加载已经持久化的图</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">	<span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line">saver = tf.train.import_meta_graph(<span class="string">"test/test.ckpt.meta"</span>)</span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">	saver.restore(sess, <span class="string">"test/test.ckpt"</span>)</span><br><span class="line">	<span class="comment">#通过张量的名称来获取张量</span></span><br><span class="line">	print(sess.run(tf.get_default_graph().get_tensor_by_name(<span class="string">"add:0"</span>)))</span><br><span class="line">	<span class="comment">#输出[3.]</span></span><br></pre></td></tr></table></figure>
+<p>该程序默认保存和加载了Tensorflow计算图中定义的全部变量。</p>
+<hr>
+<h1 id="3-加载或者保存部分变量"><a href="#3-加载或者保存部分变量" class="headerlink" title="3.加载或者保存部分变量"></a>3.加载或者保存部分变量</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">saver = tf.train.Saver([v1])<span class="comment">#该命令只用来加载变量v1</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="4-加载或者保存时对变量重命名"><a href="#4-加载或者保存时对变量重命名" class="headerlink" title="4.加载或者保存时对变量重命名"></a>4.加载或者保存时对变量重命名</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这里声明的变量名称和已经保存的模型中变量的名称不同</span></span><br><span class="line">V1=tf.Variable(tf.constant(<span class="number">1.0</span>,shape=[<span class="number">1</span>]),name=<span class="string">"other-v1"</span>)</span><br><span class="line">V2=tf.variable(tf.constant (<span class="number">2.0</span>，shape=[<span class="number">1</span>]),name=<span class="string">"other-v2"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果直接使用tf.train.Saver () 来加载模型会报变量找不到的错误。下面显示了报错信息:</span></span><br><span class="line"><span class="comment"># tensorflow.python.framewotk.erors.NotFoundError: Tensor name "other-v2"</span></span><br><span class="line"><span class="comment"># not found in checkpoint files /test/test.ckpt</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用一个字典(aictionary) 来重命名变量可以就可以加载原来的模型了。这个字典指定了</span></span><br><span class="line"><span class="comment"># 原来名称为v1的变量现在加载到变量v1中(名称为other-v1),名称为v2的变量</span></span><br><span class="line"><span class="comment"># 加载到变量v2 中(名称为other-v2)。</span></span><br><span class="line">saver=tf.train.Saver(&#123;<span class="string">"v1"</span>=v1,<span class="string">"v2"</span>:v2&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="如果直接通过saver-tf-train-Saver默认构造的函数来加载保存的模型，那么程序会报变量找不到的错误。因为保存时候的变量和加载时的变量的名称不一致。因此可以通过字典来将保存时和加载是的变量联系起来。"><a href="#如果直接通过saver-tf-train-Saver默认构造的函数来加载保存的模型，那么程序会报变量找不到的错误。因为保存时候的变量和加载时的变量的名称不一致。因此可以通过字典来将保存时和加载是的变量联系起来。" class="headerlink" title="如果直接通过saver=tf.train.Saver默认构造的函数来加载保存的模型，那么程序会报变量找不到的错误。因为保存时候的变量和加载时的变量的名称不一致。因此可以通过字典来将保存时和加载是的变量联系起来。"></a>如果直接通过saver=tf.train.Saver默认构造的函数来加载保存的模型，那么程序会报变量找不到的错误。因为保存时候的变量和加载时的变量的名称不一致。因此可以通过字典来将保存时和加载是的变量联系起来。</h4>
       
     </div>
     
@@ -384,8 +394,6 @@
           
             <a href="/tags/tensorflow/" rel="tag"><i class="fa fa-tag"></i> tensorflow</a>
           
-            <a href="/tags/matplotlib/" rel="tag"><i class="fa fa-tag"></i> matplotlib</a>
-          
         </div>
       
 
@@ -397,8 +405,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/11/08/Tensorflow进行简单的神经网络的尝试（建造神经网络）/" rel="next" title="Tensorflow进行简单的神经网络的尝试（建造神经网络）">
-                <i class="fa fa-chevron-left"></i> Tensorflow进行简单的神经网络的尝试（建造神经网络）
+              <a href="/2017/11/10/Tensorflow的变量管理/" rel="next" title="Tensorflow的变量管理">
+                <i class="fa fa-chevron-left"></i> Tensorflow的变量管理
               </a>
             
           </div>
@@ -407,8 +415,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/11/08/使用TensorBoard进行数据可视化/" rel="prev" title="使用TensorBoard进行数据可视化">
-                使用TensorBoard进行数据可视化 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/02/10/Django网站部署前期准备/" rel="prev" title="Django网站部署前期准备">
+                Django网站部署前期准备 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -599,7 +607,7 @@ var jiathis_config={
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#使用matplotlib中的一些函数将tensorflow中的数据可视化，更加便于分析"><span class="nav-number">1.</span> <span class="nav-text">使用matplotlib中的一些函数将tensorflow中的数据可视化，更加便于分析</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-存储模型"><span class="nav-number">1.</span> <span class="nav-text">1.存储模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#运行该程序后，将在test文件中出现以下的文件"><span class="nav-number">1.0.1.</span> <span class="nav-text">运行该程序后，将在test文件中出现以下的文件</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-加载模型"><span class="nav-number">2.</span> <span class="nav-text">2.加载模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#如果不希望重复定义变量以及运算，可以直接加载已经持久化的图"><span class="nav-number">2.1.</span> <span class="nav-text">如果不希望重复定义变量以及运算，可以直接加载已经持久化的图</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-加载或者保存部分变量"><span class="nav-number">3.</span> <span class="nav-text">3.加载或者保存部分变量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-加载或者保存时对变量重命名"><span class="nav-number">4.</span> <span class="nav-text">4.加载或者保存时对变量重命名</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#如果直接通过saver-tf-train-Saver默认构造的函数来加载保存的模型，那么程序会报变量找不到的错误。因为保存时候的变量和加载时的变量的名称不一致。因此可以通过字典来将保存时和加载是的变量联系起来。"><span class="nav-number">4.0.0.1.</span> <span class="nav-text">如果直接通过saver=tf.train.Saver默认构造的函数来加载保存的模型，那么程序会报变量找不到的错误。因为保存时候的变量和加载时的变量的名称不一致。因此可以通过字典来将保存时和加载是的变量联系起来。</span></a></li></ol></li></ol></li></ol></li></ol></div>
             
 
           </div>
