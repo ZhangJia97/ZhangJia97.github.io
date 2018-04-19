@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2018/02/12/flask%E7%9A%84%E5%A4%96%E9%83%A8%E8%84%9A%E6%9C%AC%E7%9A%84%E4%BD%BF%E7%94%A8/</loc>
+    
+    <lastmod>2018-04-19T16:06:41.049Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2018/02/12/flask%E8%BF%9E%E6%8E%A5sqlite3%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
     
     <lastmod>2018-04-19T16:04:26.380Z</lastmod>
