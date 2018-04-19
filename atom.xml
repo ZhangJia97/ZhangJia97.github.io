@@ -111,6 +111,28 @@
   </entry>
   
   <entry>
+    <title>python字符串前缀 u和r的区别</title>
+    <link href="http://yoursite.com/2017/11/09/python%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%89%8D%E7%BC%80-u%E5%92%8Cr%E7%9A%84%E5%8C%BA%E5%88%AB/"/>
+    <id>http://yoursite.com/2017/11/09/python字符串前缀-u和r的区别/</id>
+    <published>2017-11-09T15:25:46.000Z</published>
+    <updated>2018-04-19T15:34:32.471Z</updated>
+    
+    <content type="html"><![CDATA[<p>在python2里面，u表示unicode string，类型是unicode, 没有u表示byte string，类型是 str。在python3里面，所有字符串都是unicode string, u前缀没有特殊含义了。r都表示raw string. 与特殊字符的escape规则有关，一般用在正则表达式里面。r和u可以搭配使用，例如ur”abc”。</p>]]></content>
+    
+    <summary type="html">
+    
+      平时在使用python时经常会看到python字符串前有u和r，本文解释这两个有何区别
+    
+    </summary>
+    
+      <category term="python" scheme="http://yoursite.com/categories/python/"/>
+    
+    
+      <category term="python" scheme="http://yoursite.com/tags/python/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Tensorflow中一些常见的函数</title>
     <link href="http://yoursite.com/2017/11/09/Tensorflow%E4%B8%AD%E4%B8%80%E4%BA%9B%E5%B8%B8%E8%A7%81%E7%9A%84%E5%87%BD%E6%95%B0/"/>
     <id>http://yoursite.com/2017/11/09/Tensorflow中一些常见的函数/</id>
