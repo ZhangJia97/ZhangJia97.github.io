@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-04-19T13:21:38.374Z</updated>
+  <updated>2018-04-19T14:57:58.377Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Tensorflow进行简单的神经网络的尝试（建造神经网络）</title>
+    <link href="http://yoursite.com/2018/04/19/Tensorflow%E8%BF%9B%E8%A1%8C%E7%AE%80%E5%8D%95%E7%9A%84%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E5%B0%9D%E8%AF%95%EF%BC%88%E5%BB%BA%E9%80%A0%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%EF%BC%89/"/>
+    <id>http://yoursite.com/2018/04/19/Tensorflow进行简单的神经网络的尝试（建造神经网络）/</id>
+    <published>2018-04-19T13:59:31.000Z</published>
+    <updated>2018-04-19T14:57:58.377Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="通过对一个简单的函数的轨迹的预测来进行一个较为简单的神经网络的构建"><a href="#通过对一个简单的函数的轨迹的预测来进行一个较为简单的神经网络的构建" class="headerlink" title="通过对一个简单的函数的轨迹的预测来进行一个较为简单的神经网络的构建"></a>通过对一个简单的函数的轨迹的预测来进行一个较为简单的神经网络的构建</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#导入程序所需要的包</span></span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment">#该函数用来进行添加神经网络的层数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add_layer</span><span class="params">(inputs, in_size, out_size, activation_function=None)</span>:</span></span><br><span class="line">    <span class="comment"># add one more layer and return the output of this layer</span></span><br><span class="line">    Weights = tf.Variable(tf.random_normal([in_size, out_size]))</span><br><span class="line">    biases = tf.Variable(tf.zeros([<span class="number">1</span>, out_size]) + <span class="number">0.1</span>)</span><br><span class="line">    Wx_plus_b = tf.matmul(inputs, Weights) + biases</span><br><span class="line">    <span class="keyword">if</span> activation_function <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">        outputs = Wx_plus_b</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        outputs = activation_function(Wx_plus_b)</span><br><span class="line">    <span class="keyword">return</span> outputs</span><br><span class="line"></span><br><span class="line"><span class="comment"># Make up some real data</span></span><br><span class="line">x_data = np.linspace(<span class="number">-1</span>,<span class="number">1</span>,<span class="number">300</span>)[:, np.newaxis]</span><br><span class="line">noise = np.random.normal(<span class="number">0</span>, <span class="number">0.05</span>, x_data.shape)</span><br><span class="line">y_data = np.square(x_data) - <span class="number">0.5</span> + noise</span><br><span class="line"></span><br><span class="line"><span class="comment"># define placeholder for inputs to network</span></span><br><span class="line">xs = tf.placeholder(tf.float32, [<span class="keyword">None</span>, <span class="number">1</span>])</span><br><span class="line">ys = tf.placeholder(tf.float32, [<span class="keyword">None</span>, <span class="number">1</span>])</span><br><span class="line"><span class="comment"># add hidden layer</span></span><br><span class="line">l1 = add_layer(xs, <span class="number">1</span>, <span class="number">10</span>, activation_function=tf.nn.relu)</span><br><span class="line"><span class="comment"># add output layer</span></span><br><span class="line">prediction = add_layer(l1, <span class="number">10</span>, <span class="number">1</span>, activation_function=<span class="keyword">None</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># the error between prediction and real data</span></span><br><span class="line">loss = tf.reduce_mean(tf.reduce_sum(tf.square(ys - prediction),</span><br><span class="line">                     reduction_indices=[<span class="number">1</span>]))</span><br><span class="line">train_step = tf.train.GradientDescentOptimizer(<span class="number">0.1</span>).minimize(loss)</span><br><span class="line"></span><br><span class="line"><span class="comment"># important step</span></span><br><span class="line"><span class="comment"># tf.initialize_all_variables() no long valid from</span></span><br><span class="line"><span class="comment"># 2017-03-02 if using tensorflow &gt;= 0.12</span></span><br><span class="line"><span class="keyword">if</span> int((tf.__version__).split(<span class="string">'.'</span>)[<span class="number">1</span>]) &lt; <span class="number">12</span>:</span><br><span class="line">    init = tf.initialize_all_variables()</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    init = tf.global_variables_initializer()</span><br><span class="line">sess = tf.Session()</span><br><span class="line">sess.run(init)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">    <span class="comment"># training</span></span><br><span class="line">    sess.run(train_step, feed_dict=&#123;xs: x_data, ys: y_data&#125;)</span><br><span class="line">    <span class="keyword">if</span> i % <span class="number">50</span> == <span class="number">0</span>:</span><br><span class="line">        <span class="comment"># to see the step improvement</span></span><br><span class="line">        print(sess.run(loss, feed_dict=&#123;xs: x_data, ys: y_data&#125;))</span><br></pre></td></tr></table></figure><p>运行的结果如下：<br><img src="http://img.blog.csdn.net/20171108205108651?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMzg1NDIwODU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p><p>主要的注意事项：了解tensorflow的Session会话，懂得各个神经网络层间的数据关系</p>]]></content>
+    
+    <summary type="html">
+    
+      本文尝试通过对一个简单的函数轨迹的预测来使用tensorflow进行一个较为简单的神经网络的构建
+    
+    </summary>
+    
+      <category term="tensorflow" scheme="http://yoursite.com/categories/tensorflow/"/>
+    
+    
+      <category term="python" scheme="http://yoursite.com/tags/python/"/>
+    
+      <category term="tensorflow" scheme="http://yoursite.com/tags/tensorflow/"/>
+    
+      <category term="神经网络" scheme="http://yoursite.com/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/"/>
+    
+  </entry>
   
   <entry>
     <title>链表的常见操作</title>
