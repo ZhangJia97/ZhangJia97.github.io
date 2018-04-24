@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="数据结构与算法,递归,二叉树," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="随我的博客" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="本文是在观看了郝斌老师的数据结构课程后对二叉树的一些常见的问题以及代码进行的总结">
+<meta name="keywords" content="数据结构与算法,递归,二叉树">
+<meta property="og:type" content="article">
+<meta property="og:title" content="二叉树以及链式二叉树的常见操作">
+<meta property="og:url" content="http://yoursite.com/2018/04/24/二叉树以及链式二叉树的常见操作/index.html">
+<meta property="og:site_name" content="随我的博客">
+<meta property="og:description" content="本文是在观看了郝斌老师的数据结构课程后对二叉树的一些常见的问题以及代码进行的总结">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://img-blog.csdn.net/20180424191123738?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NTQyMDg1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:image" content="https://img-blog.csdn.net/20180424191141445?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NTQyMDg1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:image" content="https://img-blog.csdn.net/20180424191225539?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NTQyMDg1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:image" content="https://img-blog.csdn.net/20180424191234502?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NTQyMDg1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:image" content="https://img-blog.csdn.net/2018042419130867?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NTQyMDg1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:image" content="https://img-blog.csdn.net/20180424191317363?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NTQyMDg1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:image" content="https://img-blog.csdn.net/20180424192130297?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NTQyMDg1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:image" content="https://img-blog.csdn.net/20180424192147107?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NTQyMDg1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:image" content="https://img-blog.csdn.net/20180424192224679?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NTQyMDg1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:updated_time" content="2018-04-24T11:31:46.257Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="二叉树以及链式二叉树的常见操作">
+<meta name="twitter:description" content="本文是在观看了郝斌老师的数据结构课程后对二叉树的一些常见的问题以及代码进行的总结">
+<meta name="twitter:image" content="https://img-blog.csdn.net/20180424191123738?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NTQyMDg1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/04/24/二叉树以及链式二叉树的常见操作/"/>
+
+
+
+
+
+  <title>二叉树以及链式二叉树的常见操作 | 随我的博客</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">随我的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">记录学习的点滴</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-align-left"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/24/二叉树以及链式二叉树的常见操作/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="随我">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="随我的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">二叉树以及链式二叉树的常见操作</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-24T19:29:41+08:00">
+                2018-04-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据结构与算法/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构与算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  本文是在观看了郝斌老师的数据结构课程后对二叉树的一些常见的问题以及代码进行的总结
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h5 id="二叉树是树这部分中最重要的知识之一，今天看完了郝斌老师关于树部分的知识，并对老师在看上所说的链式二叉树代码进行了实现"><a href="#二叉树是树这部分中最重要的知识之一，今天看完了郝斌老师关于树部分的知识，并对老师在看上所说的链式二叉树代码进行了实现" class="headerlink" title="二叉树是树这部分中最重要的知识之一，今天看完了郝斌老师关于树部分的知识，并对老师在看上所说的链式二叉树代码进行了实现"></a>二叉树是树这部分中最重要的知识之一，今天看完了郝斌老师关于树部分的知识，并对老师在看上所说的链式二叉树代码进行了实现</h5><hr>
+<hr>
+<h1 id="一、二叉树的中的一些专有名词的解释："><a href="#一、二叉树的中的一些专有名词的解释：" class="headerlink" title="一、二叉树的中的一些专有名词的解释："></a>一、二叉树的中的一些专有名词的解释：</h1><h4 id="1-先序遍历-指先访问根节点，再先序遍历左子树，再先序遍历右子树"><a href="#1-先序遍历-指先访问根节点，再先序遍历左子树，再先序遍历右子树" class="headerlink" title="1.先序遍历:指先访问根节点，再先序遍历左子树，再先序遍历右子树"></a>1.先序遍历:指先访问根节点，再先序遍历左子树，再先序遍历右子树</h4><h4 id="2-中序遍历-指先中序遍历左子树，再访问根节点，再中序遍历右子树"><a href="#2-中序遍历-指先中序遍历左子树，再访问根节点，再中序遍历右子树" class="headerlink" title="2.中序遍历:指先中序遍历左子树，再访问根节点，再中序遍历右子树"></a>2.中序遍历:指先中序遍历左子树，再访问根节点，再中序遍历右子树</h4><h4 id="3-后序遍历-指先后序遍历左子树，再后序遍历右子树，再访问根节点"><a href="#3-后序遍历-指先后序遍历左子树，再后序遍历右子树，再访问根节点" class="headerlink" title="3.后序遍历:指先后序遍历左子树，再后序遍历右子树，再访问根节点"></a>3.后序遍历:指先后序遍历左子树，再后序遍历右子树，再访问根节点</h4><hr>
+<h3 id="下面是郝斌老师上课时关于这三种遍历的视频截图"><a href="#下面是郝斌老师上课时关于这三种遍历的视频截图" class="headerlink" title="下面是郝斌老师上课时关于这三种遍历的视频截图"></a>下面是郝斌老师上课时关于这三种遍历的视频截图</h3><h4 id="先序遍历："><a href="#先序遍历：" class="headerlink" title="先序遍历："></a>先序遍历：</h4><p><img src="https://img-blog.csdn.net/20180424191123738?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NTQyMDg1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br><img src="https://img-blog.csdn.net/20180424191141445?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NTQyMDg1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<h4 id="中序遍历："><a href="#中序遍历：" class="headerlink" title="中序遍历："></a>中序遍历：</h4><p><img src="https://img-blog.csdn.net/20180424191225539?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NTQyMDg1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br><img src="https://img-blog.csdn.net/20180424191234502?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NTQyMDg1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<h4 id="后序遍历："><a href="#后序遍历：" class="headerlink" title="后序遍历："></a>后序遍历：</h4><p><img src="https://img-blog.csdn.net/2018042419130867?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NTQyMDg1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br><img src="https://img-blog.csdn.net/20180424191317363?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NTQyMDg1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<hr>
+<hr>
+<h1 id="二、通过先序与中序求后序以及通过中序与后序求先序"><a href="#二、通过先序与中序求后序以及通过中序与后序求先序" class="headerlink" title="二、通过先序与中序求后序以及通过中序与后序求先序"></a>二、通过先序与中序求后序以及通过中序与后序求先序</h1><h3 id="不论是先序还是后序，我们分别可以从先序的第一个以及后序的最后一个来确认二叉树的根节点，然后通过中序可得出该二叉树的左子树部分由哪些组成，以及右子树部分由哪些组成。"><a href="#不论是先序还是后序，我们分别可以从先序的第一个以及后序的最后一个来确认二叉树的根节点，然后通过中序可得出该二叉树的左子树部分由哪些组成，以及右子树部分由哪些组成。" class="headerlink" title="不论是先序还是后序，我们分别可以从先序的第一个以及后序的最后一个来确认二叉树的根节点，然后通过中序可得出该二叉树的左子树部分由哪些组成，以及右子树部分由哪些组成。"></a>不论是先序还是后序，我们分别可以从先序的第一个以及后序的最后一个来确认二叉树的根节点，然后通过中序可得出该二叉树的左子树部分由哪些组成，以及右子树部分由哪些组成。</h3><h4 id="1-在先序与中序求后序时，先序中谁先出现，谁就是子树的根节点"><a href="#1-在先序与中序求后序时，先序中谁先出现，谁就是子树的根节点" class="headerlink" title="1.在先序与中序求后序时，先序中谁先出现，谁就是子树的根节点"></a>1.在先序与中序求后序时，先序中谁先出现，谁就是子树的根节点</h4><h4 id="2-在中序与后序求后序时，后序中谁后出现，谁就是子树的根节点"><a href="#2-在中序与后序求后序时，后序中谁后出现，谁就是子树的根节点" class="headerlink" title="2.在中序与后序求后序时，后序中谁后出现，谁就是子树的根节点"></a>2.在中序与后序求后序时，后序中谁后出现，谁就是子树的根节点</h4><hr>
+<h3 id="下面是郝斌老师关于求二叉树时的视频截图"><a href="#下面是郝斌老师关于求二叉树时的视频截图" class="headerlink" title="下面是郝斌老师关于求二叉树时的视频截图:"></a>下面是郝斌老师关于求二叉树时的视频截图:</h3><h4 id="已知先序中序求后序"><a href="#已知先序中序求后序" class="headerlink" title="已知先序中序求后序"></a>已知先序中序求后序</h4><p><img src="https://img-blog.csdn.net/20180424192130297?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NTQyMDg1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p><img src="https://img-blog.csdn.net/20180424192147107?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NTQyMDg1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<h4 id="已知中序后序求先序"><a href="#已知中序后序求先序" class="headerlink" title="已知中序后序求先序"></a>已知中序后序求先序</h4><p><img src="https://img-blog.csdn.net/20180424192224679?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NTQyMDg1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<hr>
+<hr>
+<h2 id="三、链式二叉树的常见操作"><a href="#三、链式二叉树的常见操作" class="headerlink" title="三、链式二叉树的常见操作"></a>三、链式二叉树的常见操作</h2><h5 id="链式二叉树是常见二叉树的程序实现方法，根据郝斌老师的课程，我对他上课所敲的代码进行了实现，具体代码如下"><a href="#链式二叉树是常见二叉树的程序实现方法，根据郝斌老师的课程，我对他上课所敲的代码进行了实现，具体代码如下" class="headerlink" title="链式二叉树是常见二叉树的程序实现方法，根据郝斌老师的课程，我对他上课所敲的代码进行了实现，具体代码如下:"></a>链式二叉树是常见二叉树的程序实现方法，根据郝斌老师的课程，我对他上课所敲的代码进行了实现，具体代码如下:</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 该二叉树的树状图如下：</span></span><br><span class="line"><span class="comment">        A</span></span><br><span class="line"><span class="comment">      *   *</span></span><br><span class="line"><span class="comment">    B       C</span></span><br><span class="line"><span class="comment">           *</span></span><br><span class="line"><span class="comment">         D</span></span><br><span class="line"><span class="comment">            *</span></span><br><span class="line"><span class="comment">              E</span></span><br><span class="line"><span class="comment"> </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//程序实现代码</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">BTNode</span>&#123;</span></span><br><span class="line">    <span class="keyword">char</span> data;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">BTNode</span> * <span class="title">pLeft</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">BTNode</span> * <span class="title">pRight</span>;</span></span><br><span class="line">&#125;BTNode;</span><br><span class="line"></span><br><span class="line"><span class="function">struct BTNode * <span class="title">createBTree</span><span class="params">(<span class="keyword">void</span>)</span></span>;<span class="comment">//创建二叉树</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">PreTraverseBTree</span><span class="params">(struct BTNode * pT)</span></span>;<span class="comment">//前序遍历</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">InTraverseBTree</span><span class="params">(struct BTNode * pT)</span></span>;<span class="comment">//中序遍历</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">PostTraverseBTree</span><span class="params">(struct BTNode * pT)</span></span>;<span class="comment">//后序遍历</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">BTNode</span> * <span class="title">pT</span> = <span class="title">createBTree</span>();</span></span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"该二叉树的前序遍历为:\n"</span>);</span><br><span class="line">    PreTraverseBTree(pT);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"\n该二叉树的中序遍历为:\n"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"\n该二叉树的后序遍历为:\n"</span>);</span><br><span class="line">    PostTraverseBTree(pT);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"\n"</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">struct BTNode * <span class="title">createBTree</span><span class="params">()</span></span>&#123;</span><br><span class="line">    BTNode * pA = (struct BTNode*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(BTNode));</span><br><span class="line">    BTNode * pB = (struct BTNode*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(BTNode));</span><br><span class="line">    BTNode * pC = (struct BTNode*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(BTNode));</span><br><span class="line">    BTNode * pD = (struct BTNode*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(BTNode));</span><br><span class="line">    BTNode * pE = (struct BTNode*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(BTNode));</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//给树的每个节点添加数据</span></span><br><span class="line">    pA-&gt;data = <span class="string">'A'</span>;</span><br><span class="line">    pB-&gt;data = <span class="string">'B'</span>;</span><br><span class="line">    pC-&gt;data = <span class="string">'C'</span>;</span><br><span class="line">    pD-&gt;data = <span class="string">'D'</span>;</span><br><span class="line">    pE-&gt;data = <span class="string">'E'</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//给树的相关节点通过指针连接</span></span><br><span class="line">    pA-&gt;pLeft = pB;</span><br><span class="line">    pA-&gt;pRight = pC;</span><br><span class="line">    pB-&gt;pLeft = pB-&gt;pRight = <span class="literal">NULL</span>;</span><br><span class="line">    pC-&gt;pLeft = pD;</span><br><span class="line">    pC-&gt;pRight = <span class="literal">NULL</span>;</span><br><span class="line">    pD-&gt;pLeft = <span class="literal">NULL</span>;</span><br><span class="line">    pD-&gt;pRight = pE;</span><br><span class="line">    pE-&gt;pLeft = pE-&gt;pRight = <span class="literal">NULL</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> pA;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">PreTraverseBTree</span><span class="params">(struct BTNode * pT)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(pT != <span class="literal">NULL</span>)&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%c "</span>,pT-&gt;data);</span><br><span class="line">        <span class="keyword">if</span>(pT-&gt;pLeft != <span class="literal">NULL</span>)&#123;</span><br><span class="line">            PreTraverseBTree(pT-&gt;pLeft);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(pT-&gt;pRight != <span class="literal">NULL</span>)&#123;</span><br><span class="line">            PreTraverseBTree(pT-&gt;pRight);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">InTraverseBTree</span><span class="params">(struct BTNode * pT)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(pT != <span class="literal">NULL</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span>(pT-&gt;pLeft != <span class="literal">NULL</span>)&#123;</span><br><span class="line">            InTraverseBTree(pT-&gt;pLeft);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%c "</span>,pT-&gt;data);</span><br><span class="line">        <span class="keyword">if</span>(pT-&gt;pRight != <span class="literal">NULL</span>)&#123;</span><br><span class="line">            InTraverseBTree(pT-&gt;pRight);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">PostTraverseBTree</span><span class="params">(struct BTNode * pT)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(pT != <span class="literal">NULL</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span>(pT-&gt;pLeft != <span class="literal">NULL</span>)&#123;</span><br><span class="line">            PostTraverseBTree(pT-&gt;pLeft);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(pT-&gt;pRight != <span class="literal">NULL</span>)&#123;</span><br><span class="line">            PostTraverseBTree(pT-&gt;pRight);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%c "</span>,pT-&gt;data);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/数据结构与算法/" rel="tag"><i class="fa fa-tag"></i> 数据结构与算法</a>
+          
+            <a href="/tags/递归/" rel="tag"><i class="fa fa-tag"></i> 递归</a>
+          
+            <a href="/tags/二叉树/" rel="tag"><i class="fa fa-tag"></i> 二叉树</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/23/汉诺塔递归问题/" rel="next" title="汉诺塔递归问题">
+                <i class="fa fa-chevron-left"></i> 汉诺塔递归问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+<span class="jiathis_txt">分享到：</span>
+<a class="jiathis_button_fav">收藏夹</a>
+<a class="jiathis_button_copy">复制网址</a>
+<a class="jiathis_button_email">邮件</a>
+<a class="jiathis_button_weixin">微信</a>
+<!-- <a class="jiathis_button_qzone">QQ空间</a>
+<a class="jiathis_button_tqq">腾讯微博</a> -->
+<a class="jiathis_button_douban">豆瓣</a>
+<a class="jiathis_button_share">一键分享</a>
+
+<a href="http://www.jiathis.com/share?uid=2140465" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+  data_track_clickback:true,
+  summary:"",
+  shortUrl:false,
+  hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="随我" />
+            
+              <p class="site-author-name" itemprop="name">随我</p>
+              <p class="site-description motion-element" itemprop="description">用心做自己喜欢的事</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+            <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=298 height=52 src="//music.163.com/outchain/player?type=2&id=26624725&auto=0&height=32"></iframe>
+          </nav>
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ZhangJia97" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zhjia97@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/qq_38542085" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-globe"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#二叉树是树这部分中最重要的知识之一，今天看完了郝斌老师关于树部分的知识，并对老师在看上所说的链式二叉树代码进行了实现"><span class="nav-number">1.</span> <span class="nav-text">二叉树是树这部分中最重要的知识之一，今天看完了郝斌老师关于树部分的知识，并对老师在看上所说的链式二叉树代码进行了实现</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一、二叉树的中的一些专有名词的解释："><span class="nav-number"></span> <span class="nav-text">一、二叉树的中的一些专有名词的解释：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-先序遍历-指先访问根节点，再先序遍历左子树，再先序遍历右子树"><span class="nav-number"></span> <span class="nav-text">1.先序遍历:指先访问根节点，再先序遍历左子树，再先序遍历右子树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-中序遍历-指先中序遍历左子树，再访问根节点，再中序遍历右子树"><span class="nav-number"></span> <span class="nav-text">2.中序遍历:指先中序遍历左子树，再访问根节点，再中序遍历右子树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-后序遍历-指先后序遍历左子树，再后序遍历右子树，再访问根节点"><span class="nav-number"></span> <span class="nav-text">3.后序遍历:指先后序遍历左子树，再后序遍历右子树，再访问根节点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#下面是郝斌老师上课时关于这三种遍历的视频截图"><span class="nav-number"></span> <span class="nav-text">下面是郝斌老师上课时关于这三种遍历的视频截图</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#先序遍历："><span class="nav-number"></span> <span class="nav-text">先序遍历：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#中序遍历："><span class="nav-number"></span> <span class="nav-text">中序遍历：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#后序遍历："><span class="nav-number"></span> <span class="nav-text">后序遍历：</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、通过先序与中序求后序以及通过中序与后序求先序"><span class="nav-number"></span> <span class="nav-text">二、通过先序与中序求后序以及通过中序与后序求先序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#不论是先序还是后序，我们分别可以从先序的第一个以及后序的最后一个来确认二叉树的根节点，然后通过中序可得出该二叉树的左子树部分由哪些组成，以及右子树部分由哪些组成。"><span class="nav-number"></span> <span class="nav-text">不论是先序还是后序，我们分别可以从先序的第一个以及后序的最后一个来确认二叉树的根节点，然后通过中序可得出该二叉树的左子树部分由哪些组成，以及右子树部分由哪些组成。</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-在先序与中序求后序时，先序中谁先出现，谁就是子树的根节点"><span class="nav-number"></span> <span class="nav-text">1.在先序与中序求后序时，先序中谁先出现，谁就是子树的根节点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-在中序与后序求后序时，后序中谁后出现，谁就是子树的根节点"><span class="nav-number"></span> <span class="nav-text">2.在中序与后序求后序时，后序中谁后出现，谁就是子树的根节点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#下面是郝斌老师关于求二叉树时的视频截图"><span class="nav-number"></span> <span class="nav-text">下面是郝斌老师关于求二叉树时的视频截图:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#已知先序中序求后序"><span class="nav-number"></span> <span class="nav-text">已知先序中序求后序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#已知中序后序求先序"><span class="nav-number"></span> <span class="nav-text">已知中序后序求先序</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、链式二叉树的常见操作"><span class="nav-number"></span> <span class="nav-text">三、链式二叉树的常见操作</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#链式二叉树是常见二叉树的程序实现方法，根据郝斌老师的课程，我对他上课所敲的代码进行了实现，具体代码如下"><span class="nav-number">1.</span> <span class="nav-text">链式二叉树是常见二叉树的程序实现方法，根据郝斌老师的课程，我对他上课所敲的代码进行了实现，具体代码如下:</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">随我</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
