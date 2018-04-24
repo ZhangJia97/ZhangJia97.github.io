@@ -89,12 +89,12 @@
 <meta property="og:site_name" content="随我的博客">
 <meta property="og:description" content="本文总结了在chrome以及firefox两个浏览器的情况下如何使用selenium进行文件下载">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2017/11/09/selenium下载文件/images/selenium下载文件/4215C8D9-2CA6-4CD2-A229-AC1EDD125898.png">
+<meta property="og:image" content="http://yoursite.com/images/selenium下载文件/4215C8D9-2CA6-4CD2-A229-AC1EDD125898.png">
 <meta property="og:updated_time" content="2018-04-24T12:11:20.892Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="selenium下载文件">
 <meta name="twitter:description" content="本文总结了在chrome以及firefox两个浏览器的情况下如何使用selenium进行文件下载">
-<meta name="twitter:image" content="http://yoursite.com/2017/11/09/selenium下载文件/images/selenium下载文件/4215C8D9-2CA6-4CD2-A229-AC1EDD125898.png">
+<meta name="twitter:image" content="http://yoursite.com/images/selenium下载文件/4215C8D9-2CA6-4CD2-A229-AC1EDD125898.png">
 
 
 
@@ -366,7 +366,7 @@
 <hr>
 <h2 id="二、Chrome文件下载"><a href="#二、Chrome文件下载" class="headerlink" title="二、Chrome文件下载"></a>二、Chrome文件下载</h2><hr>
 <h3 id="download-default-directory-设置下载路径"><a href="#download-default-directory-设置下载路径" class="headerlink" title="download.default_directory:设置下载路径"></a>download.default_directory:设置下载路径</h3><h3 id="profile-default-content-settings-popups-设置为0禁止弹出窗口"><a href="#profile-default-content-settings-popups-设置为0禁止弹出窗口" class="headerlink" title="profile.default_content_settings.popups:设置为0禁止弹出窗口"></a>profile.default_content_settings.popups:设置为0禁止弹出窗口</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver </span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> sleep</span><br><span class="line">options = webdriver.ChromeOptions() </span><br><span class="line">prefs = &#123;<span class="string">'profile.default_content_settings.popups'</span>: <span class="number">0</span>, <span class="string">'download.default_directory'</span>: <span class="string">'d:\\'</span>&#125;</span><br><span class="line">options.add_experimental_option(<span class="string">'prefs'</span>, prefs) </span><br><span class="line">driver = webdriver.Chrome(executable_path=<span class="string">'D:\\chromedriver.exe'</span>, chrome_options=options) </span><br><span class="line">driver.get(<span class="string">'http://sahitest.com/demo/saveAs.htm'</span>) </span><br><span class="line">driver.find_element_by_xpath(<span class="string">'//a[text()="testsaveas.zip"]'</span>).click() </span><br><span class="line">sleep(<span class="number">3</span>) </span><br><span class="line">driver.quit()</span><br></pre></td></tr></table></figure>
-<p><img src="/2017/11/09/selenium下载文件/images/selenium下载文件/4215C8D9-2CA6-4CD2-A229-AC1EDD125898.png" alt="这里写图片描述"></p>
+<p><img src="/images/selenium下载文件/4215C8D9-2CA6-4CD2-A229-AC1EDD125898.png" alt="这里写图片描述"></p>
 
       
     </div>
