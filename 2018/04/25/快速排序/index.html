@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="数据结构与算法,快速排序," />
 
 
 
@@ -81,17 +81,18 @@
 
 
 
-<meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta name="description" content="本文是在观看了郝斌老师的数据结构课程后将他课上的代码直接复制下来以做后期复习用">
+<meta name="keywords" content="数据结构与算法,快速排序">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="http://yoursite.com/2017/11/03/hello-world/index.html">
+<meta property="og:title" content="快速排序">
+<meta property="og:url" content="http://yoursite.com/2018/04/25/快速排序/index.html">
 <meta property="og:site_name" content="随我的博客">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta property="og:description" content="本文是在观看了郝斌老师的数据结构课程后将他课上的代码直接复制下来以做后期复习用">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-04-19T13:33:13.390Z">
+<meta property="og:updated_time" content="2018-04-25T08:44:03.385Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
-<meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta name="twitter:title" content="快速排序">
+<meta name="twitter:description" content="本文是在观看了郝斌老师的数据结构课程后将他课上的代码直接复制下来以做后期复习用">
 
 
 
@@ -121,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/11/03/hello-world/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/04/25/快速排序/"/>
 
 
 
 
 
-  <title>Hello World | 随我的博客</title>
+  <title>快速排序 | 随我的博客</title>
   
 
 
@@ -264,7 +265,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/03/hello-world/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/25/快速排序/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="随我">
@@ -281,7 +282,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Hello World</h1>
+          <h1 class="post-title" itemprop="name headline">快速排序</h1>
         
 
         <div class="post-meta">
@@ -293,8 +294,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-03T00:00:00+08:00">
-                2017-11-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-25T16:42:49+08:00">
+                2018-04-25
               </time>
             
 
@@ -304,6 +305,28 @@
           </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据结构与算法/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构与算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -316,6 +339,10 @@
 
           
 
+          
+              <div class="post-description">
+                  本文是在观看了郝斌老师的数据结构课程后将他课上的代码直接复制下来以做后期复习用
+              </div>
           
 
         </div>
@@ -331,16 +358,7 @@
       
 
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
+        <h5 id="其实这节课并没有听太懂，但是为了防止忘记，所以直接将郝斌老师的代码扔到了博客上希望我之后多次看之后能真正理解这个排序方法，还有就是郝斌老师的数据结构课程看完了，并没有图的相关，看来我要开始自学图了，加油！！！！"><a href="#其实这节课并没有听太懂，但是为了防止忘记，所以直接将郝斌老师的代码扔到了博客上希望我之后多次看之后能真正理解这个排序方法，还有就是郝斌老师的数据结构课程看完了，并没有图的相关，看来我要开始自学图了，加油！！！！" class="headerlink" title="其实这节课并没有听太懂，但是为了防止忘记，所以直接将郝斌老师的代码扔到了博客上希望我之后多次看之后能真正理解这个排序方法，还有就是郝斌老师的数据结构课程看完了，并没有图的相关，看来我要开始自学图了，加油！！！！"></a>其实这节课并没有听太懂，但是为了防止忘记，所以直接将郝斌老师的代码扔到了博客上希望我之后多次看之后能真正理解这个排序方法，还有就是郝斌老师的数据结构课程看完了，并没有图的相关，看来我要开始自学图了，加油！！！！</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># <span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">FindPos</span><span class="params">(<span class="keyword">int</span> * a, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">QuickSort</span><span class="params">(<span class="keyword">int</span> * a, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> a[<span class="number">6</span>] = &#123;<span class="number">-2</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">-985</span>, <span class="number">4</span>, <span class="number">-93</span>&#125;;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">	QuickSort(a, <span class="number">0</span>, <span class="number">5</span>); <span class="comment">//第二个参数表示第一个元素的下标  第三个参数表示最后一个元素的下标</span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;<span class="number">6</span>; ++i)</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%d  "</span>, a[i]);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\n"</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">QuickSort</span><span class="params">(<span class="keyword">int</span> * a, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> pos;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (low &lt; high)</span><br><span class="line">	&#123;</span><br><span class="line">		pos = FindPos(a, low, high);</span><br><span class="line">		QuickSort(a, low, pos<span class="number">-1</span>);</span><br><span class="line">		QuickSort(a, pos+<span class="number">1</span>, high);</span><br><span class="line">	&#125;	</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">FindPos</span><span class="params">(<span class="keyword">int</span> * a, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> val = a[low];</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> (low &lt; high)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">while</span> (low&lt;high  &amp;&amp; a[high]&gt;=val)</span><br><span class="line">			--high;</span><br><span class="line">		a[low] = a[high];</span><br><span class="line"></span><br><span class="line">		<span class="keyword">while</span> (low&lt;high &amp;&amp; a[low]&lt;=val)</span><br><span class="line">			++low;</span><br><span class="line">		a[high] = a[low];</span><br><span class="line">	&#125;<span class="comment">//终止while循环之后low和high一定是相等的</span></span><br><span class="line"></span><br><span class="line">	a[low] = val; </span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> high; <span class="comment">//high可以改为low, 但不能改为val 也不能改为a[low]  也不能改为a[high]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
     </div>
     
@@ -355,6 +373,14 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/数据结构与算法/" rel="tag"><i class="fa fa-tag"></i> 数据结构与算法</a>
+          
+            <a href="/tags/快速排序/" rel="tag"><i class="fa fa-tag"></i> 快速排序</a>
+          
+        </div>
+      
 
       
       
@@ -364,15 +390,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2018/04/25/include-stdio-h/" rel="next" title="# include <stdio.h>">
+                <i class="fa fa-chevron-left"></i> # include <stdio.h>
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/11/04/python-matplotlib中常用函数/" rel="prev" title="python matplotlib中常用函数">
-                python matplotlib中常用函数 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -562,7 +588,7 @@ var jiathis_config={
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Start"><span class="nav-number">1.</span> <span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-a-new-post"><span class="nav-number">1.1.</span> <span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-server"><span class="nav-number">1.2.</span> <span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate-static-files"><span class="nav-number">1.3.</span> <span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-to-remote-sites"><span class="nav-number">1.4.</span> <span class="nav-text">Deploy to remote sites</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#其实这节课并没有听太懂，但是为了防止忘记，所以直接将郝斌老师的代码扔到了博客上希望我之后多次看之后能真正理解这个排序方法，还有就是郝斌老师的数据结构课程看完了，并没有图的相关，看来我要开始自学图了，加油！！！！"><span class="nav-number">1.</span> <span class="nav-text">其实这节课并没有听太懂，但是为了防止忘记，所以直接将郝斌老师的代码扔到了博客上希望我之后多次看之后能真正理解这个排序方法，还有就是郝斌老师的数据结构课程看完了，并没有图的相关，看来我要开始自学图了，加油！！！！</span></a></li></ol></div>
             
 
           </div>
