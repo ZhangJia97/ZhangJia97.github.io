@@ -89,7 +89,7 @@
 <meta property="og:site_name" content="随我的博客">
 <meta property="og:description" content="由于之前的一些情况，为了防止有人用无效邮箱进行注册，所以这次在报名时添加了邮箱发送以及验证功能，用于验证邮箱是否有效，当然了，在强大的Django之下，集成邮件功能并不难，接下来我们看一下如何有效的在Django中集成邮件功能吧">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-11-16T12:59:28.429Z">
+<meta property="og:updated_time" content="2018-11-16T13:24:10.732Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Django集成邮件发送功能">
 <meta name="twitter:description" content="由于之前的一些情况，为了防止有人用无效邮箱进行注册，所以这次在报名时添加了邮箱发送以及验证功能，用于验证邮箱是否有效，当然了，在强大的Django之下，集成邮件功能并不难，接下来我们看一下如何有效的在Django中集成邮件功能吧">
@@ -371,7 +371,7 @@
 <h4 id="4-身份验证"><a href="#4-身份验证" class="headerlink" title="4.身份验证"></a>4.身份验证</h4><p>身份验证的url<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(<span class="string">r'^active/(?P&lt;active_code&gt;.*)/$'</span>, views.user_active, name=<span class="string">"user_active"</span>),  <span class="comment"># 提取出active后的所有字符赋给active_code</span></span><br></pre></td></tr></table></figure></p>
 <p>身份验证相关函数(通过url中传输的active_code，来判断是否验证成功)<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">user_active</span><span class="params">(request,active_code)</span>:</span></span><br><span class="line">    print(<span class="string">"可以1"</span>)</span><br><span class="line">    all_records = EmailVerifyRecord.objects.filter(code=active_code)</span><br><span class="line">    <span class="keyword">if</span> all_records:</span><br><span class="line">        <span class="keyword">for</span> record <span class="keyword">in</span> all_records:</span><br><span class="line">            email = record.email</span><br><span class="line">            <span class="comment"># 通过邮箱查找到对应的用户</span></span><br><span class="line">            user = models.User.objects.get(email=email)</span><br><span class="line">            <span class="comment"># 激活用户</span></span><br><span class="line">            user.is_active = <span class="keyword">True</span></span><br><span class="line">            user.save()</span><br><span class="line">        print(<span class="string">"可以"</span>)</span><br><span class="line">    print(<span class="string">"不行"</span>)</span><br></pre></td></tr></table></figure></p>
 <h4 id="5-总结"><a href="#5-总结" class="headerlink" title="5.总结"></a>5.总结</h4><blockquote>
-<p>通过上面的四步就可以把邮箱功能加入到Django项目中，为用户注册，密码找回等功能提供了一个验证本人身份的好方式</p>
+<p>通过上面的四步就可以把邮箱功能加入到Django项目中，为用户注册，密码找回等功能提供了一个验证本人身份的好方式<br>项目代码链接在这里<a href="https://github.com/ZhangJia97/sacc_sign" target="_blank" rel="noopener">传送门</a></p>
 </blockquote>
 
       
