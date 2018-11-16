@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Java,Springboot,Swagger," />
 
 
 
@@ -81,17 +81,18 @@
 
 
 
-<meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta name="description" content="运行Springboot的时候总是会报错，本以为是那里写的有bug结果发现是Swagger出现的问题，只要把log等级修改一下即可">
+<meta name="keywords" content="Java,Springboot,Swagger">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="http://yoursite.com/2017/11/03/hello-world/index.html">
+<meta property="og:title" content="Swagger报错:java.lang.NumberFormatException: For input string: &quot;&quot;">
+<meta property="og:url" content="http://yoursite.com/2018/11/15/Swagger报错-java-lang-NumberFormatException-For-input-string/index.html">
 <meta property="og:site_name" content="随我的博客">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta property="og:description" content="运行Springboot的时候总是会报错，本以为是那里写的有bug结果发现是Swagger出现的问题，只要把log等级修改一下即可">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-04-19T13:33:13.390Z">
+<meta property="og:updated_time" content="2018-11-16T14:19:39.039Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
-<meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta name="twitter:title" content="Swagger报错:java.lang.NumberFormatException: For input string: &quot;&quot;">
+<meta name="twitter:description" content="运行Springboot的时候总是会报错，本以为是那里写的有bug结果发现是Swagger出现的问题，只要把log等级修改一下即可">
 
 
 
@@ -121,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/11/03/hello-world/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/11/15/Swagger报错-java-lang-NumberFormatException-For-input-string/"/>
 
 
 
 
 
-  <title>Hello World | 随我的博客</title>
+  <title>Swagger报错:java.lang.NumberFormatException: For input string: "" | 随我的博客</title>
   
 
 
@@ -264,7 +265,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/03/hello-world/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/15/Swagger报错-java-lang-NumberFormatException-For-input-string/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="随我">
@@ -281,7 +282,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Hello World</h1>
+          <h1 class="post-title" itemprop="name headline">Swagger报错:java.lang.NumberFormatException: For input string: ""</h1>
         
 
         <div class="post-meta">
@@ -293,8 +294,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-03T00:00:00+08:00">
-                2017-11-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-15T10:17:14+08:00">
+                2018-11-15
               </time>
             
 
@@ -304,6 +305,28 @@
           </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Springboot/" itemprop="url" rel="index">
+                    <span itemprop="name">Springboot</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -316,6 +339,10 @@
 
           
 
+          
+              <div class="post-description">
+                  运行Springboot的时候总是会报错，本以为是那里写的有bug结果发现是Swagger出现的问题，只要把log等级修改一下即可
+              </div>
           
 
         </div>
@@ -331,15 +358,17 @@
       
 
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+        <h5 id="使用Swagger和Springfox，我们编写了REST-API，我们编写了更多可访问的API。当您运行该应用程序时，您可能会遇到一个奇怪的异常，如下所示："><a href="#使用Swagger和Springfox，我们编写了REST-API，我们编写了更多可访问的API。当您运行该应用程序时，您可能会遇到一个奇怪的异常，如下所示：" class="headerlink" title="使用Swagger和Springfox，我们编写了REST API，我们编写了更多可访问的API。当您运行该应用程序时，您可能会遇到一个奇怪的异常，如下所示："></a>使用Swagger和Springfox，我们编写了REST API，我们编写了更多可访问的API。当您运行该应用程序时，您可能会遇到一个奇怪的异常，如下所示：</h5><p><code>java.lang.NumberFormatException: For input string: &quot;&quot;</code></p>
+<h5 id="这似乎是一个错误，所以你可以忽略那个。如果它让您烦恼，您可以随时更改该文件的日志记录级别，就像他们在该问题中提出的那样。您也可以在application-properties或application-yml中执行此操作："><a href="#这似乎是一个错误，所以你可以忽略那个。如果它让您烦恼，您可以随时更改该文件的日志记录级别，就像他们在该问题中提出的那样。您也可以在application-properties或application-yml中执行此操作：" class="headerlink" title="这似乎是一个错误，所以你可以忽略那个。如果它让您烦恼，您可以随时更改该文件的日志记录级别，就像他们在该问题中提出的那样。您也可以在application.properties或application.yml中执行此操作："></a>这似乎是一个错误，所以你可以忽略那个。如果它让您烦恼，您可以随时更改该文件的日志记录级别，就像他们在该问题中提出的那样。您也可以在<code>application.properties</code>或<code>application.yml</code>中执行此操作：</h5><blockquote>
+<p>application.properties<br><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">logging.level.io.swagger.models.parameters.AbstractSerializableParameter=error</span></span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<blockquote>
+<p>application.yml</p>
+</blockquote>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">logging:</span></span><br><span class="line"><span class="attr">  level:</span></span><br><span class="line">    <span class="string">io.swagger.models.parameters.AbstractSerializableParameter:</span> <span class="string">error</span></span><br></pre></td></tr></table></figure>
+<hr>
+<p>参考文章：<a href="https://g00glen00b.be/documenting-rest-api-swagger-springfox/" target="_blank" rel="noopener">https://g00glen00b.be/documenting-rest-api-swagger-springfox/</a></p>
+<hr>
 
       
     </div>
@@ -355,6 +384,16 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"><i class="fa fa-tag"></i> Java</a>
+          
+            <a href="/tags/Springboot/" rel="tag"><i class="fa fa-tag"></i> Springboot</a>
+          
+            <a href="/tags/Swagger/" rel="tag"><i class="fa fa-tag"></i> Swagger</a>
+          
+        </div>
+      
 
       
       
@@ -364,15 +403,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2018/11/14/Springboot集成Swagger2/" rel="next" title="Springboot集成Swagger2">
+                <i class="fa fa-chevron-left"></i> Springboot集成Swagger2
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/11/04/python-matplotlib中常用函数/" rel="prev" title="python matplotlib中常用函数">
-                python matplotlib中常用函数 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -556,7 +595,7 @@ var jiathis_config={
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Start"><span class="nav-number">1.</span> <span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-a-new-post"><span class="nav-number">1.1.</span> <span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-server"><span class="nav-number">1.2.</span> <span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate-static-files"><span class="nav-number">1.3.</span> <span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-to-remote-sites"><span class="nav-number">1.4.</span> <span class="nav-text">Deploy to remote sites</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#使用Swagger和Springfox，我们编写了REST-API，我们编写了更多可访问的API。当您运行该应用程序时，您可能会遇到一个奇怪的异常，如下所示："><span class="nav-number">1.</span> <span class="nav-text">使用Swagger和Springfox，我们编写了REST API，我们编写了更多可访问的API。当您运行该应用程序时，您可能会遇到一个奇怪的异常，如下所示：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#这似乎是一个错误，所以你可以忽略那个。如果它让您烦恼，您可以随时更改该文件的日志记录级别，就像他们在该问题中提出的那样。您也可以在application-properties或application-yml中执行此操作："><span class="nav-number">2.</span> <span class="nav-text">这似乎是一个错误，所以你可以忽略那个。如果它让您烦恼，您可以随时更改该文件的日志记录级别，就像他们在该问题中提出的那样。您也可以在application.properties或application.yml中执行此操作：</span></a></li></ol></div>
             
 
           </div>

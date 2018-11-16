@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-11-15T02:16:22.438Z</updated>
+  <updated>2018-11-16T14:19:39.039Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Swagger报错:java.lang.NumberFormatException: For input string: &quot;&quot;</title>
+    <link href="http://yoursite.com/2018/11/15/Swagger%E6%8A%A5%E9%94%99-java-lang-NumberFormatException-For-input-string/"/>
+    <id>http://yoursite.com/2018/11/15/Swagger报错-java-lang-NumberFormatException-For-input-string/</id>
+    <published>2018-11-15T02:17:14.000Z</published>
+    <updated>2018-11-16T14:19:39.039Z</updated>
+    
+    <content type="html"><![CDATA[<h5 id="使用Swagger和Springfox，我们编写了REST-API，我们编写了更多可访问的API。当您运行该应用程序时，您可能会遇到一个奇怪的异常，如下所示："><a href="#使用Swagger和Springfox，我们编写了REST-API，我们编写了更多可访问的API。当您运行该应用程序时，您可能会遇到一个奇怪的异常，如下所示：" class="headerlink" title="使用Swagger和Springfox，我们编写了REST API，我们编写了更多可访问的API。当您运行该应用程序时，您可能会遇到一个奇怪的异常，如下所示："></a>使用Swagger和Springfox，我们编写了REST API，我们编写了更多可访问的API。当您运行该应用程序时，您可能会遇到一个奇怪的异常，如下所示：</h5><p><code>java.lang.NumberFormatException: For input string: &quot;&quot;</code></p><h5 id="这似乎是一个错误，所以你可以忽略那个。如果它让您烦恼，您可以随时更改该文件的日志记录级别，就像他们在该问题中提出的那样。您也可以在application-properties或application-yml中执行此操作："><a href="#这似乎是一个错误，所以你可以忽略那个。如果它让您烦恼，您可以随时更改该文件的日志记录级别，就像他们在该问题中提出的那样。您也可以在application-properties或application-yml中执行此操作：" class="headerlink" title="这似乎是一个错误，所以你可以忽略那个。如果它让您烦恼，您可以随时更改该文件的日志记录级别，就像他们在该问题中提出的那样。您也可以在application.properties或application.yml中执行此操作："></a>这似乎是一个错误，所以你可以忽略那个。如果它让您烦恼，您可以随时更改该文件的日志记录级别，就像他们在该问题中提出的那样。您也可以在<code>application.properties</code>或<code>application.yml</code>中执行此操作：</h5><blockquote><p>application.properties<br><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">logging.level.io.swagger.models.parameters.AbstractSerializableParameter=error</span></span><br></pre></td></tr></table></figure></p></blockquote><blockquote><p>application.yml</p></blockquote><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">logging:</span></span><br><span class="line"><span class="attr">  level:</span></span><br><span class="line">    <span class="string">io.swagger.models.parameters.AbstractSerializableParameter:</span> <span class="string">error</span></span><br></pre></td></tr></table></figure><hr><p>参考文章：<a href="https://g00glen00b.be/documenting-rest-api-swagger-springfox/" target="_blank" rel="noopener">https://g00glen00b.be/documenting-rest-api-swagger-springfox/</a></p><hr>]]></content>
+    
+    <summary type="html">
+    
+      运行Springboot的时候总是会报错，本以为是那里写的有bug结果发现是Swagger出现的问题，只要把log等级修改一下即可
+    
+    </summary>
+    
+      <category term="Springboot" scheme="http://yoursite.com/categories/Springboot/"/>
+    
+    
+      <category term="Java" scheme="http://yoursite.com/tags/Java/"/>
+    
+      <category term="Springboot" scheme="http://yoursite.com/tags/Springboot/"/>
+    
+      <category term="Swagger" scheme="http://yoursite.com/tags/Swagger/"/>
+    
+  </entry>
   
   <entry>
     <title>Springboot集成Swagger2</title>
@@ -477,30 +503,6 @@
       <category term="github" scheme="http://yoursite.com/tags/github/"/>
     
       <category term="hexo" scheme="http://yoursite.com/tags/hexo/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Django集成邮件发送功能</title>
-    <link href="http://yoursite.com/2018/03/16/Django%E9%9B%86%E6%88%90%E9%82%AE%E4%BB%B6%E5%8F%91%E9%80%81%E5%8A%9F%E8%83%BD/"/>
-    <id>http://yoursite.com/2018/03/16/Django集成邮件发送功能/</id>
-    <published>2018-03-16T14:58:19.000Z</published>
-    <updated>2018-11-16T13:24:10.732Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="Django集成邮件发送功能"><a href="#Django集成邮件发送功能" class="headerlink" title="Django集成邮件发送功能"></a>Django集成邮件发送功能</h3><p>由于之前的一些情况，为了防止有人用无效邮箱进行注册，所以这次在报名时添加了邮箱发送以及验证功能，用于验证邮箱是否有效，当然了，在强大的Django之下，集成邮件功能并不难，接下来我们看一下如何有效的在Django中集成邮件功能吧</p><hr><h4 id="1-创建项目-（这里我就不赘述了，之前专门谢了一篇文章用于记录如何创建一个新的Django项目，传送门）"><a href="#1-创建项目-（这里我就不赘述了，之前专门谢了一篇文章用于记录如何创建一个新的Django项目，传送门）" class="headerlink" title="1.创建项目 （这里我就不赘述了，之前专门谢了一篇文章用于记录如何创建一个新的Django项目，传送门）"></a>1.创建项目 （这里我就不赘述了，之前专门谢了一篇文章用于记录如何创建一个新的Django项目，<a href="http://suiwo.xyz/2018/02/10/Django%E7%BD%91%E7%AB%99%E9%83%A8%E7%BD%B2%E5%89%8D%E6%9C%9F%E5%87%86%E5%A4%87/" target="_blank" rel="noopener">传送门</a>）</h4><hr><h4 id="2-在settings-py中配置与邮件相关的配置"><a href="#2-在settings-py中配置与邮件相关的配置" class="headerlink" title="2.在settings.py中配置与邮件相关的配置"></a>2.在settings.py中配置与邮件相关的配置</h4><p>代码如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">EMAIL_HOST = <span class="string">'smtp.qq.com'</span> <span class="comment">#邮箱服务商</span></span><br><span class="line">EMAIL_PORT = <span class="number">587</span> <span class="comment">#端口</span></span><br><span class="line">EMAIL_HOST_USER = <span class="string">'user'</span></span><br><span class="line">EMAIL_HOST_PASSWORD = <span class="string">'password'</span></span><br><span class="line">DEFAULT_FROM_EMAIL = <span class="string">'your Email Address'</span></span><br></pre></td></tr></table></figure></p><p>只需要上面短短几行，就ok了，是不是很简单</p><hr><h4 id="3-邮件发送相关函数"><a href="#3-邮件发送相关函数" class="headerlink" title="3.邮件发送相关函数"></a>3.邮件发送相关函数</h4><p>models.py中添加邮箱验证相关类<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">EmailVerifyRecord</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    <span class="comment"># 验证码</span></span><br><span class="line">    code = models.CharField(max_length=<span class="number">20</span>, verbose_name=<span class="string">u"验证码"</span>)</span><br><span class="line">    email = models.EmailField(max_length=<span class="number">50</span>, verbose_name=<span class="string">u"邮箱"</span>)</span><br><span class="line">    <span class="comment"># 包含注册验证和找回验证</span></span><br><span class="line">    send_time = models.DateTimeField(verbose_name=<span class="string">u"发送时间"</span>, default=datetime.now)</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        verbose_name = <span class="string">u"邮箱验证码"</span></span><br><span class="line">        verbose_name_plural = verbose_name</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.email</span><br></pre></td></tr></table></figure></p><p>验证码随机数生成函数<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 生成随机字符串用来验证邮箱</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">random_str</span><span class="params">(randomlength=<span class="number">8</span>)</span>:</span></span><br><span class="line">    str = <span class="string">''</span></span><br><span class="line">    chars = <span class="string">'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789'</span></span><br><span class="line">    length = len(chars) - <span class="number">1</span></span><br><span class="line">    random = Random()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(randomlength):</span><br><span class="line">        str += chars[random.randint(<span class="number">0</span>, length)]</span><br><span class="line">    <span class="keyword">return</span> str</span><br></pre></td></tr></table></figure></p><p>邮箱发送函数<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sendEmail</span><span class="params">(email)</span>:</span></span><br><span class="line">    email_record = EmailVerifyRecord()</span><br><span class="line">    <span class="comment"># 将给用户发的信息保存在数据库中</span></span><br><span class="line">    code = random_str(<span class="number">16</span>) <span class="comment">#这个是生成验证连接的函数</span></span><br><span class="line">    email_record.code = code</span><br><span class="line">    email_record.email = email</span><br><span class="line">    email_record.save()</span><br><span class="line">    <span class="comment"># 初始化为空</span></span><br><span class="line">    email_title = <span class="string">""</span></span><br><span class="line">    email_body = <span class="string">""</span></span><br><span class="line">    email_title = <span class="string">"注册激活链接"</span></span><br><span class="line">    email_body = <span class="string">" 同学你好，欢迎参加本次计算机基础知识大赛，"</span>+<span class="string">"请点击下面的链接激活你的账号:http://127.0.0.1:8000/users/active/&#123;0&#125;"</span>.format(code)</span><br><span class="line">    <span class="comment"># 发送邮件</span></span><br><span class="line">    send_status = send_mail(email_title, email_body, DEFAULT_FROM_EMAIL, [email])</span><br></pre></td></tr></table></figure></p><hr><h4 id="4-身份验证"><a href="#4-身份验证" class="headerlink" title="4.身份验证"></a>4.身份验证</h4><p>身份验证的url<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(<span class="string">r'^active/(?P&lt;active_code&gt;.*)/$'</span>, views.user_active, name=<span class="string">"user_active"</span>),  <span class="comment"># 提取出active后的所有字符赋给active_code</span></span><br></pre></td></tr></table></figure></p><p>身份验证相关函数(通过url中传输的active_code，来判断是否验证成功)<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">user_active</span><span class="params">(request,active_code)</span>:</span></span><br><span class="line">    print(<span class="string">"可以1"</span>)</span><br><span class="line">    all_records = EmailVerifyRecord.objects.filter(code=active_code)</span><br><span class="line">    <span class="keyword">if</span> all_records:</span><br><span class="line">        <span class="keyword">for</span> record <span class="keyword">in</span> all_records:</span><br><span class="line">            email = record.email</span><br><span class="line">            <span class="comment"># 通过邮箱查找到对应的用户</span></span><br><span class="line">            user = models.User.objects.get(email=email)</span><br><span class="line">            <span class="comment"># 激活用户</span></span><br><span class="line">            user.is_active = <span class="keyword">True</span></span><br><span class="line">            user.save()</span><br><span class="line">        print(<span class="string">"可以"</span>)</span><br><span class="line">    print(<span class="string">"不行"</span>)</span><br></pre></td></tr></table></figure></p><h4 id="5-总结"><a href="#5-总结" class="headerlink" title="5.总结"></a>5.总结</h4><blockquote><p>通过上面的四步就可以把邮箱功能加入到Django项目中，为用户注册，密码找回等功能提供了一个验证本人身份的好方式<br>项目代码链接在这里<a href="https://github.com/ZhangJia97/sacc_sign" target="_blank" rel="noopener">传送门</a></p></blockquote>]]></content>
-    
-    <summary type="html">
-    
-      由于之前的一些情况，为了防止有人用无效邮箱进行注册，所以这次在报名时添加了邮箱发送以及验证功能，用于验证邮箱是否有效，当然了，在强大的Django之下，集成邮件功能并不难，接下来我们看一下如何有效的在Django中集成邮件功能吧
-    
-    </summary>
-    
-      <category term="Django" scheme="http://yoursite.com/categories/Django/"/>
-    
-    
-      <category term="python" scheme="http://yoursite.com/tags/python/"/>
-    
-      <category term="Django" scheme="http://yoursite.com/tags/Django/"/>
     
   </entry>
   
