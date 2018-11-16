@@ -940,46 +940,14 @@
 
       
         
-          
-            <h3 id="在java中，异常对象都是派生于Throwable类的一个实例。如果java内置的异常类不能够满足需求，用户还可以创建自己的异常类。"><a href="#在java中，异常对象都是派生于Throwable类的一个实例。如果java内置的异常类不能够满足需求，用户还可以创建自己的异常类。" class="headerlink" title="在java中，异常对象都是派生于Throwable类的一个实例。如果java内置的异常类不能够满足需求，用户还可以创建自己的异常类。"></a>在java中，异常对象都是派生于Throwable类的一个实例。如果java内置的异常类不能够满足需求，用户还可以创建自己的异常类。</h3><p><img src="/images/java异常处理-Exception-error-运行时异常和一般异常有何异同/8abb70109b89583dcbefca4783addd96.png" alt="这里写图片描述"></p>
-<blockquote>
-<p>Exception 和 Error 都是继承了 Throwable 类，在 Java 中只有 Throwable 类型的实例才可以被抛出（throw）或者捕获（catch），它是异常处理机制的基本组成类型。<br>Exception 和 Error 体现了 Java 平台设计者对不同异常情况的分类。Exception 是程序正常运行中，可以预料的意外情况，可能并且应该被捕获，进行相应处理。</p>
-</blockquote>
-<blockquote>
-<ul>
-<li>Error 是指在正常情况下，不大可能出现的情况，绝大部分的 Error 都会导致程序（比如 JVM 自身）处于非正常的、不可恢复状态。既然是非正常情况，所以不便于也不需要捕获，常见的比如 OutOfMemoryError 之类，都是 Error 的子类。</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li>Exception 又分为可检查（checked）异常和不检查（unchecked）异常</li>
-<li><ul>
-<li>unchecked exception（非检查异常）：包括运行时异常（RuntimeException）和派生于Error类的异常。对于运行时异常，java编译器不要求必须进行异常捕获处理或者抛出声明，由程序员自行决定。 </li>
-</ul>
-</li>
-<li><ul>
-<li>checked exception（检查异常，编译异常，必须要处理的异常）<br>也：称非运行时异常（运行时异常以外的异常就是非运行时异常），java编译器强制程序员必须进行捕获处理，比如常见的IOExeption和SQLException。对于非运行时异常如果不进行捕获或者抛出声明处理，编译都不会通过。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p>常见的RuntimeException（运行时异常）:</p>
-<blockquote>
-<ul>
-<li>IndexOutOfBoundsException(下标越界异常) </li>
-<li>NullPointerException(空指针异常) </li>
-<li>NumberFormatException （String转换为指定的数字类型异常） </li>
-<li>ArithmeticException -（算术运算异常 如除数为0） </li>
-<li>ArrayStoreException - （向数组中存放与声明类型不兼容对象- - 异常） </li>
-<li>SecurityException -（安全异常） </li>
-<li>IOException（其他异常） </li>
-<li>FileNotFoundException（文件未找到异常。） </li>
-<li>IOException（操作输入流和输出流时可能出现的异常。） </li>
-<li>EOFException （文件已结束异常）</li>
-</ul>
-</blockquote>
-
-          
+          写代码过程中遇到error非常常见。我们就要区别java异常处理 Exception,error,运行时异常和一般异常有何异同
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/08/19/java异常处理-Exception-error-运行时异常和一般异常有何异同/">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
