@@ -90,7 +90,7 @@
 <meta property="og:description" content="本文是在看了慕课相关课程后进行的数据库锁模块的事务并发访问产生的问题以及事务隔离机制的相关总结">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://suiwo.xyz/images/数据库事务并发访问中的问题及隔离机制/A7BC620F-9A19-4713-862D-B329006D7A2F.png">
-<meta property="og:updated_time" content="2019-02-01T14:39:48.521Z">
+<meta property="og:updated_time" content="2019-02-01T14:42:56.939Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据库事务并发访问中的问题及隔离机制">
 <meta name="twitter:description" content="本文是在看了慕课相关课程后进行的数据库锁模块的事务并发访问产生的问题以及事务隔离机制的相关总结">
@@ -462,9 +462,8 @@
 </tbody>
 </table>
 <blockquote>
-<p>解决办法：我们使用下面的sql语句将食物隔离级别修改为<code>REPEATABLE-READ</code></p>
+<p>解决办法：我们使用下面的sql语句将食物隔离级别修改为<code>REPEATABLE-READ</code><br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> <span class="keyword">session</span> <span class="keyword">transaction</span> <span class="keyword">isolation</span> <span class="keyword">level</span> repeatable <span class="keyword">read</span>;</span><br></pre></td></tr></table></figure></p>
 </blockquote>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> <span class="keyword">session</span> <span class="keyword">transaction</span> <span class="keyword">isolation</span> <span class="keyword">level</span> repeatable <span class="keyword">read</span>;</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>这时我们在步骤3中获取的money仍然为300，但是如果我们使用<code>update learn_sql.learn_sql set money = money + 100 where id = 1;</code>后再查询会发现money不是我们最后一步查询的300+100=400元，而是我们控制台1提交之后的400+100=500元，这就防止了在一次事务中多次读不一致，同时可以保证该食物提交结果正确。</p>
 </blockquote>
