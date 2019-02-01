@@ -84,17 +84,17 @@
 <meta name="description" content="本文是在看了慕课相关课程后进行的数据库锁模块的事务并发访问产生的问题以及事务隔离机制的相关总结">
 <meta name="keywords" content="数据库,锁,事务">
 <meta property="og:type" content="article">
-<meta property="og:title" content="数据库锁模块的事务并发访问产生的问题以及事务隔离机制">
+<meta property="og:title" content="数据库事务并发访问中的问题及隔离机制">
 <meta property="og:url" content="http://yoursite.com/2019/02/01/数据库锁模块的事务并发访问产生的问题以及事务隔离机制/index.html">
 <meta property="og:site_name" content="随我的博客">
 <meta property="og:description" content="本文是在看了慕课相关课程后进行的数据库锁模块的事务并发访问产生的问题以及事务隔离机制的相关总结">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/images/数据库锁模块的事务并发访问产生的问题以及事务隔离机制/A7BC620F-9A19-4713-862D-B329006D7A2F.png">
-<meta property="og:updated_time" content="2019-02-01T14:03:01.447Z">
+<meta property="og:image" content="http://yoursite.com/images/数据库事务并发访问中的问题及隔离机制/A7BC620F-9A19-4713-862D-B329006D7A2F.png">
+<meta property="og:updated_time" content="2019-02-01T14:06:40.653Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="数据库锁模块的事务并发访问产生的问题以及事务隔离机制">
+<meta name="twitter:title" content="数据库事务并发访问中的问题及隔离机制">
 <meta name="twitter:description" content="本文是在看了慕课相关课程后进行的数据库锁模块的事务并发访问产生的问题以及事务隔离机制的相关总结">
-<meta name="twitter:image" content="http://yoursite.com/images/数据库锁模块的事务并发访问产生的问题以及事务隔离机制/A7BC620F-9A19-4713-862D-B329006D7A2F.png">
+<meta name="twitter:image" content="http://yoursite.com/images/数据库事务并发访问中的问题及隔离机制/A7BC620F-9A19-4713-862D-B329006D7A2F.png">
 
 
 
@@ -130,7 +130,7 @@
 
 
 
-  <title>数据库锁模块的事务并发访问产生的问题以及事务隔离机制 | 随我的博客</title>
+  <title>数据库事务并发访问中的问题及隔离机制 | 随我的博客</title>
   
 
 
@@ -284,7 +284,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">数据库锁模块的事务并发访问产生的问题以及事务隔离机制</h1>
+          <h1 class="post-title" itemprop="name headline">数据库事务并发访问中的问题及隔离机制</h1>
         
 
         <div class="post-meta">
@@ -406,7 +406,7 @@
 </blockquote>
 <h4 id="下面我们进行验证"><a href="#下面我们进行验证" class="headerlink" title="下面我们进行验证"></a>下面我们进行验证</h4><p>首先我们先使用下面的语句获取当前的事务隔离级别可知数据库的默认级别<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">```sql</span><br><span class="line">select @@tx_isolation;#查询隔离级别</span><br></pre></td></tr></table></figure></p>
 <p>下面我们使用下面的语句将当前事务的隔离级别设置为可读未提交<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">```sql</span><br><span class="line">set session transaction isolation level read uncommitted;#修改隔离界别为 可读未提交</span><br></pre></td></tr></table></figure></p>
-<h4 id="下面我们模拟脏读"><a href="#下面我们模拟脏读" class="headerlink" title="下面我们模拟脏读"></a>下面我们模拟脏读</h4><h4 id="我们在数据库中先添加一个数据"><a href="#我们在数据库中先添加一个数据" class="headerlink" title="我们在数据库中先添加一个数据"></a>我们在数据库中先添加一个数据</h4><p><img src="/images/数据库锁模块的事务并发访问产生的问题以及事务隔离机制/A7BC620F-9A19-4713-862D-B329006D7A2F.png" alt="这里写图片描述"></p>
+<h4 id="下面我们模拟脏读"><a href="#下面我们模拟脏读" class="headerlink" title="下面我们模拟脏读"></a>下面我们模拟脏读</h4><h4 id="我们在数据库中先添加一个数据"><a href="#我们在数据库中先添加一个数据" class="headerlink" title="我们在数据库中先添加一个数据"></a>我们在数据库中先添加一个数据</h4><p><img src="/images/数据库事务并发访问中的问题及隔离机制/A7BC620F-9A19-4713-862D-B329006D7A2F.png" alt="这里写图片描述"></p>
 <table>
 <thead>
 <tr>
