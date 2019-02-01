@@ -90,7 +90,7 @@
 <meta property="og:description" content="本文是在看了慕课相关课程后进行的数据库锁模块的事务并发访问产生的问题以及事务隔离机制的相关总结">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/数据库锁模块的事务并发访问产生的问题以及事务隔离机制/A7BC620F-9A19-4713-862D-B329006D7A2F.png">
-<meta property="og:updated_time" content="2019-02-01T13:59:57.892Z">
+<meta property="og:updated_time" content="2019-02-01T14:00:42.486Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据库锁模块的事务并发访问产生的问题以及事务隔离机制">
 <meta name="twitter:description" content="本文是在看了慕课相关课程后进行的数据库锁模块的事务并发访问产生的问题以及事务隔离机制的相关总结">
@@ -365,38 +365,38 @@
 <h3 id="1-更新丢失"><a href="#1-更新丢失" class="headerlink" title="1.更新丢失"></a>1.更新丢失</h3><h4 id="目前主流数据库都会自动进行枷锁来避免，所以不好从数据库层面进行模拟，举个例子："><a href="#目前主流数据库都会自动进行枷锁来避免，所以不好从数据库层面进行模拟，举个例子：" class="headerlink" title="目前主流数据库都会自动进行枷锁来避免，所以不好从数据库层面进行模拟，举个例子："></a>目前主流数据库都会自动进行枷锁来避免，所以不好从数据库层面进行模拟，举个例子：</h4><table>
 <thead>
 <tr>
-<th>取款事务</th>
-<th>存款事务</th>
+<th style="text-align:center">取款事务</th>
+<th style="text-align:center">存款事务</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>开始事务</td>
-<td>开始事务</td>
+<td style="text-align:center">开始事务</td>
+<td style="text-align:center">开始事务</td>
 </tr>
 <tr>
-<td>查询转账余额为100元</td>
-<td></td>
+<td style="text-align:center">查询转账余额为100元</td>
+<td style="text-align:center"></td>
 </tr>
 <tr>
-<td></td>
-<td>查询转账余额为100元</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">查询转账余额为100元</td>
 </tr>
 <tr>
-<td></td>
-<td>存入20元,余额变为120元</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">存入20元,余额变为120元</td>
 </tr>
 <tr>
-<td></td>
-<td>提交事务</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">提交事务</td>
 </tr>
 <tr>
-<td>取出10元,余额改为90元</td>
-<td></td>
+<td style="text-align:center">取出10元,余额改为90元</td>
+<td style="text-align:center"></td>
 </tr>
 <tr>
-<td>回滚事务,余额恢复为100元</td>
-<td>更新丢失</td>
+<td style="text-align:center">回滚事务,余额恢复为100元</td>
+<td style="text-align:center">更新丢失</td>
 </tr>
 </tbody>
 </table>
