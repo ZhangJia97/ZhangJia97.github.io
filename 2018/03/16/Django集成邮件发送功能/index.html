@@ -360,7 +360,7 @@
       
         <h3 id="Django集成邮件发送功能"><a href="#Django集成邮件发送功能" class="headerlink" title="Django集成邮件发送功能"></a>Django集成邮件发送功能</h3><p>由于之前的一些情况，为了防止有人用无效邮箱进行注册，所以这次在报名时添加了邮箱发送以及验证功能，用于验证邮箱是否有效，当然了，在强大的Django之下，集成邮件功能并不难，接下来我们看一下如何有效的在Django中集成邮件功能吧</p>
 <hr>
-<h4 id="1-创建项目-（这里我就不赘述了，之前专门谢了一篇文章用于记录如何创建一个新的Django项目，传送门）"><a href="#1-创建项目-（这里我就不赘述了，之前专门谢了一篇文章用于记录如何创建一个新的Django项目，传送门）" class="headerlink" title="1.创建项目 （这里我就不赘述了，之前专门谢了一篇文章用于记录如何创建一个新的Django项目，传送门）"></a>1.创建项目 （这里我就不赘述了，之前专门谢了一篇文章用于记录如何创建一个新的Django项目，<a href="http://suiwo.xyz/2018/02/10/Django%E7%BD%91%E7%AB%99%E9%83%A8%E7%BD%B2%E5%89%8D%E6%9C%9F%E5%87%86%E5%A4%87/" target="_blank" rel="noopener">传送门</a>）</h4><hr>
+<h4 id="1-创建项目-（这里我就不赘述了，之前专门谢了一篇文章用于记录如何创建一个新的Django项目，传送门）"><a href="#1-创建项目-（这里我就不赘述了，之前专门谢了一篇文章用于记录如何创建一个新的Django项目，传送门）" class="headerlink" title="1.创建项目 （这里我就不赘述了，之前专门谢了一篇文章用于记录如何创建一个新的Django项目，传送门）"></a>1.创建项目 （这里我就不赘述了，之前专门谢了一篇文章用于记录如何创建一个新的Django项目，<a href="http://suiwo.xyz/2018/02/10/Django%E7%BD%91%E7%AB%99%E9%83%A8%E7%BD%B2%E5%89%8D%E6%9C%9F%E5%87%86%E5%A4%87/">传送门</a>）</h4><hr>
 <h4 id="2-在settings-py中配置与邮件相关的配置"><a href="#2-在settings-py中配置与邮件相关的配置" class="headerlink" title="2.在settings.py中配置与邮件相关的配置"></a>2.在settings.py中配置与邮件相关的配置</h4><p>代码如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">EMAIL_HOST = <span class="string">'smtp.qq.com'</span> <span class="comment">#邮箱服务商</span></span><br><span class="line">EMAIL_PORT = <span class="number">587</span> <span class="comment">#端口</span></span><br><span class="line">EMAIL_HOST_USER = <span class="string">'user'</span></span><br><span class="line">EMAIL_HOST_PASSWORD = <span class="string">'password'</span></span><br><span class="line">DEFAULT_FROM_EMAIL = <span class="string">'your Email Address'</span></span><br></pre></td></tr></table></figure></p>
 <p>只需要上面短短几行，就ok了，是不是很简单</p>
 <hr>
@@ -524,7 +524,7 @@ var jiathis_config={
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-count">53</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
