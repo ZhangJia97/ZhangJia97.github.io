@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="python,flask," />
+  <meta name="keywords" content="非关系型数据库,redis,锁," />
 
 
 
@@ -81,20 +81,18 @@
 
 
 
-<meta name="description" content="本文是对flask的外部脚本的使用的总结">
-<meta name="keywords" content="python,flask">
+<meta name="description" content="本文是在看了慕课相关课程后对redis如何实现分布式锁进行的相关总结">
+<meta name="keywords" content="非关系型数据库,redis,锁">
 <meta property="og:type" content="article">
-<meta property="og:title" content="flask的外部脚本的使用">
-<meta property="og:url" content="http://suiwo.xyz/2018/02/12/flask的外部脚本的使用/index.html">
+<meta property="og:title" content="redis如何实现分布式锁">
+<meta property="og:url" content="http://suiwo.xyz/2019/02/13/redis如何实现分布式锁/index.html">
 <meta property="og:site_name" content="随我的博客">
-<meta property="og:description" content="本文是对flask的外部脚本的使用的总结">
+<meta property="og:description" content="本文是在看了慕课相关课程后对redis如何实现分布式锁进行的相关总结">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://suiwo.xyz/images/flask的外部脚本的使用/0C71170F-1BEA-4977-B4A9-401B85C69117.png">
-<meta property="og:updated_time" content="2018-04-24T12:18:29.261Z">
+<meta property="og:updated_time" content="2019-02-13T15:33:38.444Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="flask的外部脚本的使用">
-<meta name="twitter:description" content="本文是对flask的外部脚本的使用的总结">
-<meta name="twitter:image" content="http://suiwo.xyz/images/flask的外部脚本的使用/0C71170F-1BEA-4977-B4A9-401B85C69117.png">
+<meta name="twitter:title" content="redis如何实现分布式锁">
+<meta name="twitter:description" content="本文是在看了慕课相关课程后对redis如何实现分布式锁进行的相关总结">
 
 
 
@@ -124,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://suiwo.xyz/2018/02/12/flask的外部脚本的使用/"/>
+  <link rel="canonical" href="http://suiwo.xyz/2019/02/13/redis如何实现分布式锁/"/>
 
 
 
 
 
-  <title>flask的外部脚本的使用 | 随我的博客</title>
+  <title>redis如何实现分布式锁 | 随我的博客</title>
   
 
 
@@ -267,7 +265,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2018/02/12/flask的外部脚本的使用/">
+    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2019/02/13/redis如何实现分布式锁/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="随我">
@@ -284,7 +282,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">flask的外部脚本的使用</h1>
+          <h1 class="post-title" itemprop="name headline">redis如何实现分布式锁</h1>
         
 
         <div class="post-meta">
@@ -296,8 +294,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-12T16:12:55+08:00">
-                2018-02-12
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-13T23:32:00+08:00">
+                2019-02-13
               </time>
             
 
@@ -319,8 +317,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/flask/" itemprop="url" rel="index">
-                    <span itemprop="name">flask</span>
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
                   </a>
                 </span>
 
@@ -343,7 +341,7 @@
 
           
               <div class="post-description">
-                  本文是对flask的外部脚本的使用的总结
+                  本文是在看了慕课相关课程后对redis如何实现分布式锁进行的相关总结
               </div>
           
 
@@ -360,11 +358,39 @@
       
 
       
-        <h1 id="1-在flask文件夹中新建一个manage-py文件，在文件中输入以下代码"><a href="#1-在flask文件夹中新建一个manage-py文件，在文件中输入以下代码" class="headerlink" title="1.在flask文件夹中新建一个manage.py文件，在文件中输入以下代码"></a>1.在flask文件夹中新建一个manage.py文件，在文件中输入以下代码</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask_script <span class="keyword">import</span> Manager</span><br><span class="line"><span class="keyword">from</span> learn_flask_script <span class="keyword">import</span> app</span><br><span class="line"></span><br><span class="line">manager = Manager(app)</span><br><span class="line"></span><br><span class="line"><span class="meta">@manager.command</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">()</span>:</span></span><br><span class="line">    print(<span class="string">"hello world"</span>)</span><br></pre></td></tr></table></figure>
+        <h2 id="分布式锁需要解决的问题"><a href="#分布式锁需要解决的问题" class="headerlink" title="分布式锁需要解决的问题"></a>分布式锁需要解决的问题</h2><ul>
+<li>互斥性：任意时刻只能有一个客户端拥有锁，不能同时多个客户端获取</li>
+<li>安全性：锁只能被持有该锁的用户删除，而不能被其他用户删除</li>
+<li>死锁：获取锁的客户端因为某些原因而宕机，而未能释放锁，其他客户端无法获取此锁，需要有机制来避免该类问题的发生</li>
+<li>容错：当部分节点宕机，客户端仍能获取锁或者释放锁</li>
+</ul>
 <hr>
-<p>在终端中使用<code>python manage.py hello</code>即可运行该脚本<br><img src="/images/flask的外部脚本的使用/0C71170F-1BEA-4977-B4A9-401B85C69117.png" alt="这里写图片描述"></p>
-<h1 id="2-在flask文件夹中新建一个manage-py文件，在文件中输入以下代码"><a href="#2-在flask文件夹中新建一个manage-py文件，在文件中输入以下代码" class="headerlink" title="2.在flask文件夹中新建一个manage.py文件，在文件中输入以下代码"></a>2.在flask文件夹中新建一个manage.py文件，在文件中输入以下代码</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask_script <span class="keyword">import</span> Manager</span><br><span class="line"><span class="keyword">from</span> learn_flask_script <span class="keyword">import</span> app</span><br><span class="line"></span><br><span class="line">manager = Manager(app)</span><br><span class="line"></span><br><span class="line"><span class="meta">@manager.option('-m','--msg',dest='msg_val',default='world')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello_world</span><span class="params">(msg_val)</span>:</span></span><br><span class="line">    print(<span class="string">'hello '</span>+msg_val)</span><br></pre></td></tr></table></figure>
-<p>在终端中使用<code>python manage.py hello -m csdn</code>或者<code>python manage.py hello --msg_val=csdn</code>即可运行该脚本<br>运行结果为<code>hello csdn</code></p>
+<h3 id="1-如何通过Redis实现分布式锁-非完善方法"><a href="#1-如何通过Redis实现分布式锁-非完善方法" class="headerlink" title="1.如何通过Redis实现分布式锁:(非完善方法)"></a>1.如何通过Redis实现分布式锁:(非完善方法)</h3><h5 id="SETNX-key-value-如果key不存在-则创建并赋值"><a href="#SETNX-key-value-如果key不存在-则创建并赋值" class="headerlink" title="SETNX key value :如果key不存在,则创建并赋值"></a>SETNX key value :如果key不存在,则创建并赋值</h5><ul>
+<li>时间复杂度: 0(1)</li>
+<li>返回值:设置成功,返回1;设置失败,返回0。</li>
+</ul>
+<blockquote>
+<p>但是此时我们获取的key是长期有效的，所以我们应该如何解决长期有效的问题呢？</p>
+</blockquote>
+<h4 id="如何解决SETNX长期有效的问题"><a href="#如何解决SETNX长期有效的问题" class="headerlink" title="如何解决SETNX长期有效的问题"></a>如何解决SETNX长期有效的问题</h4><h5 id="EXPIRE-key-seconds"><a href="#EXPIRE-key-seconds" class="headerlink" title="EXPIRE key seconds"></a>EXPIRE key seconds</h5><ul>
+<li>设置key的生存时间,当key过期时(生存时间为0) ,会被自动删除</li>
+<li>缺点：原子性得不到满足<h5 id="下面是伪代码"><a href="#下面是伪代码" class="headerlink" title="下面是伪代码"></a>下面是伪代码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//改程序存在危险，如果执行到第二行就崩溃了，则此时key会被一直占用而无法被释放</span></span><br><span class="line">RedisService redisService = SpringUtils . getBean(Redi sService <span class="class"><span class="keyword">class</span>)</span>; </span><br><span class="line"><span class="keyword">long</span> status = <span class="function">redisService <span class="title">setnx</span><span class="params">(key, <span class="string">"1"</span>)</span></span>;</span><br><span class="line"><span class="keyword">if</span>(status == <span class="number">1</span>) &#123;</span><br><span class="line">	redisService.expire(key, expire);</span><br><span class="line">	<span class="comment">//执行独占资源逻辑</span></span><br><span class="line">	doOcuppiedWork( );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<hr>
+<h3 id="2-如何通过Redis实现分布式锁-正确方式"><a href="#2-如何通过Redis实现分布式锁-正确方式" class="headerlink" title="2.如何通过Redis实现分布式锁:(正确方式)"></a>2.如何通过Redis实现分布式锁:(正确方式)</h3><h5 id="SET-key-value-EX-seconds-PX-milliseconds-NX-XX"><a href="#SET-key-value-EX-seconds-PX-milliseconds-NX-XX" class="headerlink" title="SET key value [EX seconds] [PX milliseconds] [NX|XX]"></a>SET key value [EX seconds] [PX milliseconds] [NX|XX]</h5><ul>
+<li>EX second :设置键的过期时间为second秒</li>
+<li>PX millisecond :设置键的过期时间为millisecond毫秒</li>
+<li>NX :只在键不存在时,才对键进行设置操作</li>
+<li>XX:只在键已经存在时,才对键进行设置操作</li>
+<li>SET操作成功完成时,返回OK ,否则返回nil<h5 id="下面是伪代码-1"><a href="#下面是伪代码-1" class="headerlink" title="下面是伪代码"></a>下面是伪代码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">RedisService redisService = SpringUtils.getBean(RedisService.class); .</span><br><span class="line">String result = redisService.set(lockKey, requestId, SET_IF_NOT_EXIST, SET_WITH_EXPIRE_TIME, expireTime);</span><br><span class="line"><span class="keyword">if</span> (<span class="string">"OK"</span>.equals(result)) &#123;</span><br><span class="line">	<span class="comment">//执行独占资源逻辑</span></span><br><span class="line">	doOcuppiedWork( );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<hr>
+<h3 id="3-大量的key同时过期的注意事项"><a href="#3-大量的key同时过期的注意事项" class="headerlink" title="3.大量的key同时过期的注意事项"></a>3.大量的key同时过期的注意事项</h3><ul>
+<li>集中过期,由于清除大量的key很耗时,会出现短暂的卡顿现象</li>
+<li>解放方案:在设置key的过期时间的时候,给每个key加上随机值</li>
+</ul>
 
       
     </div>
@@ -382,9 +408,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/python/" rel="tag"><i class="fa fa-tag"></i> python</a>
+            <a href="/tags/非关系型数据库/" rel="tag"><i class="fa fa-tag"></i> 非关系型数据库</a>
           
-            <a href="/tags/flask/" rel="tag"><i class="fa fa-tag"></i> flask</a>
+            <a href="/tags/redis/" rel="tag"><i class="fa fa-tag"></i> redis</a>
+          
+            <a href="/tags/锁/" rel="tag"><i class="fa fa-tag"></i> 锁</a>
           
         </div>
       
@@ -397,8 +425,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/02/12/flask连接sqlite3数据库/" rel="next" title="flask连接sqlite3数据库">
-                <i class="fa fa-chevron-left"></i> flask连接sqlite3数据库
+              <a href="/2019/02/13/当前读与快照读/" rel="next" title="当前读与快照读">
+                <i class="fa fa-chevron-left"></i> 当前读与快照读
               </a>
             
           </div>
@@ -406,10 +434,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/02/12/Flask扩展flask-script文档中文翻译/" rel="prev" title="Flask扩展flask-script文档中文翻译">
-                Flask扩展flask-script文档中文翻译 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -599,7 +623,7 @@ var jiathis_config={
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-在flask文件夹中新建一个manage-py文件，在文件中输入以下代码"><span class="nav-number">1.</span> <span class="nav-text">1.在flask文件夹中新建一个manage.py文件，在文件中输入以下代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-在flask文件夹中新建一个manage-py文件，在文件中输入以下代码"><span class="nav-number">2.</span> <span class="nav-text">2.在flask文件夹中新建一个manage.py文件，在文件中输入以下代码</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#分布式锁需要解决的问题"><span class="nav-number">1.</span> <span class="nav-text">分布式锁需要解决的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-如何通过Redis实现分布式锁-非完善方法"><span class="nav-number">1.1.</span> <span class="nav-text">1.如何通过Redis实现分布式锁:(非完善方法)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#SETNX-key-value-如果key不存在-则创建并赋值"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">SETNX key value :如果key不存在,则创建并赋值</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如何解决SETNX长期有效的问题"><span class="nav-number">1.1.1.</span> <span class="nav-text">如何解决SETNX长期有效的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#EXPIRE-key-seconds"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">EXPIRE key seconds</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#下面是伪代码"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">下面是伪代码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-如何通过Redis实现分布式锁-正确方式"><span class="nav-number">1.2.</span> <span class="nav-text">2.如何通过Redis实现分布式锁:(正确方式)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#SET-key-value-EX-seconds-PX-milliseconds-NX-XX"><span class="nav-number">1.2.0.1.</span> <span class="nav-text">SET key value [EX seconds] [PX milliseconds] [NX|XX]</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#下面是伪代码-1"><span class="nav-number">1.2.0.2.</span> <span class="nav-text">下面是伪代码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-大量的key同时过期的注意事项"><span class="nav-number">1.3.</span> <span class="nav-text">3.大量的key同时过期的注意事项</span></a></li></ol></li></ol></div>
             
 
           </div>
