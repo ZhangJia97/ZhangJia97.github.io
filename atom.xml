@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://suiwo.xyz/"/>
-  <updated>2019-02-13T15:42:41.734Z</updated>
+  <updated>2019-02-14T02:04:47.667Z</updated>
   <id>http://suiwo.xyz/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>redis如何实现异步队列</title>
+    <link href="http://suiwo.xyz/2019/02/14/redis%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E5%BC%82%E6%AD%A5%E9%98%9F%E5%88%97/"/>
+    <id>http://suiwo.xyz/2019/02/14/redis如何实现异步队列/</id>
+    <published>2019-02-14T02:02:20.000Z</published>
+    <updated>2019-02-14T02:04:47.667Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="一-如何使用Redis做异步队列"><a href="#一-如何使用Redis做异步队列" class="headerlink" title="一.如何使用Redis做异步队列"></a>一.如何使用Redis做异步队列</h2><h3 id="1-使用List作为队列-RPUSH生产消息-LPOP消费消息"><a href="#1-使用List作为队列-RPUSH生产消息-LPOP消费消息" class="headerlink" title="1.使用List作为队列, RPUSH生产消息, LPOP消费消息"></a>1.使用List作为队列, RPUSH生产消息, LPOP消费消息</h3><p>➢缺点:没有等待队列里有值就直接消费<br>➢弥补:可以通过在应用层引入Sleep机制去调用LPOP重试</p><h3 id="2-BLPOP-key-key-timeout-阻塞直到队列有消息或者超时"><a href="#2-BLPOP-key-key-timeout-阻塞直到队列有消息或者超时" class="headerlink" title="2. BLPOP key [key .. timeout :阻塞直到队列有消息或者超时"></a>2. <code>BLPOP key [key .. timeout</code> :阻塞直到队列有消息或者超时</h3><p>➢缺点:只能供-一个消费者消费</p><h2 id="二-如何使用Redis做异步队列"><a href="#二-如何使用Redis做异步队列" class="headerlink" title="二.如何使用Redis做异步队列"></a>二.如何使用Redis做异步队列</h2><h3 id="pub-sub-主题订阅者模式"><a href="#pub-sub-主题订阅者模式" class="headerlink" title="pub/sub :主题订阅者模式"></a>pub/sub :主题订阅者模式</h3><ul><li>发送者(pub)发送消息,订阅者(sub)接收消息</li><li>订阅者可以订阅任意数量的频道<br>hex</li></ul><p><img src="/images/redis如何实现异步队列/4599D9D7-8657-4473-BFAF-9AAE44487A04.png" alt="这里写图片描述"></p><h5 id="下面我们就演示一下，首先我们打开三个终端，两个作为接收者，一个作为发送者，由下图可见当我们发送消息时只有指定的订阅者可以获取到消息"><a href="#下面我们就演示一下，首先我们打开三个终端，两个作为接收者，一个作为发送者，由下图可见当我们发送消息时只有指定的订阅者可以获取到消息" class="headerlink" title="下面我们就演示一下，首先我们打开三个终端，两个作为接收者，一个作为发送者，由下图可见当我们发送消息时只有指定的订阅者可以获取到消息"></a>下面我们就演示一下，首先我们打开三个终端，两个作为接收者，一个作为发送者，由下图可见当我们发送消息时只有指定的订阅者可以获取到消息</h5><p><img src="/images/redis如何实现异步队列/83848910-41A0-46B3-B876-A2CB6E8E5B07.png" alt="这里写图片描述"></p><h2 id="三-pub-sub的缺点"><a href="#三-pub-sub的缺点" class="headerlink" title="三.pub/sub的缺点"></a>三.pub/sub的缺点</h2><h5 id="消息的发布是无状态的-无法保证可达，若订阅者在发送者发布消息期间下线，之后我们再上线将无法接受到刚才发送的消息，解决办法就是使用消息队列"><a href="#消息的发布是无状态的-无法保证可达，若订阅者在发送者发布消息期间下线，之后我们再上线将无法接受到刚才发送的消息，解决办法就是使用消息队列" class="headerlink" title="消息的发布是无状态的,无法保证可达，若订阅者在发送者发布消息期间下线，之后我们再上线将无法接受到刚才发送的消息，解决办法就是使用消息队列"></a>消息的发布是无状态的,无法保证可达，若订阅者在发送者发布消息期间下线，之后我们再上线将无法接受到刚才发送的消息，解决办法就是使用消息队列</h5>]]></content>
+    
+    <summary type="html">
+    
+      本文是在看了慕课相关课程后对redis如何实现异步队列进行的相关总结
+    
+    </summary>
+    
+      <category term="数据库" scheme="http://suiwo.xyz/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+      <category term="非关系型数据库" scheme="http://suiwo.xyz/tags/%E9%9D%9E%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+      <category term="redis" scheme="http://suiwo.xyz/tags/redis/"/>
+    
+      <category term="异步队列" scheme="http://suiwo.xyz/tags/%E5%BC%82%E6%AD%A5%E9%98%9F%E5%88%97/"/>
+    
+  </entry>
   
   <entry>
     <title>redis如何实现分布式锁</title>
@@ -479,30 +505,6 @@
       <category term="数据结构与算法" scheme="http://suiwo.xyz/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"/>
     
       <category term="KMP算法" scheme="http://suiwo.xyz/tags/KMP%E7%AE%97%E6%B3%95/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>快速排序</title>
-    <link href="http://suiwo.xyz/2018/04/25/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/"/>
-    <id>http://suiwo.xyz/2018/04/25/快速排序/</id>
-    <published>2018-04-25T08:42:49.000Z</published>
-    <updated>2018-04-25T08:44:03.385Z</updated>
-    
-    <content type="html"><![CDATA[<h5 id="其实这节课并没有听太懂，但是为了防止忘记，所以直接将郝斌老师的代码扔到了博客上希望我之后多次看之后能真正理解这个排序方法，还有就是郝斌老师的数据结构课程看完了，并没有图的相关，看来我要开始自学图了，加油！！！！"><a href="#其实这节课并没有听太懂，但是为了防止忘记，所以直接将郝斌老师的代码扔到了博客上希望我之后多次看之后能真正理解这个排序方法，还有就是郝斌老师的数据结构课程看完了，并没有图的相关，看来我要开始自学图了，加油！！！！" class="headerlink" title="其实这节课并没有听太懂，但是为了防止忘记，所以直接将郝斌老师的代码扔到了博客上希望我之后多次看之后能真正理解这个排序方法，还有就是郝斌老师的数据结构课程看完了，并没有图的相关，看来我要开始自学图了，加油！！！！"></a>其实这节课并没有听太懂，但是为了防止忘记，所以直接将郝斌老师的代码扔到了博客上希望我之后多次看之后能真正理解这个排序方法，还有就是郝斌老师的数据结构课程看完了，并没有图的相关，看来我要开始自学图了，加油！！！！</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># <span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">FindPos</span><span class="params">(<span class="keyword">int</span> * a, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">QuickSort</span><span class="params">(<span class="keyword">int</span> * a, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="keyword">int</span> a[<span class="number">6</span>] = &#123;<span class="number">-2</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">-985</span>, <span class="number">4</span>, <span class="number">-93</span>&#125;;</span><br><span class="line"><span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">QuickSort(a, <span class="number">0</span>, <span class="number">5</span>); <span class="comment">//第二个参数表示第一个元素的下标  第三个参数表示最后一个元素的下标</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;<span class="number">6</span>; ++i)</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"%d  "</span>, a[i]);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"\n"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">QuickSort</span><span class="params">(<span class="keyword">int</span> * a, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="keyword">int</span> pos;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (low &lt; high)</span><br><span class="line">&#123;</span><br><span class="line">pos = FindPos(a, low, high);</span><br><span class="line">QuickSort(a, low, pos<span class="number">-1</span>);</span><br><span class="line">QuickSort(a, pos+<span class="number">1</span>, high);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">FindPos</span><span class="params">(<span class="keyword">int</span> * a, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="keyword">int</span> val = a[low];</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> (low &lt; high)</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">while</span> (low&lt;high  &amp;&amp; a[high]&gt;=val)</span><br><span class="line">--high;</span><br><span class="line">a[low] = a[high];</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> (low&lt;high &amp;&amp; a[low]&lt;=val)</span><br><span class="line">++low;</span><br><span class="line">a[high] = a[low];</span><br><span class="line">&#125;<span class="comment">//终止while循环之后low和high一定是相等的</span></span><br><span class="line"></span><br><span class="line">a[low] = val; </span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> high; <span class="comment">//high可以改为low, 但不能改为val 也不能改为a[low]  也不能改为a[high]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      本文是在观看了郝斌老师的数据结构课程后将他课上的代码直接复制下来以做后期复习用
-    
-    </summary>
-    
-      <category term="数据结构与算法" scheme="http://suiwo.xyz/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"/>
-    
-    
-      <category term="数据结构与算法" scheme="http://suiwo.xyz/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"/>
-    
-      <category term="快速排序" scheme="http://suiwo.xyz/tags/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/"/>
     
   </entry>
   
