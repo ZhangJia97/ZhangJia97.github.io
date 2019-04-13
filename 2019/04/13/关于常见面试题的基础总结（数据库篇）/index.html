@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="数据库,面试," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="随我的博客" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="本文对面试中常见的一些数据库相关知识点或者问题的总结（日常迷信，希望自己运气好一些，早日手拿心仪offer）">
+<meta name="keywords" content="数据库,面试">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于常见面试题的基础总结（数据库篇）">
+<meta property="og:url" content="http://suiwo.xyz/2019/04/13/关于常见面试题的基础总结（数据库篇）/index.html">
+<meta property="og:site_name" content="随我的博客">
+<meta property="og:description" content="本文对面试中常见的一些数据库相关知识点或者问题的总结（日常迷信，希望自己运气好一些，早日手拿心仪offer）">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://suiwo.xyz/images/关于常见面试题的基础总结（数据库篇）/FB9AF3CC-91EE-45A0-84B8-252F43013CE8.png">
+<meta property="og:image" content="http://suiwo.xyz/images/关于常见面试题的基础总结（数据库篇）/4D1E71C6-E9E1-4818-82F2-E0B5B36647EE.png">
+<meta property="og:image" content="http://suiwo.xyz/images/关于常见面试题的基础总结（数据库篇）/A86B95F0-68CE-4201-90B5-8AFA5D50005E.png">
+<meta property="og:updated_time" content="2019-04-13T03:51:01.507Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于常见面试题的基础总结（数据库篇）">
+<meta name="twitter:description" content="本文对面试中常见的一些数据库相关知识点或者问题的总结（日常迷信，希望自己运气好一些，早日手拿心仪offer）">
+<meta name="twitter:image" content="http://suiwo.xyz/images/关于常见面试题的基础总结（数据库篇）/FB9AF3CC-91EE-45A0-84B8-252F43013CE8.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://suiwo.xyz/2019/04/13/关于常见面试题的基础总结（数据库篇）/"/>
+
+
+
+
+
+  <title>关于常见面试题的基础总结（数据库篇） | 随我的博客</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">随我的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">记录学习的点滴</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-align-left"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2019/04/13/关于常见面试题的基础总结（数据库篇）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="随我">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="随我的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">关于常见面试题的基础总结（数据库篇）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-13T11:18:17+08:00">
+                2019-04-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  本文对面试中常见的一些数据库相关知识点或者问题的总结（日常迷信，希望自己运气好一些，早日手拿心仪offer）
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>由于这些内容都是比较早之前进行的整理的，所以有的部分是参考了他人的博文，但是由于是之前找的，所以具体的博文链接找不到了，如果原博主看到这个文章或者有人知道其中部分内容的原博文，请与我联系，我将加上原链接，谢谢</p>
+</blockquote>
+<hr>
+<h3 id="1、为什么要使用索引"><a href="#1、为什么要使用索引" class="headerlink" title="1、为什么要使用索引"></a>1、为什么要使用索引</h3><ul>
+<li>为了快速查询数据</li>
+</ul>
+<hr>
+<h3 id="2、如何创建索引"><a href="#2、如何创建索引" class="headerlink" title="2、如何创建索引"></a>2、如何创建索引</h3><ul>
+<li><p>唯一索引<br><code>CREATE UNIQUE INDEX 索引名称 ON 表名称 (列名称)</code></p>
+</li>
+<li><p>简单索引<br><code>CREATE INDEX 索引名称 ON 表名称 (列名称)</code></p>
+</li>
+</ul>
+<hr>
+<h3 id="3、普通索引，唯一索引，主键索引，全文索引，组合索引"><a href="#3、普通索引，唯一索引，主键索引，全文索引，组合索引" class="headerlink" title="3、普通索引，唯一索引，主键索引，全文索引，组合索引"></a>3、普通索引，唯一索引，主键索引，全文索引，组合索引</h3><ul>
+<li>一个表只能有一个主键索引，可以有多个唯一索引；</li>
+<li>主键索引一定是唯一索引， 唯一索引不是主键索引；。</li>
+<li>普通索引：最基本的索引，没有任何限制</li>
+<li>唯一索引：与”普通索引”类似，不同的就是：索引列的值必须唯一，但允许有空值。</li>
+<li>主键索引：它是一种特殊的唯一索引，不允许有空值。 </li>
+<li>全文索引：仅可用于 MyISAM 表，针对较大的数据，生成全文索引很耗时好空间。</li>
+<li>组合索引：为了更多的提高mysql效率可建立组合索引，遵循”最左前缀“原则。</li>
+</ul>
+<hr>
+<h3 id="4、密集索引，稀疏索引"><a href="#4、密集索引，稀疏索引" class="headerlink" title="4、密集索引，稀疏索引"></a>4、密集索引，稀疏索引</h3><ul>
+<li>密集索引：每个搜索码值都对应一个索引值</li>
+<li>稀疏索引：只为某些值建立索引</li>
+</ul>
+<hr>
+<h3 id="5、什么是最左前缀原则"><a href="#5、什么是最左前缀原则" class="headerlink" title="5、什么是最左前缀原则"></a>5、什么是最左前缀原则</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`user2`</span> (</span><br><span class="line">  <span class="string">`userid`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`username`</span> <span class="built_in">varchar</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">''</span>,</span><br><span class="line">  <span class="string">`password`</span> <span class="built_in">varchar</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">''</span>,</span><br><span class="line">  <span class="string">`usertype`</span> <span class="built_in">varchar</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">''</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`userid`</span>),</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`a_b_c_index`</span> (<span class="string">`username`</span>,<span class="string">`password`</span>,<span class="string">`usertype`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> AUTO_INCREMENT=<span class="number">2</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8;</span><br></pre></td></tr></table></figure>
+<p>上表中有一个联合索引，下面开始验证最左匹配原则。</p>
+<ul>
+<li>当存在username时会使用索引查询：<br><code>explain select * from user2 where username = &#39;1&#39; and password = &#39;1&#39;;</code></li>
+<li>当没有username时，不会使用索引查询：<br><code>explain select * from user2 where password = &#39;1&#39;;</code></li>
+<li>当有username，但顺序乱序时也可以使用索引：<br><code>explain select * from user2 where password = &#39;1&#39; and username = &#39;1&#39;;</code></li>
+</ul>
+<p>在最左匹配原则中，有如下说明：</p>
+<ul>
+<li>最左前缀匹配原则，非常重要的原则，mysql会一直向右匹配直到遇到范围查询(&gt;、&lt;、between、like)就停止匹配，比如<code>a = 1 and b = 2 and c &gt; 3 and d = 4</code> 如果建立(a,b,c,d)顺序的索引，d是用不到索引的，如果建立(a,b,d,c)的索引则都可以用到，a,b,d的顺序可以任意调整。</li>
+<li>=和in可以乱序，比如<code>a = 1 and b = 2 and c = 3</code> 建立(a,b,c)索引可以任意顺序，mysql的查询优化器会帮你优化成索引可以识别的形式</li>
+<li>最左前缀的成因也不难理解：就是生成索引是先按照第一个索引，再按照第二个索引。如果只有第二个条件，此时第二个条件的索引是无序的。</li>
+</ul>
+<hr>
+<h3 id="6、索引失效的几种情况"><a href="#6、索引失效的几种情况" class="headerlink" title="6、索引失效的几种情况"></a>6、索引失效的几种情况</h3><ul>
+<li>如果条件中有or，即使其中有条件带索引也不会使用(这也是为什么尽量少用or的原因)要想使用or，又想让索引生效，只能将or条件中的每个列都加上索引</li>
+<li>对于多列索引，不是使用的第一部分，则不会使用索引</li>
+<li>like查询以%开头</li>
+<li>如果列类型是字符串，那一定要在条件中将数据使用引号引用起来,否则不使用索引</li>
+<li>如果mysql估计使用全表扫描要比使用索引快,则不使用索引</li>
+</ul>
+<hr>
+<h3 id="7、主键，复合主键，联合主键"><a href="#7、主键，复合主键，联合主键" class="headerlink" title="7、主键，复合主键，联合主键"></a>7、主键，复合主键，联合主键</h3><ul>
+<li>主键是能唯一表示一条数据的字段</li>
+<li>复合主键是多个字段的组合</li>
+<li>联合主键是多个表之间的通过给的数据表主键然后创建的联合主键</li>
+</ul>
+<hr>
+<h3 id="8、常见索引的数据结构"><a href="#8、常见索引的数据结构" class="headerlink" title="8、常见索引的数据结构"></a>8、常见索引的数据结构</h3><p>二叉搜索树</p>
+<p>B-tree<br><img src="/images/关于常见面试题的基础总结（数据库篇）/FB9AF3CC-91EE-45A0-84B8-252F43013CE8.png" alt="这里写图片描述"><br>b+-tree<br><img src="/images/关于常见面试题的基础总结（数据库篇）/4D1E71C6-E9E1-4818-82F2-E0B5B36647EE.png" alt="这里写图片描述"></p>
+<p>Hash</p>
+<hr>
+<h3 id="9、b-树和Hash优缺点"><a href="#9、b-树和Hash优缺点" class="headerlink" title="9、b+树和Hash优缺点"></a>9、b+树和Hash优缺点</h3><ul>
+<li>B+树的磁盘读写代价更低</li>
+<li>B +树的查询效率更加稳定</li>
+<li>B+树更有利于对数据库的扫描</li>
+<li>Hash仅仅能满足“=”, “IN”,</li>
+<li>Hash不能使用范围查询</li>
+<li>Hash无法被用来避免数据的排序操作</li>
+<li>Hash不能利用部分索引键查询</li>
+<li>Hash不能避免表扫描</li>
+<li>Hash遇到大量Hash值相等的情况后性能并不一定就会比B-Tree索引高</li>
+</ul>
+<hr>
+<h3 id="10、b数和b-数区别"><a href="#10、b数和b-数区别" class="headerlink" title="10、b数和b+数区别"></a>10、b数和b+数区别</h3><ul>
+<li>b数每个节点都存储key和data，叶子节点的指针为null</li>
+<li>b+数只有叶子节点存储data，叶子节点包含了这个数的所有键值，叶子节点不存值</li>
+</ul>
+<hr>
+<h3 id="11、如何定位慢查询"><a href="#11、如何定位慢查询" class="headerlink" title="11、如何定位慢查询"></a>11、如何定位慢查询</h3><ul>
+<li>根据慢日志查询SQL语句 使用 show variables like ‘%query%’ 可以将slow_query_log选项开启，同时可以查看慢日志的路径</li>
+<li>使用Explain关键字，即在普通SQL语句前加上Explain，可通过查看extra项和type项看是否使用到了索引</li>
+<li>最左匹配原则</li>
+</ul>
+<hr>
+<h3 id="12、索引是建立的越多越好吗"><a href="#12、索引是建立的越多越好吗" class="headerlink" title="12、索引是建立的越多越好吗"></a>12、索引是建立的越多越好吗</h3><ul>
+<li>数据量小不需要索引</li>
+<li>经常变更同时也需要维护索引，意味着更多的维护成本</li>
+<li>更多索引以为这更多的空间</li>
+</ul>
+<hr>
+<h3 id="13、InnoDB和MyISAM区别以及各自适合场景"><a href="#13、InnoDB和MyISAM区别以及各自适合场景" class="headerlink" title="13、InnoDB和MyISAM区别以及各自适合场景"></a>13、InnoDB和MyISAM区别以及各自适合场景</h3><ul>
+<li>InnoDb数据索引在一个文件中。MyISAM数据与索引为两个文件</li>
+<li>MyISAM默认用的是表级锁,不支持行级锁</li>
+<li>InnoDB默认用的是行级锁,也支持表级锁</li>
+<li>MyISAM适合于频繁执行全表count语句，同时对增删改频率不高，查询频繁，没有事务</li>
+<li>InnoDB适合于增删改查都相当频繁，同时可靠性要求比较高，要求支持事务</li>
+</ul>
+<hr>
+<h3 id="14、数据库不同隔离级别下遇到的问题"><a href="#14、数据库不同隔离级别下遇到的问题" class="headerlink" title="14、数据库不同隔离级别下遇到的问题"></a>14、数据库不同隔离级别下遇到的问题</h3><p>本问题可参考本博客之前的文章：<a href="https://suiwo.xyz/2019/02/01/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BA%8B%E5%8A%A1%E5%B9%B6%E5%8F%91%E8%AE%BF%E9%97%AE%E4%B8%AD%E7%9A%84%E9%97%AE%E9%A2%98%E5%8F%8A%E9%9A%94%E7%A6%BB%E6%9C%BA%E5%88%B6/">传送门</a></p>
+<p><img src="/images/关于常见面试题的基础总结（数据库篇）/A86B95F0-68CE-4201-90B5-8AFA5D50005E.png" alt="这里写图片描述"></p>
+<hr>
+<h3 id="15、事务的ACID"><a href="#15、事务的ACID" class="headerlink" title="15、事务的ACID"></a>15、事务的ACID</h3><ul>
+<li>原子性</li>
+<li>一致性</li>
+<li>隔离性</li>
+<li>持久性</li>
+</ul>
+<hr>
+<h3 id="16、数据库的优化"><a href="#16、数据库的优化" class="headerlink" title="16、数据库的优化"></a>16、数据库的优化</h3><h5 id="读写分离"><a href="#读写分离" class="headerlink" title="读写分离"></a>读写分离</h5><ul>
+<li>读写分离从字面意思就可以理解，就是把对数据库的读操作和写操作分离开。读写分离在网站发展初期可以一定程度上缓解读写并发时产生锁的问题，将读写压力分担到多台服务器上，通常用于读远大于写的场景。</li>
+<li>读写分离的基本原理是让主数据库处理事务性增、改、删操作（INSERT、UPDATE、DELETE），而从数据库处理SELECT查询操作。数据库复制被用来把事务性操作导致的变更同步到集群中的从数据库。单表的数据量限制，当单表数据量到一定条数之后数据库性能会显著下降。数据多了之后，对数据库的读、写就会很多。分库减少单台数据库的压力。</li>
+</ul>
+<h5 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h5><ul>
+<li>主从复制，是用来建立一个和主数据库完全一样的数据库环境，称为从数据库；</li>
+<li>主数据库一般是实时的业务数据库，从数据库的作用和使用场合一般有几个：<ul>
+<li>一是作为后备数据库，主数据库服务器故障后，可切换到从数据库继续工作；</li>
+<li>二是可在从数据库作备份、数据统计等工作，这样不影响主数据库的性能；</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="17、InnoDB如何手动设置共享锁和排它锁"><a href="#17、InnoDB如何手动设置共享锁和排它锁" class="headerlink" title="17、InnoDB如何手动设置共享锁和排它锁"></a>17、InnoDB如何手动设置共享锁和排它锁</h3><ul>
+<li>共享锁也叫读锁，简称S锁，原理：一个事务获取了一个数据行的共享锁，其他事务能获得该行对应的共享锁，但不能获得排他锁，即一个事务在读取一个数据行的时候，其他事务也可以读，但不能对该数据行进行增删改。</li>
+<li>排他锁也叫写锁，简称x锁，原理：一个事务获取了一个数据行的排他锁，其他事务就不能再获取该行的其他锁（排他锁或者共享锁），即一个事务在读取一个数据行的时候，其他事务不能对该数据行进行增删改查。<h5 id="如何设置共享锁和排他锁？"><a href="#如何设置共享锁和排他锁？" class="headerlink" title="如何设置共享锁和排他锁？"></a>如何设置共享锁和排他锁？</h5></li>
+<li>设置共享锁：<code>SELECT ... LOCK IN SHARE MODE;</code></li>
+<li>设置排他锁：<code>SELECT ... FOR UPDATE;</code></li>
+</ul>
+<hr>
+<h3 id="18、redis基础数据结构"><a href="#18、redis基础数据结构" class="headerlink" title="18、redis基础数据结构"></a>18、redis基础数据结构</h3><blockquote>
+<p>redis相关问题可参考之前的一些文章：</p>
+<ul>
+<li><a href="https://suiwo.xyz/2019/02/14/redis%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E5%BC%82%E6%AD%A5%E9%98%9F%E5%88%97/">redis如何实现异步队列</a></li>
+<li><a href="https://suiwo.xyz/2019/02/13/redis%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">redis如何实现分布式锁</a></li>
+</ul>
+</blockquote>
+<ul>
+<li><p>string：是一个可变的字节数组</p>
+<ul>
+<li><code>set name zhangsan</code>（增加）</li>
+<li><code>get name</code>（删除）</li>
+<li><code>strlen name</code>（获取长度）</li>
+<li><code>getrange name 1 10</code>（获取1-10的字符）</li>
+<li><code>append name ishahaha</code>（追加字符，此时name 为 zhangsanis）</li>
+<li><code>decrby name 100</code>（name的值减100）</li>
+<li><code>Incrby name 100</code>（name的值加100）</li>
+</ul>
+</li>
+<li><p>List：是一个列表数据结构，且是双向链表<br>常见操作：<code>rpop</code>，<code>rpush</code>，<code>lpop</code>，<code>lpush</code>，<code>llen（长度）</code>，<code>lrange</code>，<code>lset name 1 lisi（将list的第二个元素修改成lisi）</code>，<code>lrem（删除）</code></p>
+</li>
+<li><p>Hash：等价于HashMap<br>常见操作：<code>hset（添加一个元素）</code>，<code>hmset（添加多个元素）</code>，<code>hget（获取一个元素）</code>，<code>hmget（获取多个元素）</code>，<code>hkeys（获取所有键）</code>，<code>hvals（获取所有值）</code>，<code>hdel（删除元素）</code></p>
+</li>
+<li><p>Set：类似于HashSet，所以value指向同一个键。<br>常见操作：<code>sadd（添加）</code>，<code>smembers（获取所有value）</code>，<code>scard（获取长度）</code>，<code>srandmember（获取随机元素）</code>，<code>srem（删除元素）</code>，<code>spop（随机删除元素）</code>，<code>sismember（判断元素是否存在）</code></p>
+</li>
+<li><p>Sortset：类似于优先队列set中每一个元素有一个score<br>常见操作：<code>zadd（添加）</code>，<code>zcard（获取长度）</code>，<code>zrem（删除元素）</code>，<code>zremrangebyrank（根据排名删除）</code>，<code>zremrangebyscore（根据成绩删除）</code></p>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/数据库/" rel="tag"><i class="fa fa-tag"></i> 数据库</a>
+          
+            <a href="/tags/面试/" rel="tag"><i class="fa fa-tag"></i> 面试</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/13/关于常见面试题的基础总结（计网篇）/" rel="next" title="关于常见面试题的基础总结（计网篇）">
+                <i class="fa fa-chevron-left"></i> 关于常见面试题的基础总结（计网篇）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+<span class="jiathis_txt">分享到：</span>
+<a class="jiathis_button_fav">收藏夹</a>
+<a class="jiathis_button_copy">复制网址</a>
+<a class="jiathis_button_email">邮件</a>
+<a class="jiathis_button_weixin">微信</a>
+<!-- <a class="jiathis_button_qzone">QQ空间</a>
+<a class="jiathis_button_tqq">腾讯微博</a> -->
+<a class="jiathis_button_douban">豆瓣</a>
+<a class="jiathis_button_share">一键分享</a>
+
+<a href="http://www.jiathis.com/share?uid=2140465" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+  data_track_clickback:true,
+  summary:"",
+  shortUrl:false,
+  hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="随我" />
+            
+              <p class="site-author-name" itemprop="name">随我</p>
+              <p class="site-description motion-element" itemprop="description">用心做自己喜欢的事</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">60</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">40</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+            <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=298 height=52 src="//music.163.com/outchain/player?type=2&id=28617887&auto=0&height=32"></iframe>
+          </nav>
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ZhangJia97" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zhjia97@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/qq_38542085" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-CSDN"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、为什么要使用索引"><span class="nav-number">1.</span> <span class="nav-text">1、为什么要使用索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、如何创建索引"><span class="nav-number">2.</span> <span class="nav-text">2、如何创建索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、普通索引，唯一索引，主键索引，全文索引，组合索引"><span class="nav-number">3.</span> <span class="nav-text">3、普通索引，唯一索引，主键索引，全文索引，组合索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、密集索引，稀疏索引"><span class="nav-number">4.</span> <span class="nav-text">4、密集索引，稀疏索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5、什么是最左前缀原则"><span class="nav-number">5.</span> <span class="nav-text">5、什么是最左前缀原则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6、索引失效的几种情况"><span class="nav-number">6.</span> <span class="nav-text">6、索引失效的几种情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7、主键，复合主键，联合主键"><span class="nav-number">7.</span> <span class="nav-text">7、主键，复合主键，联合主键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8、常见索引的数据结构"><span class="nav-number">8.</span> <span class="nav-text">8、常见索引的数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9、b-树和Hash优缺点"><span class="nav-number">9.</span> <span class="nav-text">9、b+树和Hash优缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10、b数和b-数区别"><span class="nav-number">10.</span> <span class="nav-text">10、b数和b+数区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11、如何定位慢查询"><span class="nav-number">11.</span> <span class="nav-text">11、如何定位慢查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12、索引是建立的越多越好吗"><span class="nav-number">12.</span> <span class="nav-text">12、索引是建立的越多越好吗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13、InnoDB和MyISAM区别以及各自适合场景"><span class="nav-number">13.</span> <span class="nav-text">13、InnoDB和MyISAM区别以及各自适合场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14、数据库不同隔离级别下遇到的问题"><span class="nav-number">14.</span> <span class="nav-text">14、数据库不同隔离级别下遇到的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15、事务的ACID"><span class="nav-number">15.</span> <span class="nav-text">15、事务的ACID</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#16、数据库的优化"><span class="nav-number">16.</span> <span class="nav-text">16、数据库的优化</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#读写分离"><span class="nav-number">16.0.1.</span> <span class="nav-text">读写分离</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#主从复制"><span class="nav-number">16.0.2.</span> <span class="nav-text">主从复制</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#17、InnoDB如何手动设置共享锁和排它锁"><span class="nav-number">17.</span> <span class="nav-text">17、InnoDB如何手动设置共享锁和排它锁</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#如何设置共享锁和排他锁？"><span class="nav-number">17.0.1.</span> <span class="nav-text">如何设置共享锁和排他锁？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#18、redis基础数据结构"><span class="nav-number">18.</span> <span class="nav-text">18、redis基础数据结构</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">随我</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+<br><a href="http://www.miitbeian.gov.cn">豫ICP备18013715号-1</a>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
