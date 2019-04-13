@@ -89,13 +89,13 @@
 <meta property="og:site_name" content="随我的博客">
 <meta property="og:description" content="昨天参加了华为的面试，其实本打算面试前就汇总好发到博客上，但是结果时间比较紧张，就没有把总结好的Word文档的内容发到博客。昨天的华为面试表现个人感觉不好，性格测试也可能挂了，希望能有个好结果吧（日常迷信第一波，希望自己运气好一些，早日手拿心仪offer，虽然已经做好了最坏的打算）">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://suiwo.xyz/images/关于常见面试题的基础总结（计网篇）/00B30835-5B39-4B03-994C-8480EBFCD6B6.png">
-<meta property="og:image" content="http://suiwo.xyz/images/关于常见面试题的基础总结（计网篇）/41B7433B-AC8B-4F56-94B7-7A0F773F8362.png">
-<meta property="og:updated_time" content="2019-04-13T04:03:38.314Z">
+<meta property="og:image" content="http://suiwo.xyz/images/常见面试题的基础总结（计网篇）/00B30835-5B39-4B03-994C-8480EBFCD6B6.png">
+<meta property="og:image" content="http://suiwo.xyz/images/常见面试题的基础总结（计网篇）/41B7433B-AC8B-4F56-94B7-7A0F773F8362.png">
+<meta property="og:updated_time" content="2019-04-13T04:06:25.092Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="常见面试题的基础总结（计网篇）">
 <meta name="twitter:description" content="昨天参加了华为的面试，其实本打算面试前就汇总好发到博客上，但是结果时间比较紧张，就没有把总结好的Word文档的内容发到博客。昨天的华为面试表现个人感觉不好，性格测试也可能挂了，希望能有个好结果吧（日常迷信第一波，希望自己运气好一些，早日手拿心仪offer，虽然已经做好了最坏的打算）">
-<meta name="twitter:image" content="http://suiwo.xyz/images/关于常见面试题的基础总结（计网篇）/00B30835-5B39-4B03-994C-8480EBFCD6B6.png">
+<meta name="twitter:image" content="http://suiwo.xyz/images/常见面试题的基础总结（计网篇）/00B30835-5B39-4B03-994C-8480EBFCD6B6.png">
 
 
 
@@ -421,7 +421,7 @@
 <li>第三次握手: C端收到SYN+ACK数据包，如果ACK number=x+1,将ACK number设置为y+1, ACK=1，向S端发送ACK数据包，C端和S端都进入ESTABLISHED (已连接)状志。</li>
 <li>简述:我连你，你同意，我再连你（成功）。</li>
 </ul>
-<p><img src="/images/关于常见面试题的基础总结（计网篇）/00B30835-5B39-4B03-994C-8480EBFCD6B6.png" alt="这里写图片描述"></p>
+<p><img src="/images/常见面试题的基础总结（计网篇）/00B30835-5B39-4B03-994C-8480EBFCD6B6.png" alt="这里写图片描述"></p>
 <h5 id="为什么要三次握手"><a href="#为什么要三次握手" class="headerlink" title="为什么要三次握手?"></a>为什么要三次握手?</h5><p>为了防止已失效的连接请求报文段突然又传到了服务端，产生错误。同时保证发送双方的消息发送与接收功能都可用。</p>
 <blockquote>
 <ul>
@@ -437,7 +437,7 @@
 <li>第四次挥手: A收到FIN报文,向B发送ACK报文(ACK=y+1) , A进入TIME_WAIT状态，B收到ACK报文后关闭连接，A在2MSL后依然没收到回复，证明B端己关闭，A就可以关闭连接了。</li>
 <li>简述:我要关闭，你同意，你要关闭，我同意你先关闭我再关闭。</li>
 </ul>
-<p><img src="/images/关于常见面试题的基础总结（计网篇）/41B7433B-AC8B-4F56-94B7-7A0F773F8362.png" alt="这里写图片描述"></p>
+<p><img src="/images/常见面试题的基础总结（计网篇）/41B7433B-AC8B-4F56-94B7-7A0F773F8362.png" alt="这里写图片描述"></p>
 <h5 id="为什么TCP要四次挥手"><a href="#为什么TCP要四次挥手" class="headerlink" title="为什么TCP要四次挥手?"></a>为什么TCP要四次挥手?</h5><ul>
 <li>TCP协议是一种面向连接的、可靠的、基于字节流的运输层通信协议。</li>
 <li>TCP是全双工模式，主机1请求关闭连接，不再发送数据了，但是可以接收主机2的数据，主机2不再发送数据了，才算关闭，这样减小了丢失数据的风险。</li>

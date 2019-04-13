@@ -89,10 +89,13 @@
 <meta property="og:site_name" content="随我的博客">
 <meta property="og:description" content="本文对面试中常见的一些Java垃圾回收相关知识点或者问题的总结（日常迷信第四波，希望自己运气好一些，早日手拿心仪offer）">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-04-13T04:03:25.279Z">
+<meta property="og:image" content="http://suiwo.xyz/images/常见面试题的基础总结（数据库篇）/87EED0DF-D176-4236-A8FF-7C19199A26BD.png">
+<meta property="og:image" content="http://suiwo.xyz/images/关于常见面试题的基础总结（数据库篇）/6095F9F4-8194-436E-85BD-526F77C76259.png">
+<meta property="og:updated_time" content="2019-04-13T04:07:55.187Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="常见面试题的基础总结（JavaGC篇）">
 <meta name="twitter:description" content="本文对面试中常见的一些Java垃圾回收相关知识点或者问题的总结（日常迷信第四波，希望自己运气好一些，早日手拿心仪offer）">
+<meta name="twitter:image" content="http://suiwo.xyz/images/常见面试题的基础总结（数据库篇）/87EED0DF-D176-4236-A8FF-7C19199A26BD.png">
 
 
 
@@ -367,7 +370,8 @@
 <li>可达性分析算法，通过判断对象的引用链来决定对象是否可达。如果不可达便被回收。可作为GC ROOT的对象有虚拟机栈中引用的对象、方法区中的常量引用的对象，方法区中的类静态属性引用的对象还有Native方法引用的对象，以及活跃线程的引用对象。</li>
 </ul>
 <hr>
-<h3 id="2、常见的垃圾回收算法"><a href="#2、常见的垃圾回收算法" class="headerlink" title="2、常见的垃圾回收算法"></a>2、常见的垃圾回收算法</h3><ul>
+<h3 id="2、常见的垃圾回收算法"><a href="#2、常见的垃圾回收算法" class="headerlink" title="2、常见的垃圾回收算法"></a>2、常见的垃圾回收算法</h3><p><img src="/images/常见面试题的基础总结（数据库篇）/87EED0DF-D176-4236-A8FF-7C19199A26BD.png" alt="这里写图片描述"></p>
+<ul>
 <li><p>标签-清除算法<br>对存活对象进行标记，清除是从头到尾进行线性遍历，回收不可达的对象内存。问题时容易碎片化。</p>
 </li>
 <li><p>复制算法<br>分为对象面和空闲面。存活的对象从对象面复制到空闲面，同时将对象面的清空。优点是解决了碎片化的问题，顺序分配内存简单高效，适用于对象存活率低的场景。年轻代因为存活较少，所以适合于用复制算法</p>
@@ -434,7 +438,8 @@
 </li>
 </ul>
 <hr>
-<h3 id="7、强引用，软引用，弱引用，虚引用"><a href="#7、强引用，软引用，弱引用，虚引用" class="headerlink" title="7、强引用，软引用，弱引用，虚引用"></a>7、强引用，软引用，弱引用，虚引用</h3><ul>
+<h3 id="7、强引用，软引用，弱引用，虚引用"><a href="#7、强引用，软引用，弱引用，虚引用" class="headerlink" title="7、强引用，软引用，弱引用，虚引用"></a>7、强引用，软引用，弱引用，虚引用</h3><p><img src="/images/关于常见面试题的基础总结（数据库篇）/6095F9F4-8194-436E-85BD-526F77C76259.png" alt="这里写图片描述"></p>
+<ul>
 <li><p>强引用是最常见的引用如： Object object = new Object（）；<br>即使内存不足也不会被回收，但是我们可以通过将对象设置为null来弱化引用，使其被回收。</p>
 </li>
 <li><p>软引用是对象处在有用但是非必须的状态，只有内存不足时才会被回收<br>可以实现高速缓存，使用方法如下：<br>SoftReference <string> softStr = new SoftReference(str);</string></p>
