@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://suiwo.xyz/"/>
-  <updated>2019-04-20T17:06:15.721Z</updated>
+  <updated>2019-04-20T17:12:15.916Z</updated>
   <id>http://suiwo.xyz/</id>
   
   <author>
@@ -15,6 +15,20 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>.DS_Store��将博客搬至CSDN��</title>
+    <link href="http://suiwo.xyz/2019/04/21/%E3%80%8A%E5%B0%86%E5%8D%9A%E5%AE%A2%E6%90%AC%E8%87%B3CSDN%E3%80%8B/"/>
+    <id>http://suiwo.xyz/2019/04/21/《将博客搬至CSDN》/</id>
+    <published>2019-04-20T17:12:15.000Z</published>
+    <updated>2019-04-20T17:12:15.916Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>synchronized及其优化</title>
@@ -491,32 +505,6 @@
       <category term="Java" scheme="http://suiwo.xyz/tags/Java/"/>
     
       <category term="Springboot" scheme="http://suiwo.xyz/tags/Springboot/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Swagger报错:java.lang.NumberFormatException: For input string: &quot;&quot;</title>
-    <link href="http://suiwo.xyz/2018/11/15/Swagger%E6%8A%A5%E9%94%99-java-lang-NumberFormatException-For-input-string/"/>
-    <id>http://suiwo.xyz/2018/11/15/Swagger报错-java-lang-NumberFormatException-For-input-string/</id>
-    <published>2018-11-15T02:17:14.000Z</published>
-    <updated>2018-11-16T14:19:39.039Z</updated>
-    
-    <content type="html"><![CDATA[<h5 id="使用Swagger和Springfox，我们编写了REST-API，我们编写了更多可访问的API。当您运行该应用程序时，您可能会遇到一个奇怪的异常，如下所示："><a href="#使用Swagger和Springfox，我们编写了REST-API，我们编写了更多可访问的API。当您运行该应用程序时，您可能会遇到一个奇怪的异常，如下所示：" class="headerlink" title="使用Swagger和Springfox，我们编写了REST API，我们编写了更多可访问的API。当您运行该应用程序时，您可能会遇到一个奇怪的异常，如下所示："></a>使用Swagger和Springfox，我们编写了REST API，我们编写了更多可访问的API。当您运行该应用程序时，您可能会遇到一个奇怪的异常，如下所示：</h5><p><code>java.lang.NumberFormatException: For input string: &quot;&quot;</code></p><h5 id="这似乎是一个错误，所以你可以忽略那个。如果它让您烦恼，您可以随时更改该文件的日志记录级别，就像他们在该问题中提出的那样。您也可以在application-properties或application-yml中执行此操作："><a href="#这似乎是一个错误，所以你可以忽略那个。如果它让您烦恼，您可以随时更改该文件的日志记录级别，就像他们在该问题中提出的那样。您也可以在application-properties或application-yml中执行此操作：" class="headerlink" title="这似乎是一个错误，所以你可以忽略那个。如果它让您烦恼，您可以随时更改该文件的日志记录级别，就像他们在该问题中提出的那样。您也可以在application.properties或application.yml中执行此操作："></a>这似乎是一个错误，所以你可以忽略那个。如果它让您烦恼，您可以随时更改该文件的日志记录级别，就像他们在该问题中提出的那样。您也可以在<code>application.properties</code>或<code>application.yml</code>中执行此操作：</h5><blockquote><p>application.properties<br><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">logging.level.io.swagger.models.parameters.AbstractSerializableParameter=error</span></span><br></pre></td></tr></table></figure></p></blockquote><blockquote><p>application.yml</p></blockquote><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">logging:</span></span><br><span class="line"><span class="attr">  level:</span></span><br><span class="line">    <span class="string">io.swagger.models.parameters.AbstractSerializableParameter:</span> <span class="string">error</span></span><br></pre></td></tr></table></figure><hr><p>参考文章：<a href="https://g00glen00b.be/documenting-rest-api-swagger-springfox/" target="_blank" rel="noopener">https://g00glen00b.be/documenting-rest-api-swagger-springfox/</a></p><hr>]]></content>
-    
-    <summary type="html">
-    
-      运行Springboot的时候总是会报错，本以为是那里写的有bug结果发现是Swagger出现的问题，只要把log等级修改一下即可
-    
-    </summary>
-    
-      <category term="Springboot" scheme="http://suiwo.xyz/categories/Springboot/"/>
-    
-    
-      <category term="Java" scheme="http://suiwo.xyz/tags/Java/"/>
-    
-      <category term="Springboot" scheme="http://suiwo.xyz/tags/Springboot/"/>
-    
-      <category term="Swagger" scheme="http://suiwo.xyz/tags/Swagger/"/>
     
   </entry>
   
