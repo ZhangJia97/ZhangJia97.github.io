@@ -89,7 +89,7 @@
 <meta property="og:site_name" content="随我的博客">
 <meta property="og:description" content="本文对Lock这一多线程中常见接口进行解析。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-04-20T15:27:08.540Z">
+<meta property="og:updated_time" content="2019-04-20T15:33:35.986Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java中Lock接口解析">
 <meta name="twitter:description" content="本文对Lock这一多线程中常见接口进行解析。">
@@ -464,6 +464,9 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">thread1正在进行读操作</span><br><span class="line">thread1正在进行读操作</span><br><span class="line">thread1正在进行读操作</span><br><span class="line">thread1正在进行读操作</span><br><span class="line">thread1正在进行读操作</span><br><span class="line">thread1读操作完毕</span><br><span class="line">thread3正在进行读操作</span><br><span class="line">thread3正在进行读操作</span><br><span class="line">thread3正在进行读操作</span><br><span class="line">thread3正在进行读操作</span><br><span class="line">thread3正在进行读操作</span><br><span class="line">thread3读操作完毕</span><br><span class="line">thread2正在进行读操作</span><br><span class="line">thread2正在进行读操作</span><br><span class="line">thread2正在进行读操作</span><br><span class="line">thread2正在进行读操作</span><br><span class="line">thread2正在进行读操作</span><br><span class="line">thread2读操作完毕</span><br></pre></td></tr></table></figure>
 <p>从输出结果可以看出，三个线程并没有交替输出，这是因为这里只是读取了5次，但将读取次数i的值改成一个较大的数值如100000时，输出结果就会交替的出现。</p>
 <hr>
+<blockquote>
+<p>看了好多人的博文，在我看来，这个Lock的用处就是可以细化加锁和解锁的操作，使锁操作更加直观，可控</p>
+</blockquote>
 
       
     </div>
