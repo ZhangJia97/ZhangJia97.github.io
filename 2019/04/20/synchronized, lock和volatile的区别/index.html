@@ -81,18 +81,18 @@
 
 
 
-<meta name="description" content="本文对volatile,synchronized和lock这三个多线程编程中经常遇到的关键词或者类进行比较。">
+<meta name="description" content="本文对synchronized, lock和volatile这三个多线程编程中经常遇到的关键词或者类进行比较。">
 <meta name="keywords" content="Java,Java多线程,锁">
 <meta property="og:type" content="article">
-<meta property="og:title" content="volatile,synchronized和lock的区别">
-<meta property="og:url" content="http://suiwo.xyz/2019/04/20/volatile-synchronized和lock的区别/index.html">
+<meta property="og:title" content="synchronized, lock和volatile的区别">
+<meta property="og:url" content="http://suiwo.xyz/2019/04/20/synchronized, lock和volatile的区别/index.html">
 <meta property="og:site_name" content="随我的博客">
-<meta property="og:description" content="本文对volatile,synchronized和lock这三个多线程编程中经常遇到的关键词或者类进行比较。">
+<meta property="og:description" content="本文对synchronized, lock和volatile这三个多线程编程中经常遇到的关键词或者类进行比较。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-04-20T13:54:19.533Z">
+<meta property="og:updated_time" content="2019-04-20T14:11:51.953Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="volatile,synchronized和lock的区别">
-<meta name="twitter:description" content="本文对volatile,synchronized和lock这三个多线程编程中经常遇到的关键词或者类进行比较。">
+<meta name="twitter:title" content="synchronized, lock和volatile的区别">
+<meta name="twitter:description" content="本文对synchronized, lock和volatile这三个多线程编程中经常遇到的关键词或者类进行比较。">
 
 
 
@@ -122,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://suiwo.xyz/2019/04/20/volatile-synchronized和lock的区别/"/>
+  <link rel="canonical" href="http://suiwo.xyz/2019/04/20/synchronized, lock和volatile的区别/"/>
 
 
 
 
 
-  <title>volatile,synchronized和lock的区别 | 随我的博客</title>
+  <title>synchronized, lock和volatile的区别 | 随我的博客</title>
   
 
 
@@ -265,7 +265,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2019/04/20/volatile-synchronized和lock的区别/">
+    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2019/04/20/synchronized, lock和volatile的区别/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="随我">
@@ -282,7 +282,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">volatile,synchronized和lock的区别</h1>
+          <h1 class="post-title" itemprop="name headline">synchronized, lock和volatile的区别</h1>
         
 
         <div class="post-meta">
@@ -341,7 +341,7 @@
 
           
               <div class="post-description">
-                  本文对volatile,synchronized和lock这三个多线程编程中经常遇到的关键词或者类进行比较。
+                  本文对synchronized, lock和volatile这三个多线程编程中经常遇到的关键词或者类进行比较。
               </div>
           
 
@@ -359,6 +359,89 @@
 
       
         <p>参考文章：<a href="https://www.jianshu.com/p/2344a3e68ca9" target="_blank" rel="noopener">https://www.jianshu.com/p/2344a3e68ca9</a><br><a href="https://cloud.tencent.com/developer/article/1369358" target="_blank" rel="noopener">https://cloud.tencent.com/developer/article/1369358</a></p>
+<hr>
+<h3 id="1、synchronized"><a href="#1、synchronized" class="headerlink" title="1、synchronized"></a>1、synchronized</h3><p>Java语言的关键字，可用来给对象和方法或者代码块加锁，当它锁定一个方法或者一个代码块的时候，同一时刻最多只有一个线程执行这段代码。当两个并发线程访问同一个对象object中的这个加锁同步代码块时，一个时间内只能有一个线程得到执行。另一个线程必须等待当前线程执行完这个代码块以后才能执行该代码块。然而，当一个线程访问object的一个加锁代码块时，另一个线程仍然可以访问该object中的非加锁代码块。</p>
+<hr>
+<h3 id="2、Lock"><a href="#2、Lock" class="headerlink" title="2、Lock"></a>2、Lock</h3><p><code>synchronized</code>是Java语言的关键字，是内置特性，而<code>ReentrantLock</code>是一个类(实现<code>Lock</code>接口的类)，通过该类可以实现线程的同步。<br>关于Lock的具体解析可以点击<a href="https://suiwo.xyz/2019/04/20/Java%E4%B8%ADLock%E6%8E%A5%E5%8F%A3%E8%A7%A3%E6%9E%90/">传送门</a></p>
+<hr>
+<h3 id="3、volatile"><a href="#3、volatile" class="headerlink" title="3、volatile"></a>3、volatile</h3><p><code>volatile</code>是一个类型修饰符（type specifier）。它是被设计用来修饰被不同线程访问和修改的变量。确保本条指令不会因编译器的优化而省略，且要求每次直接读值。</p>
+<hr>
+<h3 id="4、synchronized-lock和volatile区别（可见性、原子性、有序性）"><a href="#4、synchronized-lock和volatile区别（可见性、原子性、有序性）" class="headerlink" title="4、synchronized, lock和volatile区别（可见性、原子性、有序性）"></a>4、synchronized, lock和volatile区别（可见性、原子性、有序性）</h3><table>
+<thead>
+<tr>
+<th>属性</th>
+<th>Synchronized</th>
+<th>lock</th>
+<th>volatile</th>
+<th style="text-align:left">解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>可见性</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td style="text-align:left">变量被操作之后，能够快速写入内存，并提醒其他线程重读，加锁是通过一个一个执行保证了可见性。</td>
+</tr>
+<tr>
+<td>原子性</td>
+<td>√</td>
+<td>√</td>
+<td>×</td>
+<td style="text-align:left">做的过程中，不要有相关的来打扰，不相关的我们也不关心，加锁是通过一个一个执行保证了流程不会被相关的打扰。</td>
+</tr>
+<tr>
+<td>有序性</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td style="text-align:left">在Java内存模型中，允许编译器和处理器对指令进行重排序，但是重排序过程不会影响到单线程程序的执行，却会影响到多线程并发执行的正确性。</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="5、synchronized与lock区别"><a href="#5、synchronized与lock区别" class="headerlink" title="5、synchronized与lock区别"></a>5、synchronized与lock区别</h3><table>
+<thead>
+<tr>
+<th>类别</th>
+<th>synchronized</th>
+<th>Lock</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>存在层次</td>
+<td>Java的关键字，在jvm层面上</td>
+<td>是一个类</td>
+</tr>
+<tr>
+<td>锁的释放</td>
+<td>1、以获取锁的线程执行完同步代码，释放锁 2、线程执行发生异常，jvm会让线程释放锁</td>
+<td>在finally中必须释放锁，不然容易造成线程死锁</td>
+</tr>
+<tr>
+<td>锁的获取</td>
+<td>假设A线程获得锁，B线程等待。如果A线程阻塞，B线程会一直等待</td>
+<td>分情况而定，Lock有多个锁获取的方式，具体下面会说道，大致就是可以尝试获得锁，线程可以不用一直等待</td>
+</tr>
+<tr>
+<td>锁状态</td>
+<td>无法判断</td>
+<td>可以判断</td>
+</tr>
+<tr>
+<td>锁类型</td>
+<td>可重入 不可中断 非公平</td>
+<td>可重入 可判断 可公平（两者皆可）</td>
+</tr>
+<tr>
+<td>性能</td>
+<td>少量同步</td>
+<td>大量同步</td>
+</tr>
+</tbody>
+</table>
 
       
     </div>
@@ -479,8 +562,17 @@ var jiathis_config={
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -572,6 +664,22 @@ var jiathis_config={
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、synchronized"><span class="nav-number">1.</span> <span class="nav-text">1、synchronized</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、Lock"><span class="nav-number">2.</span> <span class="nav-text">2、Lock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、volatile"><span class="nav-number">3.</span> <span class="nav-text">3、volatile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、synchronized-lock和volatile区别（可见性、原子性、有序性）"><span class="nav-number">4.</span> <span class="nav-text">4、synchronized, lock和volatile区别（可见性、原子性、有序性）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5、synchronized与lock区别"><span class="nav-number">5.</span> <span class="nav-text">5、synchronized与lock区别</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
