@@ -89,7 +89,7 @@
 <meta property="og:site_name" content="随我的博客">
 <meta property="og:description" content="本文对Lock这一多线程中常见接口进行解析。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-04-20T15:21:15.719Z">
+<meta property="og:updated_time" content="2019-04-20T15:27:08.540Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java中Lock接口解析">
 <meta name="twitter:description" content="本文对Lock这一多线程中常见接口进行解析。">
@@ -430,7 +430,32 @@
 <blockquote>
 <p>synchronized和ReentrantLock都是可重入锁，可重入性举个简单的例子，当一个线程执行到某个synchronized方法时，比如说method1，而在method1中会调用另外一个synchronized方法method2，此时线程不必重新去申请锁，而是可以直接执行方法method2。</p>
 </blockquote>
-<p>上面的响应中断的例子已经地使用到了ReentrantLock，下面来介绍另外一种锁，可重入读写锁ReentrantReadWriteLock，该类实现了ReadWriteLock接口，该接口的源码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ReadWriteLock</span> </span>&#123;</span><br><span class="line">	<span class="function">Lock <span class="title">readLock</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="function">Lock <span class="title">writeLock</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h4 id="ReentrantReadWriteLock简介"><a href="#ReentrantReadWriteLock简介" class="headerlink" title="ReentrantReadWriteLock简介"></a>ReentrantReadWriteLock简介</h4><p>上面的响应中断的例子已经地使用到了ReentrantLock，下面来介绍另外一种锁，可重入读写锁ReentrantReadWriteLock，该类实现了ReadWriteLock接口，该接口的源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ReadWriteLock</span> </span>&#123;</span><br><span class="line">	<span class="function">Lock <span class="title">readLock</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="function">Lock <span class="title">writeLock</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>ReentrantReadWriteLock会使用两把锁来解决问题，一个读锁，一个写锁。</p>
+</blockquote>
+<ul>
+<li><h5 id="线程进入读锁的前提条件："><a href="#线程进入读锁的前提条件：" class="headerlink" title="线程进入读锁的前提条件："></a>线程进入读锁的前提条件：</h5><ol>
+<li>没有其他线程的写锁</li>
+<li>没有写请求，或者有写请求但调用线程和持有锁的线程是同一个线程</li>
+</ol>
+</li>
+<li><h5 id="进入写锁的前提条件："><a href="#进入写锁的前提条件：" class="headerlink" title="进入写锁的前提条件："></a>进入写锁的前提条件：</h5><ol>
+<li>没有其他线程的读锁</li>
+<li>没有其他线程的写锁</li>
+</ol>
+</li>
+<li><h5 id="需要提前了解的概念："><a href="#需要提前了解的概念：" class="headerlink" title="需要提前了解的概念："></a>需要提前了解的概念：</h5><ul>
+<li>锁降级：从写锁变成读锁；</li>
+<li>锁升级：从读锁变成写锁。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>读锁是可以被多线程共享的，写锁是单线程独占的。也就是说写锁的并发限制比读锁高，这可能就是升级/降级名称的来源。</p>
+</blockquote>
 <p>ReadWriteLock接口只有获取读锁和写锁的方法，而ReentrantReadWriteLock是实现了ReadWriteLock接口，接着对其应用场景做简单介绍。</p>
 <hr>
 <h4 id="应用场景："><a href="#应用场景：" class="headerlink" title="应用场景："></a>应用场景：</h4><p>假设一个共享的文件，其属性是可读，如果某个时间有100个线程在同时读取该文件，如果通过synchronized或者Lock来实现线程的同步访问，那么有个问题来了，当这100个线程的某个线程获取到了锁后，其它的线程都要等该线程释放了锁才能进行读操作，这样就会造成系统资源和时间极大的浪费，而ReentrantReadWriteLock正好解决了这个问题。下面给一个简单的例子，并根据代码以及输出结果做简要说明：</p>
@@ -439,25 +464,6 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">thread1正在进行读操作</span><br><span class="line">thread1正在进行读操作</span><br><span class="line">thread1正在进行读操作</span><br><span class="line">thread1正在进行读操作</span><br><span class="line">thread1正在进行读操作</span><br><span class="line">thread1读操作完毕</span><br><span class="line">thread3正在进行读操作</span><br><span class="line">thread3正在进行读操作</span><br><span class="line">thread3正在进行读操作</span><br><span class="line">thread3正在进行读操作</span><br><span class="line">thread3正在进行读操作</span><br><span class="line">thread3读操作完毕</span><br><span class="line">thread2正在进行读操作</span><br><span class="line">thread2正在进行读操作</span><br><span class="line">thread2正在进行读操作</span><br><span class="line">thread2正在进行读操作</span><br><span class="line">thread2正在进行读操作</span><br><span class="line">thread2读操作完毕</span><br></pre></td></tr></table></figure>
 <p>从输出结果可以看出，三个线程并没有交替输出，这是因为这里只是读取了5次，但将读取次数i的值改成一个较大的数值如100000时，输出结果就会交替的出现。</p>
 <hr>
-<h4 id="ReentrantReadWriteLock"><a href="#ReentrantReadWriteLock" class="headerlink" title="ReentrantReadWriteLock"></a>ReentrantReadWriteLock</h4><blockquote>
-<p>ReentrantReadWriteLock会使用两把锁来解决问题，一个读锁，一个写锁。</p>
-</blockquote>
-<h5 id="线程进入读锁的前提条件："><a href="#线程进入读锁的前提条件：" class="headerlink" title="线程进入读锁的前提条件："></a>线程进入读锁的前提条件：</h5><ol>
-<li>没有其他线程的写锁</li>
-<li>没有写请求，或者有写请求但调用线程和持有锁的线程是同一个线程</li>
-</ol>
-<h5 id="进入写锁的前提条件："><a href="#进入写锁的前提条件：" class="headerlink" title="进入写锁的前提条件："></a>进入写锁的前提条件：</h5><ol>
-<li>没有其他线程的读锁</li>
-<li>没有其他线程的写锁</li>
-</ol>
-<p>需要提前了解的概念：</p>
-<ul>
-<li>锁降级：从写锁变成读锁；</li>
-<li>锁升级：从读锁变成写锁。</li>
-</ul>
-<blockquote>
-<p>读锁是可以被多线程共享的，写锁是单线程独占的。也就是说写锁的并发限制比读锁高，这可能就是升级/降级名称的来源。</p>
-</blockquote>
 
       
     </div>
@@ -696,7 +702,7 @@ var jiathis_config={
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、Lock"><span class="nav-number">1.</span> <span class="nav-text">一、Lock</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Lock一般的使用如下："><span class="nav-number">1.1.</span> <span class="nav-text">1.Lock一般的使用如下：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Lock接口的主要方法介绍："><span class="nav-number">1.2.</span> <span class="nav-text">2.Lock接口的主要方法介绍：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-newCondition-方法"><span class="nav-number">1.3.</span> <span class="nav-text">3.newCondition()方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Object和Conditon对应关系如下："><span class="nav-number">1.4.</span> <span class="nav-text">4.Object和Conditon对应关系如下：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、ReadWriteLock"><span class="nav-number">2.</span> <span class="nav-text">二、ReadWriteLock</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#应用场景："><span class="nav-number">2.1.</span> <span class="nav-text">应用场景：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ReentrantReadWriteLock"><span class="nav-number">2.2.</span> <span class="nav-text">ReentrantReadWriteLock</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#线程进入读锁的前提条件："><span class="nav-number">2.2.1.</span> <span class="nav-text">线程进入读锁的前提条件：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#进入写锁的前提条件："><span class="nav-number">2.2.2.</span> <span class="nav-text">进入写锁的前提条件：</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、Lock"><span class="nav-number">1.</span> <span class="nav-text">一、Lock</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Lock一般的使用如下："><span class="nav-number">1.1.</span> <span class="nav-text">1.Lock一般的使用如下：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Lock接口的主要方法介绍："><span class="nav-number">1.2.</span> <span class="nav-text">2.Lock接口的主要方法介绍：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-newCondition-方法"><span class="nav-number">1.3.</span> <span class="nav-text">3.newCondition()方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Object和Conditon对应关系如下："><span class="nav-number">1.4.</span> <span class="nav-text">4.Object和Conditon对应关系如下：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、ReadWriteLock"><span class="nav-number">2.</span> <span class="nav-text">二、ReadWriteLock</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ReentrantReadWriteLock简介"><span class="nav-number">2.1.</span> <span class="nav-text">ReentrantReadWriteLock简介</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#线程进入读锁的前提条件："><span class="nav-number">2.1.1.</span> <span class="nav-text">线程进入读锁的前提条件：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#进入写锁的前提条件："><span class="nav-number">2.1.2.</span> <span class="nav-text">进入写锁的前提条件：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#需要提前了解的概念："><span class="nav-number">2.1.3.</span> <span class="nav-text">需要提前了解的概念：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#应用场景："><span class="nav-number">2.2.</span> <span class="nav-text">应用场景：</span></a></li></ol></li></ol></div>
             
 
           </div>
