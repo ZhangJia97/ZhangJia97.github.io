@@ -91,7 +91,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://suiwo.xyz/images/常见面试题的基础总结（JVM篇）/4DDBB319-AF7D-441C-A222-DEC72ECEE2DA.png">
 <meta property="og:image" content="http://suiwo.xyz/images/常见面试题的基础总结（JVM篇）/98DF0A18-E236-4284-84E8-4C06EB932965.png">
-<meta property="og:updated_time" content="2019-05-05T02:47:56.352Z">
+<meta property="og:updated_time" content="2019-05-05T02:54:59.589Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="常见面试题的基础总结（JVM篇）">
 <meta name="twitter:description" content="本文对面试中常见的一些Java虚拟机相关知识点或者问题的总结">
@@ -434,6 +434,7 @@
 </ul>
 <hr>
 <h3 id="11、元空间、堆、栈、线程独占部分的联系——————内存角度"><a href="#11、元空间、堆、栈、线程独占部分的联系——————内存角度" class="headerlink" title="11、元空间、堆、栈、线程独占部分的联系——————内存角度"></a>11、元空间、堆、栈、线程独占部分的联系——————内存角度</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorld</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sayHello</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Hello"</span> + name);</span><br><span class="line">    &#125;    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> a = <span class="number">1</span>;</span><br><span class="line">        HelloWorld hw = <span class="keyword">new</span> HelloWorld();</span><br><span class="line">        hw.setName(<span class="string">"test"</span>);</span><br><span class="line">        hw.sayHello();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>引用参数<br>本地变量<br>局部变量</p>
 <p><img src="/images/常见面试题的基础总结（JVM篇）/98DF0A18-E236-4284-84E8-4C06EB932965.png" alt="这里写图片描述"></p>
 
       
