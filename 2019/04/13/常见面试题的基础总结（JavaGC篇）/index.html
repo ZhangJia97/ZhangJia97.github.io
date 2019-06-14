@@ -91,7 +91,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://suiwo.xyz/images/常见面试题的基础总结（JavaGC篇）/87EED0DF-D176-4236-A8FF-7C19199A26BD.png">
 <meta property="og:image" content="http://suiwo.xyz/images/常见面试题的基础总结（JavaGC篇）/6095F9F4-8194-436E-85BD-526F77C76259.png">
-<meta property="og:updated_time" content="2019-04-18T01:23:14.585Z">
+<meta property="og:updated_time" content="2019-05-05T07:32:19.665Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="常见面试题的基础总结（JavaGC篇）">
 <meta name="twitter:description" content="本文对面试中常见的一些Java垃圾回收相关知识点或者问题的总结">
@@ -414,22 +414,25 @@
 <li>单核执行效率不如Serial ,在多核下执行才有优势</li>
 </ol>
 <ul>
-<li>CMS收集器(标记清除算法)</li>
-</ul>
+<li><p>CMS收集器(标记清除算法)</p>
+<blockquote>
+<p>垃圾回收线程几乎可以与用户线程同时工作，对停顿比较敏感，并且可以提供更强的硬件，如果JVM中存在较多存在时间较长的对象，更适合使用CMS。其中初始标记和重新标记是需要s-t-w</p>
 <ol>
 <li>初始标记：进入s-t-w</li>
 <li>并发标记：并发追溯标记程序不会停顿</li>
-<li>并发预处理：查找并发标记阶段新生代晋升老年代的对象</li>
+<li>并发预清理：查找并发标记阶段新生代晋升老年代的对象</li>
 <li>重新标记：暂停虚拟机扫描CMS堆中的剩余对象</li>
 <li>并发清理，清理对象，程序不会停顿</li>
 <li>并发重置：重置CMS收集器的数据结构</li>
 </ol>
-<ul>
-<li>G1收集器 Garbage First收集器(复制+标记整理算法)<ul>
-<li>本收集器是将整个Java堆内存划分为多个大小相等的region，然后新生代和老年代不进行了物理隔离。</li>
-<li>特点：</li>
-</ul>
-<ol>
+</blockquote>
+</li>
+<li><p>G1收集器 Garbage First收集器(复制+标记整理算法)</p>
+<blockquote>
+<p>本收集器是将整个Java堆内存划分为多个大小相等的region，然后新生代和老年代不进行了物理隔离。</p>
+</blockquote>
+</li>
+<li>特点：<ol>
 <li>并发和并行</li>
 <li>分带收集</li>
 <li>空间整合</li>
