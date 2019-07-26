@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://suiwo.xyz/"/>
-  <updated>2019-06-14T03:35:48.237Z</updated>
+  <updated>2019-07-26T03:53:05.814Z</updated>
   <id>http://suiwo.xyz/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>关于MySQL日期相关的的一些问题</title>
+    <link href="http://suiwo.xyz/2019/07/26/%E5%85%B3%E4%BA%8EMySQL%E6%97%A5%E6%9C%9F%E7%9B%B8%E5%85%B3%E7%9A%84%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/"/>
+    <id>http://suiwo.xyz/2019/07/26/关于MySQL日期相关的的一些问题/</id>
+    <published>2019-07-26T03:36:27.000Z</published>
+    <updated>2019-07-26T03:53:05.814Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="1-MySQL按照时间范围进行查询的SQL语句"><a href="#1-MySQL按照时间范围进行查询的SQL语句" class="headerlink" title="1.MySQL按照时间范围进行查询的SQL语句"></a>1.MySQL按照时间范围进行查询的SQL语句</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># DATE_FORMAT(字段名, 格式化规则) startDate endDate指代查询范围</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> t_name <span class="keyword">where</span> <span class="keyword">DATE_FORMAT</span>(c_date, <span class="string">'%Y%m%d%H%i'</span>) <span class="keyword">between</span> startDate <span class="keyword">and</span> endDate;</span><br></pre></td></tr></table></figure><h4 id="2-MySQL中的时间的加减-以加法为例"><a href="#2-MySQL中的时间的加减-以加法为例" class="headerlink" title="2.MySQL中的时间的加减(以加法为例)"></a>2.MySQL中的时间的加减(以加法为例)</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">date_add</span>(<span class="string">'2018-06-26 23:59:59'</span>,<span class="built_in">INTERVAL</span> <span class="number">1</span> <span class="keyword">hour</span>);</span><br></pre></td></tr></table></figure><p>输出结果为</p><blockquote><p>‘2018-06-27 0:59:59’</p></blockquote><h4 id="3-较为复杂的MySQL语句，用来查询当前时间一个小时后的时间"><a href="#3-较为复杂的MySQL语句，用来查询当前时间一个小时后的时间" class="headerlink" title="3.较为复杂的MySQL语句，用来查询当前时间一个小时后的时间"></a>3.较为复杂的MySQL语句，用来查询当前时间一个小时后的时间</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 数据格式：201907261251（2019年07月26日12时51分）</span><br><span class="line"><span class="keyword">select</span> <span class="keyword">DATE_FORMAT</span>(<span class="keyword">DATE_ADD</span>(<span class="keyword">DATE_FORMAT</span>(<span class="keyword">now</span>(), <span class="string">'%Y-%m-%d %H:%i'</span>), <span class="built_in">interval</span> <span class="string">'1'</span> <span class="keyword">hour</span>),<span class="string">'%Y%m%d%H%i'</span>);</span><br></pre></td></tr></table></figure><p>更多相关可以参考下面两篇文章<br><a href="https://yq.aliyun.com/articles/526458" target="_blank" rel="noopener">https://yq.aliyun.com/articles/526458</a><br><a href="https://www.cnblogs.com/zhongchi/archive/2010/05/04/1727096.html" target="_blank" rel="noopener">https://www.cnblogs.com/zhongchi/archive/2010/05/04/1727096.html</a></p>]]></content>
+    
+    <summary type="html">
+    
+      本文是今天遇到的一些关于MySQL的Date相关的一些问题
+    
+    </summary>
+    
+      <category term="数据库" scheme="http://suiwo.xyz/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+      <category term="MySQL" scheme="http://suiwo.xyz/tags/MySQL/"/>
+    
+  </entry>
   
   <entry>
     <title>基于编程方式实现条件装配</title>
@@ -499,28 +521,6 @@
       <category term="锁" scheme="http://suiwo.xyz/tags/%E9%94%81/"/>
     
       <category term="事务" scheme="http://suiwo.xyz/tags/%E4%BA%8B%E5%8A%A1/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>计算机网络相关知识总结之HTTP</title>
-    <link href="http://suiwo.xyz/2019/02/01/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93%E4%B9%8BHTTP/"/>
-    <id>http://suiwo.xyz/2019/02/01/计算机网络相关知识总结之HTTP/</id>
-    <published>2019-02-01T07:12:17.000Z</published>
-    <updated>2019-04-13T02:26:26.762Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="1-HTTP简介"><a href="#1-HTTP简介" class="headerlink" title="1.HTTP简介"></a>1.HTTP简介</h4><h6 id="HTTP协议（HyperText-Transfer-Protocol，超文本传输协议）是因特网上应用最为广泛的一种网络传输协议，所有的WWW文件都必须遵守这个标准。HTTP是一个基于TCP-IP通信协议来传递数据（HTML-文件-图片文件-查询结果等）。"><a href="#HTTP协议（HyperText-Transfer-Protocol，超文本传输协议）是因特网上应用最为广泛的一种网络传输协议，所有的WWW文件都必须遵守这个标准。HTTP是一个基于TCP-IP通信协议来传递数据（HTML-文件-图片文件-查询结果等）。" class="headerlink" title="HTTP协议（HyperText Transfer Protocol，超文本传输协议）是因特网上应用最为广泛的一种网络传输协议，所有的WWW文件都必须遵守这个标准。HTTP是一个基于TCP/IP通信协议来传递数据（HTML 文件, 图片文件, 查询结果等）。"></a>HTTP协议（HyperText Transfer Protocol，超文本传输协议）是因特网上应用最为广泛的一种网络传输协议，所有的WWW文件都必须遵守这个标准。HTTP是一个基于TCP/IP通信协议来传递数据（HTML 文件, 图片文件, 查询结果等）。</h6><h6 id="HTTP三点注意事项："><a href="#HTTP三点注意事项：" class="headerlink" title="HTTP三点注意事项："></a>HTTP三点注意事项：</h6><blockquote><p>1.HTTP是无连接：无连接的含义是限制每次连接只处理一个请求。服务器处理完客户的请求，并收到客户的应答后，即断开连接。采用这种方式可以节省传输时间。<br>2.HTTP是媒体独立的：这意味着，只要客户端和服务器知道如何处理的数据内容，任何类型的数据都可以通过HTTP发送。客户端以及服务器指定使用适合的MIME-type内容类型。<br>3.HTTP是无状态：HTTP协议是无状态协议。无状态是指协议对于事务处理没有记忆能力。缺少状态意味着如果后续处理需要前面的信息，则它必须重传，这样可能导致每次连接传送的数据量增大。另一方面，在服务器不需要先前信息时它的应答就较快。</p></blockquote><hr><h4 id="2-HTTP消息结构"><a href="#2-HTTP消息结构" class="headerlink" title="2.HTTP消息结构"></a>2.HTTP消息结构</h4><h6 id="客户端请求消息：客户端发送一个HTTP请求到服务器的请求消息包括以下格式：请求行（request-line）、请求头部（header）、空行和请求数据四个部分组成，下图给出了请求报文的一般格式。"><a href="#客户端请求消息：客户端发送一个HTTP请求到服务器的请求消息包括以下格式：请求行（request-line）、请求头部（header）、空行和请求数据四个部分组成，下图给出了请求报文的一般格式。" class="headerlink" title="客户端请求消息：客户端发送一个HTTP请求到服务器的请求消息包括以下格式：请求行（request line）、请求头部（header）、空行和请求数据四个部分组成，下图给出了请求报文的一般格式。"></a>客户端请求消息：客户端发送一个HTTP请求到服务器的请求消息包括以下格式：请求行（request line）、请求头部（header）、空行和请求数据四个部分组成，下图给出了请求报文的一般格式。</h6><p><img src="/images/计算机网络相关知识总结之HTTP/2012072810301161.png" alt="这里写图片描述"><br><figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GET</span> <span class="string">/hello.txt</span> HTTP/1.1</span><br><span class="line"><span class="attribute">User-Agent</span>: curl/7.16.3 libcurl/7.16.3 OpenSSL/0.9.7l zlib/1.2.3</span><br><span class="line"><span class="attribute">Host</span>: www.example.com</span><br><span class="line"><span class="attribute">Accept-Language</span>: en, mi</span><br></pre></td></tr></table></figure></p><h5 id="服务器响应消息：HTTP响应也由四个部分组成，分别是：状态行、消息报头、空行和响应正文。"><a href="#服务器响应消息：HTTP响应也由四个部分组成，分别是：状态行、消息报头、空行和响应正文。" class="headerlink" title="服务器响应消息：HTTP响应也由四个部分组成，分别是：状态行、消息报头、空行和响应正文。"></a>服务器响应消息：HTTP响应也由四个部分组成，分别是：状态行、消息报头、空行和响应正文。</h5><p><img src="/images/计算机网络相关知识总结之HTTP/httpmessage.jpg" alt="这里写图片描述"></p><figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 <span class="number">200</span> OK</span><br><span class="line"><span class="attribute">Date</span>: Mon, 27 Jul 2009 12:28:53 GMT</span><br><span class="line"><span class="attribute">Server</span>: Apache</span><br><span class="line"><span class="attribute">Last-Modified</span>: Wed, 22 Jul 2009 19:15:56 GMT</span><br><span class="line"><span class="attribute">ETag</span>: "34aa387-d-1568eb00"</span><br><span class="line"><span class="attribute">Accept-Ranges</span>: bytes</span><br><span class="line"><span class="attribute">Content-Length</span>: 51</span><br><span class="line"><span class="attribute">Vary</span>: Accept-Encoding</span><br><span class="line"><span class="attribute">Content-Type</span>: text/plain</span><br></pre></td></tr></table></figure><hr><h4 id="3-HTTP请求方法"><a href="#3-HTTP请求方法" class="headerlink" title="3.HTTP请求方法"></a>3.HTTP请求方法</h4><p>根据HTTP标准，HTTP请求可以使用多种请求方法。<br>HTTP1.0定义了三种请求方法： GET, POST 和 HEAD方法。<br>HTTP1.1新增了五种请求方法：OPTIONS, PUT, DELETE, TRACE 和 CONNECT 方法。</p><table><thead><tr><th>序号</th><th>方法</th><th>描述</th></tr></thead><tbody><tr><td>1</td><td>GET</td><td>请求指定的页面信息，并返回实体主体。</td></tr><tr><td>2</td><td>HEAD</td><td>类似于get请求，只不过返回的响应中没有具体的内容，用于获取报头</td></tr><tr><td>3</td><td>POST</td><td>向指定资源提交数据进行处理请求（例如提交表单或者上传文件）。数据被包含在请求体中。POST请求可能会导致新的资源的建立和/或已有资源的修改。</td></tr><tr><td>4</td><td>PUT</td><td>从客户端向服务器传送的数据取代指定的文档的内容。</td></tr><tr><td>5</td><td>DELETE</td><td>请求服务器删除指定的页面。</td></tr><tr><td>6</td><td>CONNECT</td><td>HTTP/1.1协议中预留给能够将连接改为管道方式的代理服务器。</td></tr><tr><td>7</td><td>OPTIONS</td><td>允许客户端查看服务器的性能。</td></tr><tr><td>8</td><td>TRACE</td><td>回显服务器收到的请求，主要用于测试或诊断。</td></tr></tbody></table><hr><h4 id="4-HTTP常见状态码"><a href="#4-HTTP常见状态码" class="headerlink" title="4.HTTP常见状态码"></a>4.HTTP常见状态码</h4><table><thead><tr><th>状态码</th><th>状态码英文名称</th><th>描述</th></tr></thead><tbody><tr><td>200</td><td>OK</td><td>正常返回信息</td></tr><tr><td>400</td><td>Bad Request</td><td>客户端请求有语法错误，不能被服务器所理解</td></tr><tr><td>401</td><td>Unauthorized</td><td>请求未经授权，这个状态代码必须和WWW-Authenticate报头域- - 起使用</td></tr><tr><td>403</td><td>Forbidden</td><td>服务器收到请求，但是拒绝提供服务</td></tr><tr><td>404</td><td>Not Found</td><td>请求资源不存在，eg, 输入了错误的URL</td></tr><tr><td>500</td><td>Internal Server Error</td><td>服务器发生不可预期的错误</td></tr><tr><td>503</td><td>Server Unavailable</td><td>服务器当前不能处理客户端的请求，一段时间后可能恢复正常</td></tr></tbody></table><hr><h4 id="5-HTTP中POST与GET的区别"><a href="#5-HTTP中POST与GET的区别" class="headerlink" title="5.HTTP中POST与GET的区别"></a>5.HTTP中POST与GET的区别</h4><p>从三个层面来解答：</p><blockquote><p>1.从Http报文层面: GET将请求信息放在URL , POST放在报文体中<br>2.数据库层面: CET符合幂等性和安全性, POST不符合<br>3.其他层面: GET可以被缓存、被存储,而POST不行</p></blockquote>]]></content>
-    
-    <summary type="html">
-    
-      本文是听了慕课计网相关课程后参考了菜鸟教程进行的总结
-    
-    </summary>
-    
-      <category term="计算机网络" scheme="http://suiwo.xyz/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
-    
-    
-      <category term="计算机网络" scheme="http://suiwo.xyz/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
     
   </entry>
   
