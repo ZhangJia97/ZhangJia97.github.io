@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://suiwo.xyz/2019/07/31/springboot%E9%9B%86%E6%88%90Log4j2/</loc>
+    
+    <lastmod>2019-07-31T09:18:05.841Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://suiwo.xyz/2019/07/25/springboot%E9%9B%86%E6%88%90Redis/</loc>
     
     <lastmod>2019-07-31T09:01:54.895Z</lastmod>
