@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="非关系型数据库,redis,异步队列," />
+  <meta name="keywords" content="非关系型数据库,Redis,异步队列," />
 
 
 
@@ -82,20 +82,20 @@
 
 
 <meta name="description" content="本文是在看了慕课相关课程后对redis如何实现异步队列进行的相关总结">
-<meta name="keywords" content="非关系型数据库,redis,异步队列">
+<meta name="keywords" content="非关系型数据库,Redis,异步队列">
 <meta property="og:type" content="article">
-<meta property="og:title" content="redis如何实现异步队列">
-<meta property="og:url" content="http://suiwo.xyz/2019/02/14/redis如何实现异步队列/index.html">
+<meta property="og:title" content="Redis如何实现异步队列">
+<meta property="og:url" content="http://suiwo.xyz/2019/02/14/Redis如何实现异步队列/index.html">
 <meta property="og:site_name" content="随我的博客">
 <meta property="og:description" content="本文是在看了慕课相关课程后对redis如何实现异步队列进行的相关总结">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://suiwo.xyz/images/redis如何实现异步队列/4599D9D7-8657-4473-BFAF-9AAE44487A04.png">
-<meta property="og:image" content="http://suiwo.xyz/images/redis如何实现异步队列/83848910-41A0-46B3-B876-A2CB6E8E5B07.png">
-<meta property="og:updated_time" content="2019-02-14T02:04:58.398Z">
+<meta property="og:image" content="http://suiwo.xyz/images/Redis如何实现异步队列/4599D9D7-8657-4473-BFAF-9AAE44487A04.png">
+<meta property="og:image" content="http://suiwo.xyz/images/Redis如何实现异步队列/83848910-41A0-46B3-B876-A2CB6E8E5B07.png">
+<meta property="og:updated_time" content="2019-08-07T08:40:24.898Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="redis如何实现异步队列">
+<meta name="twitter:title" content="Redis如何实现异步队列">
 <meta name="twitter:description" content="本文是在看了慕课相关课程后对redis如何实现异步队列进行的相关总结">
-<meta name="twitter:image" content="http://suiwo.xyz/images/redis如何实现异步队列/4599D9D7-8657-4473-BFAF-9AAE44487A04.png">
+<meta name="twitter:image" content="http://suiwo.xyz/images/Redis如何实现异步队列/4599D9D7-8657-4473-BFAF-9AAE44487A04.png">
 
 
 
@@ -125,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="http://suiwo.xyz/2019/02/14/redis如何实现异步队列/"/>
+  <link rel="canonical" href="http://suiwo.xyz/2019/02/14/Redis如何实现异步队列/"/>
 
 
 
 
 
-  <title>redis如何实现异步队列 | 随我的博客</title>
+  <title>Redis如何实现异步队列 | 随我的博客</title>
   
 
 
@@ -268,7 +268,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2019/02/14/redis如何实现异步队列/">
+    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2019/02/14/Redis如何实现异步队列/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="随我">
@@ -285,7 +285,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">redis如何实现异步队列</h1>
+          <h1 class="post-title" itemprop="name headline">Redis如何实现异步队列</h1>
         
 
         <div class="post-meta">
@@ -367,8 +367,8 @@
 <li>发送者(pub)发送消息,订阅者(sub)接收消息</li>
 <li>订阅者可以订阅任意数量的频道<br>hex</li>
 </ul>
-<p><img src="/images/redis如何实现异步队列/4599D9D7-8657-4473-BFAF-9AAE44487A04.png" alt="这里写图片描述"></p>
-<h5 id="下面我们就演示一下，首先我们打开三个终端，两个作为接收者，一个作为发送者，由下图可见当我们发送消息时只有指定的订阅者可以获取到消息"><a href="#下面我们就演示一下，首先我们打开三个终端，两个作为接收者，一个作为发送者，由下图可见当我们发送消息时只有指定的订阅者可以获取到消息" class="headerlink" title="下面我们就演示一下，首先我们打开三个终端，两个作为接收者，一个作为发送者，由下图可见当我们发送消息时只有指定的订阅者可以获取到消息"></a>下面我们就演示一下，首先我们打开三个终端，两个作为接收者，一个作为发送者，由下图可见当我们发送消息时只有指定的订阅者可以获取到消息</h5><p><img src="/images/redis如何实现异步队列/83848910-41A0-46B3-B876-A2CB6E8E5B07.png" alt="这里写图片描述"></p>
+<p><img src="/images/Redis如何实现异步队列/4599D9D7-8657-4473-BFAF-9AAE44487A04.png" alt="这里写图片描述"></p>
+<h5 id="下面我们就演示一下，首先我们打开三个终端，两个作为接收者，一个作为发送者，由下图可见当我们发送消息时只有指定的订阅者可以获取到消息"><a href="#下面我们就演示一下，首先我们打开三个终端，两个作为接收者，一个作为发送者，由下图可见当我们发送消息时只有指定的订阅者可以获取到消息" class="headerlink" title="下面我们就演示一下，首先我们打开三个终端，两个作为接收者，一个作为发送者，由下图可见当我们发送消息时只有指定的订阅者可以获取到消息"></a>下面我们就演示一下，首先我们打开三个终端，两个作为接收者，一个作为发送者，由下图可见当我们发送消息时只有指定的订阅者可以获取到消息</h5><p><img src="/images/Redis如何实现异步队列/83848910-41A0-46B3-B876-A2CB6E8E5B07.png" alt="这里写图片描述"></p>
 <h2 id="三-pub-sub的缺点"><a href="#三-pub-sub的缺点" class="headerlink" title="三.pub/sub的缺点"></a>三.pub/sub的缺点</h2><h5 id="消息的发布是无状态的-无法保证可达，若订阅者在发送者发布消息期间下线，之后我们再上线将无法接受到刚才发送的消息，解决办法就是使用消息队列"><a href="#消息的发布是无状态的-无法保证可达，若订阅者在发送者发布消息期间下线，之后我们再上线将无法接受到刚才发送的消息，解决办法就是使用消息队列" class="headerlink" title="消息的发布是无状态的,无法保证可达，若订阅者在发送者发布消息期间下线，之后我们再上线将无法接受到刚才发送的消息，解决办法就是使用消息队列"></a>消息的发布是无状态的,无法保证可达，若订阅者在发送者发布消息期间下线，之后我们再上线将无法接受到刚才发送的消息，解决办法就是使用消息队列</h5>
       
     </div>
@@ -388,7 +388,7 @@
           
             <a href="/tags/非关系型数据库/" rel="tag"><i class="fa fa-tag"></i> 非关系型数据库</a>
           
-            <a href="/tags/redis/" rel="tag"><i class="fa fa-tag"></i> redis</a>
+            <a href="/tags/Redis/" rel="tag"><i class="fa fa-tag"></i> Redis</a>
           
             <a href="/tags/异步队列/" rel="tag"><i class="fa fa-tag"></i> 异步队列</a>
           
@@ -403,8 +403,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/02/13/redis如何实现分布式锁/" rel="next" title="redis如何实现分布式锁">
-                <i class="fa fa-chevron-left"></i> redis如何实现分布式锁
+              <a href="/2019/02/13/Redis如何实现分布式锁/" rel="next" title="Redis如何实现分布式锁">
+                <i class="fa fa-chevron-left"></i> Redis如何实现分布式锁
               </a>
             
           </div>
@@ -522,7 +522,7 @@ var jiathis_config={
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">77</span>
+                  <span class="site-state-item-count">78</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
