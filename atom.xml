@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://suiwo.xyz/"/>
-  <updated>2019-08-07T09:02:18.470Z</updated>
+  <updated>2019-08-08T08:12:53.657Z</updated>
   <id>http://suiwo.xyz/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Java遍历一个类的所有属性和值</title>
+    <link href="http://suiwo.xyz/2019/08/08/Java%E9%81%8D%E5%8E%86%E4%B8%80%E4%B8%AA%E7%B1%BB%E7%9A%84%E6%89%80%E6%9C%89%E5%B1%9E%E6%80%A7%E5%92%8C%E5%80%BC/"/>
+    <id>http://suiwo.xyz/2019/08/08/Java遍历一个类的所有属性和值/</id>
+    <published>2019-08-08T08:11:38.000Z</published>
+    <updated>2019-08-08T08:12:53.657Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p>今天在尝试使用Java反射来实现Java导出数据库数据到Excel中，然后在尝试获取类所有的属性的时候，由于对于反射的不熟练，然后找到了一篇博文，所以在此进行记录，以供未来参考，原博文地址:<br><a href="https://blog.csdn.net/ztx114/article/details/78274314" target="_blank" rel="noopener">https://blog.csdn.net/ztx114/article/details/78274314</a></p></blockquote><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">bianLi</span><span class="params">(Object obj)</span></span>&#123;</span><br><span class="line"> Field[] fields = obj.getClass().getDeclaredFields();</span><br><span class="line"> <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span> , len = fields.length; i &lt; len; i++) &#123;</span><br><span class="line"> <span class="comment">// 对于每个属性，获取属性名</span></span><br><span class="line"> String varName = fields[i].getName();</span><br><span class="line"> <span class="keyword">try</span> &#123;</span><br><span class="line"> <span class="comment">// 获取原来的访问控制权限</span></span><br><span class="line"> <span class="keyword">boolean</span> accessFlag = fields[i].isAccessible();</span><br><span class="line"> <span class="comment">// 修改访问控制权限</span></span><br><span class="line"> fields[i].setAccessible(<span class="keyword">true</span>);</span><br><span class="line"> <span class="comment">// 获取在对象f中属性fields[i]对应的对象中的变量</span></span><br><span class="line"> Object o;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">o = fields[i].get(obj);</span><br><span class="line">System.err.println(<span class="string">"传入的对象中包含一个如下的变量："</span> + varName + <span class="string">" = "</span> + o);</span><br><span class="line">&#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</span><br><span class="line"><span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">e.printStackTrace();</span><br><span class="line">&#125;</span><br><span class="line"> <span class="comment">// 恢复访问控制权限</span></span><br><span class="line"> fields[i].setAccessible(accessFlag);</span><br><span class="line"> &#125; <span class="keyword">catch</span> (IllegalArgumentException ex) &#123;</span><br><span class="line"> ex.printStackTrace();</span><br><span class="line"> &#125; </span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      今天在尝试使用Java反射来实现Java导出数据库数据到Excel中，然后在尝试获取类所有的属性的时候，由于对于反射的不熟练，然后找到了一篇博文，所以在此进行记录，以供未来参考。
+    
+    </summary>
+    
+      <category term="Java" scheme="http://suiwo.xyz/categories/Java/"/>
+    
+    
+      <category term="Java" scheme="http://suiwo.xyz/tags/Java/"/>
+    
+      <category term="反射" scheme="http://suiwo.xyz/tags/%E5%8F%8D%E5%B0%84/"/>
+    
+  </entry>
   
   <entry>
     <title>RabbitMQ事务以及confirm机制</title>
@@ -84,9 +108,9 @@
       <category term="Springboot" scheme="http://suiwo.xyz/categories/Springboot/"/>
     
     
-      <category term="Springboot" scheme="http://suiwo.xyz/tags/Springboot/"/>
-    
       <category term="RabbitMQ" scheme="http://suiwo.xyz/tags/RabbitMQ/"/>
+    
+      <category term="Springboot" scheme="http://suiwo.xyz/tags/Springboot/"/>
     
   </entry>
   
@@ -138,9 +162,9 @@
     
       <category term="Java" scheme="http://suiwo.xyz/tags/Java/"/>
     
-      <category term="Springboot" scheme="http://suiwo.xyz/tags/Springboot/"/>
-    
       <category term="Redis" scheme="http://suiwo.xyz/tags/Redis/"/>
+    
+      <category term="Springboot" scheme="http://suiwo.xyz/tags/Springboot/"/>
     
   </entry>
   
@@ -493,30 +517,6 @@
       <category term="Java" scheme="http://suiwo.xyz/tags/Java/"/>
     
       <category term="Java多线程" scheme="http://suiwo.xyz/tags/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>常见面试题的基础总结（JavaGC篇）</title>
-    <link href="http://suiwo.xyz/2019/04/13/%E5%B8%B8%E8%A7%81%E9%9D%A2%E8%AF%95%E9%A2%98%E7%9A%84%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93%EF%BC%88JavaGC%E7%AF%87%EF%BC%89/"/>
-    <id>http://suiwo.xyz/2019/04/13/常见面试题的基础总结（JavaGC篇）/</id>
-    <published>2019-04-13T03:53:03.000Z</published>
-    <updated>2019-05-05T07:32:19.000Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote><p>由于这些内容都是比较早之前进行的整理的，所以有的部分是参考了他人的博文，但是由于是之前找的，所以具体的博文链接找不到了，如果原博主看到这个文章或者有人知道其中部分内容的原博文，请与我联系，我将加上原链接，谢谢</p></blockquote><hr><h3 id="1、Java的垃圾回收判断对象是否为垃圾有两种算法。"><a href="#1、Java的垃圾回收判断对象是否为垃圾有两种算法。" class="headerlink" title="1、Java的垃圾回收判断对象是否为垃圾有两种算法。"></a>1、Java的垃圾回收判断对象是否为垃圾有两种算法。</h3><ul><li>引用计数算法，本算法就是通过引用计数器来统计，当被引用+1，完成引用-1.任何对象实例引用为0时就可以当做垃圾收集，优点是执行效率高，问题是循环引用会出现问题。</li><li>可达性分析算法，通过判断对象的引用链来决定对象是否可达。如果不可达便被回收。可作为GC ROOT的对象有虚拟机栈中引用的对象、方法区中的常量引用的对象，方法区中的类静态属性引用的对象还有Native方法引用的对象，以及活跃线程的引用对象。</li></ul><hr><h3 id="2、常见的垃圾回收算法"><a href="#2、常见的垃圾回收算法" class="headerlink" title="2、常见的垃圾回收算法"></a>2、常见的垃圾回收算法</h3><p><img src="/images/常见面试题的基础总结（JavaGC篇）/87EED0DF-D176-4236-A8FF-7C19199A26BD.png" alt="这里写图片描述"></p><ul><li><p>标签-清除算法<br>对存活对象进行标记，清除是从头到尾进行线性遍历，回收不可达的对象内存。问题时容易碎片化。</p></li><li><p>复制算法<br>分为对象面和空闲面。存活的对象从对象面复制到空闲面，同时将对象面的清空。优点是解决了碎片化的问题，顺序分配内存简单高效，适用于对象存活率低的场景。年轻代因为存活较少，所以适合于用复制算法</p></li><li><p>标记-整理算法<br>标记就是从GC ROOT进行扫描对存活对象进行标记，然后移动所有存活的对象，且按照内存地址依次有序排列，然后将末端的内存地址以后的内存都进行回收。有点是避免了内存的不连续行，且不用进行两块内存互换，适用于存活率高德场景。</p></li><li><p>分代收集算法<br>分代收集算法就是多种算法的集合，其中年轻代使用复制算法，老年代使用标记整理算法。JDK7之前有新生代，老年代和永久代。JDK7之后只有新生代和老年代没有了新生代。</p><ul><li>年轻代分为eden区和两个servivor区，当进行垃圾回收时，存活的对象计数会加一，同时复制到servivor中的from区，然后将eden区清空，当第二次进行GC时eden区同理，但是servivor区仍然会计数加1然后复制到另一个servivor中。直到某个存活对象的技术超过某个值然后该对象进入老年代。</li><li>老年代常用的是标记-清除和标记整理算法,其中新生代老年代一半了比例为1:2</li></ul></li></ul><hr><h3 id="3、对于新生代如何晋升老年代有三种情况："><a href="#3、对于新生代如何晋升老年代有三种情况：" class="headerlink" title="3、对于新生代如何晋升老年代有三种情况："></a>3、对于新生代如何晋升老年代有三种情况：</h3><ul><li>经历了多次MinorGC后仍然存活</li><li>survivor区中存放不下大对象</li><li>新生成的大对象</li></ul><hr><h3 id="4、常见得到调优参数"><a href="#4、常见得到调优参数" class="headerlink" title="4、常见得到调优参数"></a>4、常见得到调优参数</h3><ul><li><code>-XX:SurvivorRatio</code> : Eden和Survivor的比值,默认8 : 1</li><li><code>-XX:NewRatio</code>: 老年代和年轻代内存大小的比例</li><li><code>-XX:MaxTenuringThreshold</code>:对象从年轻代晋升到老生代经过GC次数的最大阈值</li></ul><hr><h3 id="5、触发GC的条件为"><a href="#5、触发GC的条件为" class="headerlink" title="5、触发GC的条件为"></a>5、触发GC的条件为</h3><p>老年代的FULL GC还有MajorGC比年轻代的MinorGC慢，但是执行频率低。</p><ul><li>老年代空间不足</li><li>CMS GC后老年代不足</li><li>年轻代晋升老年代的空间大于剩余空间</li><li>调用了<code>System.gs()</code></li></ul><hr><h3 id="6、常见垃圾收集器"><a href="#6、常见垃圾收集器" class="headerlink" title="6、常见垃圾收集器"></a>6、常见垃圾收集器</h3><ul><li>ParNew收集器( -XX:+UseParNewGC ,复制算法)</li></ul><ol><li>多线程收集,其余的行为、特点和Serial收集器一样</li><li>单核执行效率不如Serial ,在多核下执行才有优势</li></ol><ul><li><p>CMS收集器(标记清除算法)</p><blockquote><p>垃圾回收线程几乎可以与用户线程同时工作，对停顿比较敏感，并且可以提供更强的硬件，如果JVM中存在较多存在时间较长的对象，更适合使用CMS。其中初始标记和重新标记是需要s-t-w</p><ol><li>初始标记：进入s-t-w</li><li>并发标记：并发追溯标记程序不会停顿</li><li>并发预清理：查找并发标记阶段新生代晋升老年代的对象</li><li>重新标记：暂停虚拟机扫描CMS堆中的剩余对象</li><li>并发清理，清理对象，程序不会停顿</li><li>并发重置：重置CMS收集器的数据结构</li></ol></blockquote></li><li><p>G1收集器 Garbage First收集器(复制+标记整理算法)</p><blockquote><p>本收集器是将整个Java堆内存划分为多个大小相等的region，然后新生代和老年代不进行了物理隔离。</p></blockquote></li><li>特点：<ol><li>并发和并行</li><li>分带收集</li><li>空间整合</li><li>可预测的停顿</li></ol></li></ul><hr><h3 id="7、强引用，软引用，弱引用，虚引用"><a href="#7、强引用，软引用，弱引用，虚引用" class="headerlink" title="7、强引用，软引用，弱引用，虚引用"></a>7、强引用，软引用，弱引用，虚引用</h3><p><img src="/images/常见面试题的基础总结（JavaGC篇）/6095F9F4-8194-436E-85BD-526F77C76259.png" alt="这里写图片描述"></p><ul><li><p>强引用是最常见的引用如： Object object = new Object（）；<br>即使内存不足也不会被回收，但是我们可以通过将对象设置为null来弱化引用，使其被回收。</p></li><li><p>软引用是对象处在有用但是非必须的状态，只有内存不足时才会被回收<br>可以实现高速缓存，使用方法如下：<br>SoftReference <string> softStr = new SoftReference(str);</string></p></li><li><p>弱引用比软引用更弱一下，然后GC时会被回收，适用于偶尔使用但是不影响垃圾收集的对象。</p></li></ul><hr><h3 id="8、其他的常见概念"><a href="#8、其他的常见概念" class="headerlink" title="8、其他的常见概念"></a>8、其他的常见概念</h3><h5 id="Stop-the-world"><a href="#Stop-the-world" class="headerlink" title="Stop-the-world"></a>Stop-the-world</h5><ul><li>在GC过程中会有Stop-the-world也就是执行GC时虚拟机会停止应用程序的执行，而且是在所有GC算法中都会发生，多数的GC通过减少s-t-w发生时间来提高程序性能</li></ul><h5 id="SafePoint"><a href="#SafePoint" class="headerlink" title="SafePoint"></a>SafePoint</h5><ul><li>分析过程中对象引用关系不会改变的点，常见的点有方法调用，循环跳转，异常跳转。安全点数量应该适中，过多过少都不好。</li></ul><h5 id="JVM有两种运行模式Server和Client"><a href="#JVM有两种运行模式Server和Client" class="headerlink" title="JVM有两种运行模式Server和Client"></a>JVM有两种运行模式Server和Client</h5><ul><li>常见两个模式server启动慢但是启动后性能更好，因为server底层是一个更大的虚拟机,可以使用<code>java -version</code>来查询是哪一种模式下的</li></ul><h5 id="Object的finalize方法"><a href="#Object的finalize方法" class="headerlink" title="Object的finalize方法"></a>Object的finalize方法</h5><ul><li>Object的finalize方法是不确定的，不一定会执行。 </li></ul>]]></content>
-    
-    <summary type="html">
-    
-      本文对面试中常见的一些Java垃圾回收相关知识点或者问题的总结
-    
-    </summary>
-    
-      <category term="Java" scheme="http://suiwo.xyz/categories/Java/"/>
-    
-    
-      <category term="Java" scheme="http://suiwo.xyz/tags/Java/"/>
-    
-      <category term="Java垃圾回收" scheme="http://suiwo.xyz/tags/Java%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/"/>
     
   </entry>
   
