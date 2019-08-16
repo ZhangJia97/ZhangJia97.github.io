@@ -84,14 +84,14 @@
 <meta name="description" content="正常情况下，如果消息经过交换器进入队列就可以完成消息的持久化，但如果消息在没有到达broker之前出现意外，那就造成消息丢失，有没有办法可以解决这个问题？">
 <meta name="keywords" content="RabbitMQ,事务">
 <meta property="og:type" content="article">
-<meta property="og:title" content="RabbitMQ事务以及confirm机制">
-<meta property="og:url" content="http://suiwo.xyz/2019/08/07/RabbitMQ事务以及confirm机制/index.html">
+<meta property="og:title" content="RabbitMQ事务,confirm机制以及return机制">
+<meta property="og:url" content="http://suiwo.xyz/2019/08/07/RabbitMQ事务,confirm机制以及return机制/index.html">
 <meta property="og:site_name" content="随我的博客">
 <meta property="og:description" content="正常情况下，如果消息经过交换器进入队列就可以完成消息的持久化，但如果消息在没有到达broker之前出现意外，那就造成消息丢失，有没有办法可以解决这个问题？">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-07T09:02:18.470Z">
+<meta property="og:updated_time" content="2019-08-16T07:54:38.706Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="RabbitMQ事务以及confirm机制">
+<meta name="twitter:title" content="RabbitMQ事务,confirm机制以及return机制">
 <meta name="twitter:description" content="正常情况下，如果消息经过交换器进入队列就可以完成消息的持久化，但如果消息在没有到达broker之前出现意外，那就造成消息丢失，有没有办法可以解决这个问题？">
 
 
@@ -122,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://suiwo.xyz/2019/08/07/RabbitMQ事务以及confirm机制/"/>
+  <link rel="canonical" href="http://suiwo.xyz/2019/08/07/RabbitMQ事务,confirm机制以及return机制/"/>
 
 
 
 
 
-  <title>RabbitMQ事务以及confirm机制 | 随我的博客</title>
+  <title>RabbitMQ事务,confirm机制以及return机制 | 随我的博客</title>
   
 
 
@@ -265,7 +265,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2019/08/07/RabbitMQ事务以及confirm机制/">
+    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2019/08/07/RabbitMQ事务,confirm机制以及return机制/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="随我">
@@ -282,7 +282,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">RabbitMQ事务以及confirm机制</h1>
+          <h1 class="post-title" itemprop="name headline">RabbitMQ事务,confirm机制以及return机制</h1>
         
 
         <div class="post-meta">
@@ -392,6 +392,10 @@
 <blockquote>
 <p>可以看出，代码是异步执行的，消息确认有可能是批量确认的，是否批量确认在于返回的multiple的参数，此参数为bool值，如果true表示批量执行了deliveryTag这个值以前的所有消息，如果为false的话表示单条确认。</p>
 </blockquote>
+<h3 id="二、Return消息机制"><a href="#二、Return消息机制" class="headerlink" title="二、Return消息机制"></a>二、Return消息机制</h3><p>Return Listener用于处理一些不可路由的消息!<br>我们的消息生产者，通过指定一个Exchange 和Routingkey,把消息送达到某一个队列中去，然后我们的消费者监听队列，进行消费处理操作!</p>
+<p>在基础API中有一个关键的配置项:<br>Mandatory:如果为true，则监听器会接收到路由不可达的消息，然后进行后续处理，如果为false,那么broker端自动删除该消息!</p>
+<p>使用方式是在channel中添加一个ReturnListener</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">channel.addReturnListener (<span class="keyword">new</span> ReturnListener () &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleReturn</span> <span class="params">(<span class="keyword">int</span> replyCode, string replyText, String exchange, String routingKey,</span></span></span><br><span class="line"><span class="function"><span class="params">        AMQP.BasicProperties properties,<span class="keyword">byte</span>[] body)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="comment">// 这里是业务代码</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 <h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><p>Confirm批量确定和Confirm异步模式性能相差不大，Confirm模式要比事务快10倍左右。</p>
 
       
@@ -627,7 +631,7 @@ var jiathis_config={
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#事务使用"><span class="nav-number">1.</span> <span class="nav-text">事务使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#尝试代码实现："><span class="nav-number">1.1.</span> <span class="nav-text">尝试代码实现：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#客户端与rabbitMQ的交互流程如下："><span class="nav-number">1.2.</span> <span class="nav-text">客户端与rabbitMQ的交互流程如下：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#消费者模式使用事务"><span class="nav-number">1.3.</span> <span class="nav-text">消费者模式使用事务</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、Confirm发送方确认模式"><span class="nav-number">2.</span> <span class="nav-text">二、Confirm发送方确认模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-普通发送方确认"><span class="nav-number">2.1.</span> <span class="nav-text">1.普通发送方确认</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-批量确认模式"><span class="nav-number">2.2.</span> <span class="nav-text">2.批量确认模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-异步监听发送方确认模式"><span class="nav-number">2.3.</span> <span class="nav-text">3.异步监听发送方确认模式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结："><span class="nav-number">3.</span> <span class="nav-text">总结：</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#事务使用"><span class="nav-number">1.</span> <span class="nav-text">事务使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#尝试代码实现："><span class="nav-number">1.1.</span> <span class="nav-text">尝试代码实现：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#客户端与rabbitMQ的交互流程如下："><span class="nav-number">1.2.</span> <span class="nav-text">客户端与rabbitMQ的交互流程如下：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#消费者模式使用事务"><span class="nav-number">1.3.</span> <span class="nav-text">消费者模式使用事务</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、Confirm发送方确认模式"><span class="nav-number">2.</span> <span class="nav-text">二、Confirm发送方确认模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-普通发送方确认"><span class="nav-number">2.1.</span> <span class="nav-text">1.普通发送方确认</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-批量确认模式"><span class="nav-number">2.2.</span> <span class="nav-text">2.批量确认模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-异步监听发送方确认模式"><span class="nav-number">2.3.</span> <span class="nav-text">3.异步监听发送方确认模式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、Return消息机制"><span class="nav-number">3.</span> <span class="nav-text">二、Return消息机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结："><span class="nav-number">4.</span> <span class="nav-text">总结：</span></a></li></ol></div>
             
 
           </div>

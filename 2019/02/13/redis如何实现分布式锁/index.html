@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="非关系型数据库,Redis,异步队列," />
+  <meta name="keywords" content="非关系型数据库,Redis,锁," />
 
 
 
@@ -81,21 +81,18 @@
 
 
 
-<meta name="description" content="本文是在看了慕课相关课程后对redis如何实现异步队列进行的相关总结">
-<meta name="keywords" content="非关系型数据库,Redis,异步队列">
+<meta name="description" content="本文是在看了慕课相关课程后对redis如何实现分布式锁进行的相关总结">
+<meta name="keywords" content="非关系型数据库,Redis,锁">
 <meta property="og:type" content="article">
-<meta property="og:title" content="redis如何实现异步队列">
-<meta property="og:url" content="http://suiwo.xyz/2019/02/14/redis如何实现异步队列/index.html">
+<meta property="og:title" content="redis如何实现分布式锁">
+<meta property="og:url" content="http://suiwo.xyz/2019/02/13/redis如何实现分布式锁/index.html">
 <meta property="og:site_name" content="随我的博客">
-<meta property="og:description" content="本文是在看了慕课相关课程后对redis如何实现异步队列进行的相关总结">
+<meta property="og:description" content="本文是在看了慕课相关课程后对redis如何实现分布式锁进行的相关总结">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://suiwo.xyz/images/redis如何实现异步队列/4599D9D7-8657-4473-BFAF-9AAE44487A04.png">
-<meta property="og:image" content="http://suiwo.xyz/images/redis如何实现异步队列/83848910-41A0-46B3-B876-A2CB6E8E5B07.png">
-<meta property="og:updated_time" content="2019-08-14T02:47:52.576Z">
+<meta property="og:updated_time" content="2019-08-13T03:30:52.942Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="redis如何实现异步队列">
-<meta name="twitter:description" content="本文是在看了慕课相关课程后对redis如何实现异步队列进行的相关总结">
-<meta name="twitter:image" content="http://suiwo.xyz/images/redis如何实现异步队列/4599D9D7-8657-4473-BFAF-9AAE44487A04.png">
+<meta name="twitter:title" content="redis如何实现分布式锁">
+<meta name="twitter:description" content="本文是在看了慕课相关课程后对redis如何实现分布式锁进行的相关总结">
 
 
 
@@ -125,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://suiwo.xyz/2019/02/14/redis如何实现异步队列/"/>
+  <link rel="canonical" href="http://suiwo.xyz/2019/02/13/redis如何实现分布式锁/"/>
 
 
 
 
 
-  <title>redis如何实现异步队列 | 随我的博客</title>
+  <title>redis如何实现分布式锁 | 随我的博客</title>
   
 
 
@@ -268,7 +265,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2019/02/14/redis如何实现异步队列/">
+    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2019/02/13/redis如何实现分布式锁/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="随我">
@@ -285,7 +282,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">redis如何实现异步队列</h1>
+          <h1 class="post-title" itemprop="name headline">redis如何实现分布式锁</h1>
         
 
         <div class="post-meta">
@@ -297,8 +294,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-14T10:02:20+08:00">
-                2019-02-14
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-13T23:32:00+08:00">
+                2019-02-13
               </time>
             
 
@@ -344,7 +341,7 @@
 
           
               <div class="post-description">
-                  本文是在看了慕课相关课程后对redis如何实现异步队列进行的相关总结
+                  本文是在看了慕课相关课程后对redis如何实现分布式锁进行的相关总结
               </div>
           
 
@@ -361,15 +358,40 @@
       
 
       
-        <h2 id="一-如何使用Redis做异步队列"><a href="#一-如何使用Redis做异步队列" class="headerlink" title="一.如何使用Redis做异步队列"></a>一.如何使用Redis做异步队列</h2><h3 id="1-使用List作为队列-RPUSH生产消息-LPOP消费消息"><a href="#1-使用List作为队列-RPUSH生产消息-LPOP消费消息" class="headerlink" title="1.使用List作为队列, RPUSH生产消息, LPOP消费消息"></a>1.使用List作为队列, RPUSH生产消息, LPOP消费消息</h3><p>➢缺点:没有等待队列里有值就直接消费<br>➢弥补:可以通过在应用层引入Sleep机制去调用LPOP重试</p>
-<h3 id="2-BLPOP-key-key-timeout-阻塞直到队列有消息或者超时"><a href="#2-BLPOP-key-key-timeout-阻塞直到队列有消息或者超时" class="headerlink" title="2. BLPOP key [key .. timeout :阻塞直到队列有消息或者超时"></a>2. <code>BLPOP key [key .. timeout</code> :阻塞直到队列有消息或者超时</h3><p>➢缺点:只能供-一个消费者消费</p>
-<h2 id="二-如何使用Redis做异步队列"><a href="#二-如何使用Redis做异步队列" class="headerlink" title="二.如何使用Redis做异步队列"></a>二.如何使用Redis做异步队列</h2><h3 id="pub-sub-主题订阅者模式"><a href="#pub-sub-主题订阅者模式" class="headerlink" title="pub/sub :主题订阅者模式"></a>pub/sub :主题订阅者模式</h3><ul>
-<li>发送者(pub)发送消息,订阅者(sub)接收消息</li>
-<li>订阅者可以订阅任意数量的频道<br>hex</li>
+        <h3 id="1-分布式锁需要解决的问题"><a href="#1-分布式锁需要解决的问题" class="headerlink" title="1.分布式锁需要解决的问题"></a>1.分布式锁需要解决的问题</h3><ul>
+<li>互斥性：任意时刻只能有一个客户端拥有锁，不能同时多个客户端获取</li>
+<li>安全性：锁只能被持有该锁的用户删除，而不能被其他用户删除</li>
+<li>死锁：获取锁的客户端因为某些原因而宕机，而未能释放锁，其他客户端无法获取此锁，需要有机制来避免该类问题的发生</li>
+<li>容错：当部分节点宕机，客户端仍能获取锁或者释放锁</li>
 </ul>
-<p><img src="/images/redis如何实现异步队列/4599D9D7-8657-4473-BFAF-9AAE44487A04.png" alt="这里写图片描述"></p>
-<h5 id="下面我们就演示一下，首先我们打开三个终端，两个作为接收者，一个作为发送者，由下图可见当我们发送消息时只有指定的订阅者可以获取到消息"><a href="#下面我们就演示一下，首先我们打开三个终端，两个作为接收者，一个作为发送者，由下图可见当我们发送消息时只有指定的订阅者可以获取到消息" class="headerlink" title="下面我们就演示一下，首先我们打开三个终端，两个作为接收者，一个作为发送者，由下图可见当我们发送消息时只有指定的订阅者可以获取到消息"></a>下面我们就演示一下，首先我们打开三个终端，两个作为接收者，一个作为发送者，由下图可见当我们发送消息时只有指定的订阅者可以获取到消息</h5><p><img src="/images/redis如何实现异步队列/83848910-41A0-46B3-B876-A2CB6E8E5B07.png" alt="这里写图片描述"></p>
-<h2 id="三-pub-sub的缺点"><a href="#三-pub-sub的缺点" class="headerlink" title="三.pub/sub的缺点"></a>三.pub/sub的缺点</h2><h5 id="消息的发布是无状态的-无法保证可达，若订阅者在发送者发布消息期间下线，之后我们再上线将无法接受到刚才发送的消息，解决办法就是使用消息队列"><a href="#消息的发布是无状态的-无法保证可达，若订阅者在发送者发布消息期间下线，之后我们再上线将无法接受到刚才发送的消息，解决办法就是使用消息队列" class="headerlink" title="消息的发布是无状态的,无法保证可达，若订阅者在发送者发布消息期间下线，之后我们再上线将无法接受到刚才发送的消息，解决办法就是使用消息队列"></a>消息的发布是无状态的,无法保证可达，若订阅者在发送者发布消息期间下线，之后我们再上线将无法接受到刚才发送的消息，解决办法就是使用消息队列</h5>
+<hr>
+<h3 id="2-如何通过Redis实现分布式锁-非完善方法"><a href="#2-如何通过Redis实现分布式锁-非完善方法" class="headerlink" title="2.如何通过Redis实现分布式锁:(非完善方法)"></a>2.如何通过Redis实现分布式锁:(非完善方法)</h3><h5 id="SETNX-key-value-如果key不存在-则创建并赋值"><a href="#SETNX-key-value-如果key不存在-则创建并赋值" class="headerlink" title="SETNX key value :如果key不存在,则创建并赋值"></a><code>SETNX key value</code> :如果key不存在,则创建并赋值</h5><ul>
+<li>时间复杂度: 0(1)</li>
+<li>返回值:设置成功,返回1;设置失败,返回0。</li>
+</ul>
+<blockquote>
+<p>但是此时我们获取的key是长期有效的，所以我们应该如何解决长期有效的问题呢？</p>
+</blockquote>
+<h4 id="如何解决SETNX长期有效的问题"><a href="#如何解决SETNX长期有效的问题" class="headerlink" title="如何解决SETNX长期有效的问题"></a>如何解决SETNX长期有效的问题</h4><h5 id="EXPIRE-key-seconds"><a href="#EXPIRE-key-seconds" class="headerlink" title="EXPIRE key seconds"></a><code>EXPIRE key seconds</code></h5><ul>
+<li>设置key的生存时间,当key过期时(生存时间为0) ,会被自动删除</li>
+<li>缺点：原子性得不到满足<h5 id="下面是伪代码"><a href="#下面是伪代码" class="headerlink" title="下面是伪代码"></a>下面是伪代码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//该程序存在危险，如果执行到第二行就崩溃了，则此时key会被一直占用而无法被释放</span></span><br><span class="line">RedisService redisService = SpringUtils.getBean(Redi sService.class); </span><br><span class="line"><span class="keyword">long</span> status = redisService.setnx(key, <span class="string">"1"</span>);</span><br><span class="line"><span class="keyword">if</span>(status == <span class="number">1</span>) &#123;</span><br><span class="line">	redisService.expire(key, expire);</span><br><span class="line">	<span class="comment">//执行独占资源逻辑</span></span><br><span class="line">	doOcuppiedWork();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<hr>
+<h3 id="3-如何通过Redis实现分布式锁-正确方式"><a href="#3-如何通过Redis实现分布式锁-正确方式" class="headerlink" title="3.如何通过Redis实现分布式锁:(正确方式)"></a>3.如何通过Redis实现分布式锁:(正确方式)</h3><h5 id="SET-key-value-EX-seconds-PX-milliseconds-NX-XX"><a href="#SET-key-value-EX-seconds-PX-milliseconds-NX-XX" class="headerlink" title="SET key value [EX seconds] [PX milliseconds] [NX|XX]"></a><code>SET key value [EX seconds] [PX milliseconds] [NX|XX]</code></h5><ul>
+<li>EX second :设置键的过期时间为second秒</li>
+<li>PX millisecond :设置键的过期时间为millisecond毫秒</li>
+<li>NX :只在键不存在时,才对键进行设置操作</li>
+<li>XX:只在键已经存在时,才对键进行设置操作</li>
+<li>SET操作成功完成时,返回OK ,否则返回nil<h5 id="下面是伪代码-1"><a href="#下面是伪代码-1" class="headerlink" title="下面是伪代码"></a>下面是伪代码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">RedisService redisService = SpringUtils.getBean(RedisService.class); .</span><br><span class="line">String result = redisService.set(lockKey, requestId, SET_IF_NOT_EXIST, SET_WITH_EXPIRE_TIME, expireTime);</span><br><span class="line"><span class="keyword">if</span> (<span class="string">"OK"</span>.equals(result)) &#123;</span><br><span class="line">	<span class="comment">//执行独占资源逻辑</span></span><br><span class="line">	doOcuppiedWork();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<hr>
+<h3 id="4-大量的key同时过期的注意事项"><a href="#4-大量的key同时过期的注意事项" class="headerlink" title="4.大量的key同时过期的注意事项"></a>4.大量的key同时过期的注意事项</h3><ul>
+<li>集中过期,由于清除大量的key很耗时,会出现短暂的卡顿现象</li>
+<li>解放方案:在设置key的过期时间的时候,给每个key加上随机值</li>
+</ul>
+
       
     </div>
     
@@ -390,7 +412,7 @@
           
             <a href="/tags/Redis/" rel="tag"><i class="fa fa-tag"></i> Redis</a>
           
-            <a href="/tags/异步队列/" rel="tag"><i class="fa fa-tag"></i> 异步队列</a>
+            <a href="/tags/锁/" rel="tag"><i class="fa fa-tag"></i> 锁</a>
           
         </div>
       
@@ -403,8 +425,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/02/13/redis如何实现分布式锁/" rel="next" title="redis如何实现分布式锁">
-                <i class="fa fa-chevron-left"></i> redis如何实现分布式锁
+              <a href="/2019/02/13/当前读与快照读/" rel="next" title="当前读与快照读">
+                <i class="fa fa-chevron-left"></i> 当前读与快照读
               </a>
             
           </div>
@@ -413,8 +435,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/03/12/常见排序算法/" rel="prev" title="常见排序算法">
-                常见排序算法 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/02/14/redis如何实现异步队列/" rel="prev" title="redis如何实现异步队列">
+                redis如何实现异步队列 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -605,7 +627,7 @@ var jiathis_config={
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一-如何使用Redis做异步队列"><span class="nav-number">1.</span> <span class="nav-text">一.如何使用Redis做异步队列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-使用List作为队列-RPUSH生产消息-LPOP消费消息"><span class="nav-number">1.1.</span> <span class="nav-text">1.使用List作为队列, RPUSH生产消息, LPOP消费消息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-BLPOP-key-key-timeout-阻塞直到队列有消息或者超时"><span class="nav-number">1.2.</span> <span class="nav-text">2. BLPOP key [key .. timeout :阻塞直到队列有消息或者超时</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二-如何使用Redis做异步队列"><span class="nav-number">2.</span> <span class="nav-text">二.如何使用Redis做异步队列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pub-sub-主题订阅者模式"><span class="nav-number">2.1.</span> <span class="nav-text">pub/sub :主题订阅者模式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#下面我们就演示一下，首先我们打开三个终端，两个作为接收者，一个作为发送者，由下图可见当我们发送消息时只有指定的订阅者可以获取到消息"><span class="nav-number">2.1.0.1.</span> <span class="nav-text">下面我们就演示一下，首先我们打开三个终端，两个作为接收者，一个作为发送者，由下图可见当我们发送消息时只有指定的订阅者可以获取到消息</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三-pub-sub的缺点"><span class="nav-number">3.</span> <span class="nav-text">三.pub/sub的缺点</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#消息的发布是无状态的-无法保证可达，若订阅者在发送者发布消息期间下线，之后我们再上线将无法接受到刚才发送的消息，解决办法就是使用消息队列"><span class="nav-number">3.0.0.1.</span> <span class="nav-text">消息的发布是无状态的,无法保证可达，若订阅者在发送者发布消息期间下线，之后我们再上线将无法接受到刚才发送的消息，解决办法就是使用消息队列</span></a></li></ol></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-分布式锁需要解决的问题"><span class="nav-number">1.</span> <span class="nav-text">1.分布式锁需要解决的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-如何通过Redis实现分布式锁-非完善方法"><span class="nav-number">2.</span> <span class="nav-text">2.如何通过Redis实现分布式锁:(非完善方法)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#SETNX-key-value-如果key不存在-则创建并赋值"><span class="nav-number">2.0.1.</span> <span class="nav-text">SETNX key value :如果key不存在,则创建并赋值</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如何解决SETNX长期有效的问题"><span class="nav-number">2.1.</span> <span class="nav-text">如何解决SETNX长期有效的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#EXPIRE-key-seconds"><span class="nav-number">2.1.1.</span> <span class="nav-text">EXPIRE key seconds</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#下面是伪代码"><span class="nav-number">2.1.2.</span> <span class="nav-text">下面是伪代码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-如何通过Redis实现分布式锁-正确方式"><span class="nav-number">3.</span> <span class="nav-text">3.如何通过Redis实现分布式锁:(正确方式)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#SET-key-value-EX-seconds-PX-milliseconds-NX-XX"><span class="nav-number">3.0.1.</span> <span class="nav-text">SET key value [EX seconds] [PX milliseconds] [NX|XX]</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#下面是伪代码-1"><span class="nav-number">3.0.2.</span> <span class="nav-text">下面是伪代码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-大量的key同时过期的注意事项"><span class="nav-number">4.</span> <span class="nav-text">4.大量的key同时过期的注意事项</span></a></li></ol></div>
             
 
           </div>
