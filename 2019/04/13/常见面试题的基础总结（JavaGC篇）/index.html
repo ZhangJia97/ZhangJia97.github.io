@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.ico?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.ico?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.ico?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.ico?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="本文对面试中常见的一些Java垃圾回收相关知识点或者问题的总结">
+<meta name="keywords" content="Java,Java垃圾回收">
+<meta property="og:type" content="article">
+<meta property="og:title" content="常见面试题的基础总结（JavaGC篇）">
+<meta property="og:url" content="http://suiwo.xyz/2019/04/13/常见面试题的基础总结（JavaGC篇）/index.html">
+<meta property="og:site_name" content="随我的博客">
+<meta property="og:description" content="本文对面试中常见的一些Java垃圾回收相关知识点或者问题的总结">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://suiwo.xyz/images/常见面试题的基础总结（JavaGC篇）/87EED0DF-D176-4236-A8FF-7C19199A26BD.png">
+<meta property="og:image" content="http://suiwo.xyz/images/常见面试题的基础总结（JavaGC篇）/6095F9F4-8194-436E-85BD-526F77C76259.png">
+<meta property="og:updated_time" content="2019-05-05T07:32:19.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="常见面试题的基础总结（JavaGC篇）">
+<meta name="twitter:description" content="本文对面试中常见的一些Java垃圾回收相关知识点或者问题的总结">
+<meta name="twitter:image" content="http://suiwo.xyz/images/常见面试题的基础总结（JavaGC篇）/87EED0DF-D176-4236-A8FF-7C19199A26BD.png">
+  <link rel="alternate" href="/atom.xml" title="随我的博客" type="application/atom+xml">
+  <link rel="canonical" href="http://suiwo.xyz/2019/04/13/常见面试题的基础总结（JavaGC篇）/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>常见面试题的基础总结（JavaGC篇） | 随我的博客</title>
+  <meta name="generator" content="Hexo 3.7.1">
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a href="https://github.com/ZhangJia97" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">随我的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录学习的点滴</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2019/04/13/常见面试题的基础总结（JavaGC篇）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="随我">
+      <meta itemprop="description" content="用心做自己喜欢的事">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="随我的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">常见面试题的基础总结（JavaGC篇）
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-04-13 11:53:03" itemprop="dateCreated datePublished" datetime="2019-04-13T11:53:03+08:00">2019-04-13</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-05 15:32:19" itemprop="dateModified" datetime="2019-05-05T15:32:19+08:00">2019-05-05</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <div class="post-description">本文对面试中常见的一些Java垃圾回收相关知识点或者问题的总结</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>由于这些内容都是比较早之前进行的整理的，所以有的部分是参考了他人的博文，但是由于是之前找的，所以具体的博文链接找不到了，如果原博主看到这个文章或者有人知道其中部分内容的原博文，请与我联系，我将加上原链接，谢谢</p>
+</blockquote>
+<hr>
+<h3 id="1、Java的垃圾回收判断对象是否为垃圾有两种算法。"><a href="#1、Java的垃圾回收判断对象是否为垃圾有两种算法。" class="headerlink" title="1、Java的垃圾回收判断对象是否为垃圾有两种算法。"></a>1、Java的垃圾回收判断对象是否为垃圾有两种算法。</h3><ul>
+<li>引用计数算法，本算法就是通过引用计数器来统计，当被引用+1，完成引用-1.任何对象实例引用为0时就可以当做垃圾收集，优点是执行效率高，问题是循环引用会出现问题。</li>
+<li>可达性分析算法，通过判断对象的引用链来决定对象是否可达。如果不可达便被回收。可作为GC ROOT的对象有虚拟机栈中引用的对象、方法区中的常量引用的对象，方法区中的类静态属性引用的对象还有Native方法引用的对象，以及活跃线程的引用对象。</li>
+</ul>
+<hr>
+<h3 id="2、常见的垃圾回收算法"><a href="#2、常见的垃圾回收算法" class="headerlink" title="2、常见的垃圾回收算法"></a>2、常见的垃圾回收算法</h3><p><img src="/images/常见面试题的基础总结（JavaGC篇）/87EED0DF-D176-4236-A8FF-7C19199A26BD.png" alt="这里写图片描述"></p>
+<ul>
+<li><p>标签-清除算法<br>对存活对象进行标记，清除是从头到尾进行线性遍历，回收不可达的对象内存。问题时容易碎片化。</p>
+</li>
+<li><p>复制算法<br>分为对象面和空闲面。存活的对象从对象面复制到空闲面，同时将对象面的清空。优点是解决了碎片化的问题，顺序分配内存简单高效，适用于对象存活率低的场景。年轻代因为存活较少，所以适合于用复制算法</p>
+</li>
+<li><p>标记-整理算法<br>标记就是从GC ROOT进行扫描对存活对象进行标记，然后移动所有存活的对象，且按照内存地址依次有序排列，然后将末端的内存地址以后的内存都进行回收。有点是避免了内存的不连续行，且不用进行两块内存互换，适用于存活率高德场景。</p>
+</li>
+<li><p>分代收集算法<br>分代收集算法就是多种算法的集合，其中年轻代使用复制算法，老年代使用标记整理算法。JDK7之前有新生代，老年代和永久代。JDK7之后只有新生代和老年代没有了新生代。</p>
+<ul>
+<li>年轻代分为eden区和两个servivor区，当进行垃圾回收时，存活的对象计数会加一，同时复制到servivor中的from区，然后将eden区清空，当第二次进行GC时eden区同理，但是servivor区仍然会计数加1然后复制到另一个servivor中。直到某个存活对象的技术超过某个值然后该对象进入老年代。</li>
+<li>老年代常用的是标记-清除和标记整理算法,其中新生代老年代一半了比例为1:2</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="3、对于新生代如何晋升老年代有三种情况："><a href="#3、对于新生代如何晋升老年代有三种情况：" class="headerlink" title="3、对于新生代如何晋升老年代有三种情况："></a>3、对于新生代如何晋升老年代有三种情况：</h3><ul>
+<li>经历了多次MinorGC后仍然存活</li>
+<li>survivor区中存放不下大对象</li>
+<li>新生成的大对象</li>
+</ul>
+<hr>
+<h3 id="4、常见得到调优参数"><a href="#4、常见得到调优参数" class="headerlink" title="4、常见得到调优参数"></a>4、常见得到调优参数</h3><ul>
+<li><code>-XX:SurvivorRatio</code> : Eden和Survivor的比值,默认8 : 1</li>
+<li><code>-XX:NewRatio</code>: 老年代和年轻代内存大小的比例</li>
+<li><code>-XX:MaxTenuringThreshold</code>:对象从年轻代晋升到老生代经过GC次数的最大阈值</li>
+</ul>
+<hr>
+<h3 id="5、触发GC的条件为"><a href="#5、触发GC的条件为" class="headerlink" title="5、触发GC的条件为"></a>5、触发GC的条件为</h3><p>老年代的FULL GC还有MajorGC比年轻代的MinorGC慢，但是执行频率低。</p>
+<ul>
+<li>老年代空间不足</li>
+<li>CMS GC后老年代不足</li>
+<li>年轻代晋升老年代的空间大于剩余空间</li>
+<li>调用了<code>System.gs()</code></li>
+</ul>
+<hr>
+<h3 id="6、常见垃圾收集器"><a href="#6、常见垃圾收集器" class="headerlink" title="6、常见垃圾收集器"></a>6、常见垃圾收集器</h3><ul>
+<li>ParNew收集器( -XX:+UseParNewGC ,复制算法)</li>
+</ul>
+<ol>
+<li>多线程收集,其余的行为、特点和Serial收集器一样</li>
+<li>单核执行效率不如Serial ,在多核下执行才有优势</li>
+</ol>
+<ul>
+<li><p>CMS收集器(标记清除算法)</p>
+<blockquote>
+<p>垃圾回收线程几乎可以与用户线程同时工作，对停顿比较敏感，并且可以提供更强的硬件，如果JVM中存在较多存在时间较长的对象，更适合使用CMS。其中初始标记和重新标记是需要s-t-w</p>
+<ol>
+<li>初始标记：进入s-t-w</li>
+<li>并发标记：并发追溯标记程序不会停顿</li>
+<li>并发预清理：查找并发标记阶段新生代晋升老年代的对象</li>
+<li>重新标记：暂停虚拟机扫描CMS堆中的剩余对象</li>
+<li>并发清理，清理对象，程序不会停顿</li>
+<li>并发重置：重置CMS收集器的数据结构</li>
+</ol>
+</blockquote>
+</li>
+<li><p>G1收集器 Garbage First收集器(复制+标记整理算法)</p>
+<blockquote>
+<p>本收集器是将整个Java堆内存划分为多个大小相等的region，然后新生代和老年代不进行了物理隔离。</p>
+</blockquote>
+</li>
+<li>特点：<ol>
+<li>并发和并行</li>
+<li>分带收集</li>
+<li>空间整合</li>
+<li>可预测的停顿</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h3 id="7、强引用，软引用，弱引用，虚引用"><a href="#7、强引用，软引用，弱引用，虚引用" class="headerlink" title="7、强引用，软引用，弱引用，虚引用"></a>7、强引用，软引用，弱引用，虚引用</h3><p><img src="/images/常见面试题的基础总结（JavaGC篇）/6095F9F4-8194-436E-85BD-526F77C76259.png" alt="这里写图片描述"></p>
+<ul>
+<li><p>强引用是最常见的引用如： Object object = new Object（）；<br>即使内存不足也不会被回收，但是我们可以通过将对象设置为null来弱化引用，使其被回收。</p>
+</li>
+<li><p>软引用是对象处在有用但是非必须的状态，只有内存不足时才会被回收<br>可以实现高速缓存，使用方法如下：<br>SoftReference <string> softStr = new SoftReference(str);</string></p>
+</li>
+<li><p>弱引用比软引用更弱一下，然后GC时会被回收，适用于偶尔使用但是不影响垃圾收集的对象。</p>
+</li>
+</ul>
+<hr>
+<h3 id="8、其他的常见概念"><a href="#8、其他的常见概念" class="headerlink" title="8、其他的常见概念"></a>8、其他的常见概念</h3><h5 id="Stop-the-world"><a href="#Stop-the-world" class="headerlink" title="Stop-the-world"></a>Stop-the-world</h5><ul>
+<li>在GC过程中会有Stop-the-world也就是执行GC时虚拟机会停止应用程序的执行，而且是在所有GC算法中都会发生，多数的GC通过减少s-t-w发生时间来提高程序性能</li>
+</ul>
+<h5 id="SafePoint"><a href="#SafePoint" class="headerlink" title="SafePoint"></a>SafePoint</h5><ul>
+<li>分析过程中对象引用关系不会改变的点，常见的点有方法调用，循环跳转，异常跳转。安全点数量应该适中，过多过少都不好。</li>
+</ul>
+<h5 id="JVM有两种运行模式Server和Client"><a href="#JVM有两种运行模式Server和Client" class="headerlink" title="JVM有两种运行模式Server和Client"></a>JVM有两种运行模式Server和Client</h5><ul>
+<li>常见两个模式server启动慢但是启动后性能更好，因为server底层是一个更大的虚拟机,可以使用<code>java -version</code>来查询是哪一种模式下的</li>
+</ul>
+<h5 id="Object的finalize方法"><a href="#Object的finalize方法" class="headerlink" title="Object的finalize方法"></a>Object的finalize方法</h5><ul>
+<li>Object的finalize方法是不确定的，不一定会执行。 </li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Java/" rel="tag"><i class="fa fa-tag"></i> Java</a>
+            
+              <a href="/tags/Java垃圾回收/" rel="tag"><i class="fa fa-tag"></i> Java垃圾回收</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/04/13/常见面试题的基础总结（数据库篇）/" rel="next" title="常见面试题的基础总结（数据库篇）">
+                  <i class="fa fa-chevron-left"></i> 常见面试题的基础总结（数据库篇）
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/04/13/常见面试题的基础总结（Java多线程篇）/" rel="prev" title="常见面试题的基础总结（Java多线程篇）">
+                  常见面试题的基础总结（Java多线程篇） <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc" data-target="post-toc-wrap">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、Java的垃圾回收判断对象是否为垃圾有两种算法。"><span class="nav-number">1.</span> <span class="nav-text">1、Java的垃圾回收判断对象是否为垃圾有两种算法。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、常见的垃圾回收算法"><span class="nav-number">2.</span> <span class="nav-text">2、常见的垃圾回收算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、对于新生代如何晋升老年代有三种情况："><span class="nav-number">3.</span> <span class="nav-text">3、对于新生代如何晋升老年代有三种情况：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、常见得到调优参数"><span class="nav-number">4.</span> <span class="nav-text">4、常见得到调优参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5、触发GC的条件为"><span class="nav-number">5.</span> <span class="nav-text">5、触发GC的条件为</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6、常见垃圾收集器"><span class="nav-number">6.</span> <span class="nav-text">6、常见垃圾收集器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7、强引用，软引用，弱引用，虚引用"><span class="nav-number">7.</span> <span class="nav-text">7、强引用，软引用，弱引用，虚引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8、其他的常见概念"><span class="nav-number">8.</span> <span class="nav-text">8、其他的常见概念</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Stop-the-world"><span class="nav-number">8.0.1.</span> <span class="nav-text">Stop-the-world</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SafePoint"><span class="nav-number">8.0.2.</span> <span class="nav-text">SafePoint</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#JVM有两种运行模式Server和Client"><span class="nav-number">8.0.3.</span> <span class="nav-text">JVM有两种运行模式Server和Client</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Object的finalize方法"><span class="nav-number">8.0.4.</span> <span class="nav-text">Object的finalize方法</span></a></li></ol></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.png"
+      alt="随我">
+  <p class="site-author-name" itemprop="name">随我</p>
+  <div class="site-description" itemprop="description">用心做自己喜欢的事</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">98</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">77</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/ZhangJia97" title="GitHub &rarr; https://github.com/ZhangJia97" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:isuiwo@qq.com" title="E-Mail &rarr; mailto:isuiwo@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">随我</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.7.1</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共107.1k字</span>
+</div>
+
+<div class="BbeiAn-info">
+    <a target="_blank" href="http://beian.miit.gov.cn" rel="nofollow">豫ICP备18013715号-1</a> <!--a标签中增加nofollow属性，避免爬虫出站。-->
+</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.3.0"></script><script src="/js/motion.js?v=7.3.0"></script>
+<script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.ico?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.ico?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.ico?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.ico?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Flask-Script扩展提供向Flask插入外部脚本的功能。包括运行一个开发用的服务器，一个定制的Python shell，设置数据库的脚本，cronjobs，以及其他的运行在web应用之外的命令行任务。Flask-Script和Flask本身的工作方式类似。只需要定义和添加能从命令行中被Manager实例调用的命令即可。">
+<meta name="keywords" content="python,flask">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flask扩展flask-script文档中文翻译">
+<meta property="og:url" content="http://suiwo.xyz/2018/02/12/Flask扩展flask-script文档中文翻译/index.html">
+<meta property="og:site_name" content="随我的博客">
+<meta property="og:description" content="Flask-Script扩展提供向Flask插入外部脚本的功能。包括运行一个开发用的服务器，一个定制的Python shell，设置数据库的脚本，cronjobs，以及其他的运行在web应用之外的命令行任务。Flask-Script和Flask本身的工作方式类似。只需要定义和添加能从命令行中被Manager实例调用的命令即可。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-04-19T16:12:53.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Flask扩展flask-script文档中文翻译">
+<meta name="twitter:description" content="Flask-Script扩展提供向Flask插入外部脚本的功能。包括运行一个开发用的服务器，一个定制的Python shell，设置数据库的脚本，cronjobs，以及其他的运行在web应用之外的命令行任务。Flask-Script和Flask本身的工作方式类似。只需要定义和添加能从命令行中被Manager实例调用的命令即可。">
+  <link rel="alternate" href="/atom.xml" title="随我的博客" type="application/atom+xml">
+  <link rel="canonical" href="http://suiwo.xyz/2018/02/12/Flask扩展flask-script文档中文翻译/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Flask扩展flask-script文档中文翻译 | 随我的博客</title>
+  <meta name="generator" content="Hexo 3.7.1">
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a href="https://github.com/ZhangJia97" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">随我的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录学习的点滴</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2018/02/12/Flask扩展flask-script文档中文翻译/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="随我">
+      <meta itemprop="description" content="用心做自己喜欢的事">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="随我的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Flask扩展flask-script文档中文翻译
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2018-02-12 16:40:29" itemprop="dateCreated datePublished" datetime="2018-02-12T16:40:29+08:00">2018-02-12</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2018-04-20 00:12:53" itemprop="dateModified" datetime="2018-04-20T00:12:53+08:00">2018-04-20</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/flask/" itemprop="url" rel="index"><span itemprop="name">flask</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <div class="post-description">Flask-Script扩展提供向Flask插入外部脚本的功能。包括运行一个开发用的服务器，一个定制的Python shell，设置数据库的脚本，cronjobs，以及其他的运行在web应用之外的命令行任务。Flask-Script和Flask本身的工作方式类似。只需要定义和添加能从命令行中被Manager实例调用的命令即可。</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文转载自<a href="https://my.oschina.net/lijsf/blog/158828" target="_blank" rel="noopener">https://my.oschina.net/lijsf/blog/158828</a></p>
+<hr>
+<hr>
+<h1 id="Flask扩展flask-script文档中文翻译"><a href="#Flask扩展flask-script文档中文翻译" class="headerlink" title="Flask扩展flask-script文档中文翻译"></a>Flask扩展flask-script文档中文翻译</h1><hr>
+<h5 id="Flask-Script扩展提供向Flask插入外部脚本的功能。包括运行一个开发用的服务器，一个定制的-Python-shell，设置数据库的脚本，cronjobs，以及其他的运行在web应用之外的命令行任务。"><a href="#Flask-Script扩展提供向Flask插入外部脚本的功能。包括运行一个开发用的服务器，一个定制的-Python-shell，设置数据库的脚本，cronjobs，以及其他的运行在web应用之外的命令行任务。" class="headerlink" title="Flask-Script扩展提供向Flask插入外部脚本的功能。包括运行一个开发用的服务器，一个定制的 Python shell，设置数据库的脚本，cronjobs，以及其他的运行在web应用之外的命令行任务。"></a>Flask-Script扩展提供向Flask插入外部脚本的功能。包括运行一个开发用的服务器，一个定制的 Python shell，设置数据库的脚本，cronjobs，以及其他的运行在web应用之外的命令行任务。</h5><h5 id="Flask-Script和Flask本身的工作方式类似。只需要定义和添加能从命令行中被Manager实例调用的命令即可。"><a href="#Flask-Script和Flask本身的工作方式类似。只需要定义和添加能从命令行中被Manager实例调用的命令即可。" class="headerlink" title="Flask-Script和Flask本身的工作方式类似。只需要定义和添加能从命令行中被Manager实例调用的命令即可。"></a>Flask-Script和Flask本身的工作方式类似。只需要定义和添加能从命令行中被Manager实例调用的命令即可。</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># manage.py</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> flask.ext.script <span class="keyword">import</span> Manager</span><br><span class="line"><span class="keyword">from</span> myapp <span class="keyword">import</span> app</span><br><span class="line"></span><br><span class="line">manager = Manager(app)</span><br><span class="line"><span class="meta">@manager.command</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"hello"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    manager.run()</span><br></pre></td></tr></table></figure>
+<h5 id="只要像上面一样定义你自己的命令脚本，就可以在命令行中如下调用他们："><a href="#只要像上面一样定义你自己的命令脚本，就可以在命令行中如下调用他们：" class="headerlink" title="只要像上面一样定义你自己的命令脚本，就可以在命令行中如下调用他们："></a>只要像上面一样定义你自己的命令脚本，就可以在命令行中如下调用他们：</h5><blockquote>
+<p>python manage.py hello</p>
+</blockquote>
+<p>Flask-Script的源代码和bug追踪见 <a href="https://github.com/smurfix/flask-script" target="_blank" rel="noopener">GitHub</a></p>
+<hr>
+<hr>
+<h1 id="安装Flask-Script"><a href="#安装Flask-Script" class="headerlink" title="安装Flask-Script"></a>安装Flask-Script</h1><hr>
+<h5 id="可以使用pip或者easy-install安装："><a href="#可以使用pip或者easy-install安装：" class="headerlink" title="可以使用pip或者easy_install安装："></a>可以使用pip或者easy_install安装：</h5><blockquote>
+<p>pip install Flask-Script</p>
+</blockquote>
+<h5 id="或者下载最新开发版本："><a href="#或者下载最新开发版本：" class="headerlink" title="或者下载最新开发版本："></a>或者下载最新开发版本：</h5><blockquote>
+<p>git clone <a href="https://github.com/techniq/flask-script.git" target="_blank" rel="noopener">https://github.com/techniq/flask-script.git</a><br>cd flask-script<br>python setup.py develop</p>
+</blockquote>
+<h5 id="如果你使用virtualenv，需保证把Flask-Script和你的Flask应用安装在同一virtualenv环境下"><a href="#如果你使用virtualenv，需保证把Flask-Script和你的Flask应用安装在同一virtualenv环境下" class="headerlink" title="如果你使用virtualenv，需保证把Flask-Script和你的Flask应用安装在同一virtualenv环境下"></a>如果你使用virtualenv，需保证把Flask-Script和你的Flask应用安装在同一virtualenv环境下</h5><hr>
+<hr>
+<h1 id="创建并且运行命令"><a href="#创建并且运行命令" class="headerlink" title="创建并且运行命令"></a>创建并且运行命令</h1><hr>
+<h5 id="首先，创建一个Python模块运行你的命令脚本。可以任意起名，例如manage-py。"><a href="#首先，创建一个Python模块运行你的命令脚本。可以任意起名，例如manage-py。" class="headerlink" title="首先，创建一个Python模块运行你的命令脚本。可以任意起名，例如manage.py。"></a>首先，创建一个Python模块运行你的命令脚本。可以任意起名，例如manage.py。</h5><h5 id="无需把所有的命令都放在同一个文件里，例如，在一个大型项目中，可以把相关联的命令放在不同的文件里。"><a href="#无需把所有的命令都放在同一个文件里，例如，在一个大型项目中，可以把相关联的命令放在不同的文件里。" class="headerlink" title="无需把所有的命令都放在同一个文件里，例如，在一个大型项目中，可以把相关联的命令放在不同的文件里。"></a>无需把所有的命令都放在同一个文件里，例如，在一个大型项目中，可以把相关联的命令放在不同的文件里。</h5><h5 id="在你的manage-py文件中，必须有一个Manager实例。Manager类将追踪所有的在命令行中调用的命令和处理过程的调用运行-情况"><a href="#在你的manage-py文件中，必须有一个Manager实例。Manager类将追踪所有的在命令行中调用的命令和处理过程的调用运行-情况" class="headerlink" title="在你的manage.py文件中，必须有一个Manager实例。Manager类将追踪所有的在命令行中调用的命令和处理过程的调用运行 情况:"></a>在你的manage.py文件中，必须有一个Manager实例。Manager类将追踪所有的在命令行中调用的命令和处理过程的调用运行 情况:</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask.ext.script <span class="keyword">import</span> Manager</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line"><span class="comment"># configure your app</span></span><br><span class="line"></span><br><span class="line">manager = Manager(app)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    manager.run()</span><br></pre></td></tr></table></figure>
+<h5 id="调用-manager-run-将启动Manger实例接收命令行中的命令。"><a href="#调用-manager-run-将启动Manger实例接收命令行中的命令。" class="headerlink" title="调用 manager.run()将启动Manger实例接收命令行中的命令。"></a>调用 manager.run()将启动Manger实例接收命令行中的命令。</h5><h5 id="Manager只有一个参数：一个Flask实例。如果你想用工场模式，那也可以是一个函数或者其他的返回Flask实例的玩意儿。"><a href="#Manager只有一个参数：一个Flask实例。如果你想用工场模式，那也可以是一个函数或者其他的返回Flask实例的玩意儿。" class="headerlink" title="Manager只有一个参数：一个Flask实例。如果你想用工场模式，那也可以是一个函数或者其他的返回Flask实例的玩意儿。"></a>Manager只有一个参数：一个Flask实例。如果你想用工场模式，那也可以是一个函数或者其他的返回Flask实例的玩意儿。</h5><h5 id="其次，创建并且加入命令。有三种方法可创建命令："><a href="#其次，创建并且加入命令。有三种方法可创建命令：" class="headerlink" title="其次，创建并且加入命令。有三种方法可创建命令："></a>其次，创建并且加入命令。有三种方法可创建命令：</h5><h5 id="创建Command的子类"><a href="#创建Command的子类" class="headerlink" title="创建Command的子类"></a>创建Command的子类</h5><h5 id="使用-command-修饰符"><a href="#使用-command-修饰符" class="headerlink" title="使用 @command 修饰符"></a>使用 @command 修饰符</h5><h5 id="使用-option-修饰符"><a href="#使用-option-修饰符" class="headerlink" title="使用 @option 修饰符"></a>使用 @option 修饰符</h5><h5 id="下面是一个简单的例子，创建一个Hello命令，该命令只是简单的输出“hello-word”。"><a href="#下面是一个简单的例子，创建一个Hello命令，该命令只是简单的输出“hello-word”。" class="headerlink" title="下面是一个简单的例子，创建一个Hello命令，该命令只是简单的输出“hello word”。"></a>下面是一个简单的例子，创建一个Hello命令，该命令只是简单的输出“hello word”。</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask.ext.script <span class="keyword">import</span> Command</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Hello</span><span class="params">(Command)</span>:</span></span><br><span class="line">    <span class="string">"prints hello world"</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">print</span> <span class="string">"hello world"</span></span><br></pre></td></tr></table></figure>
+<h5 id="再把上面创建的Hello命令加入Manager实例："><a href="#再把上面创建的Hello命令加入Manager实例：" class="headerlink" title="再把上面创建的Hello命令加入Manager实例："></a>再把上面创建的Hello命令加入Manager实例：</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">manager.add_command(<span class="string">'hello'</span>, Hello())</span><br></pre></td></tr></table></figure>
+<h5 id="很明显，上面的语句需要在manager-run-之前运行。现在执行下面的命令："><a href="#很明显，上面的语句需要在manager-run-之前运行。现在执行下面的命令：" class="headerlink" title="很明显，上面的语句需要在manager.run()之前运行。现在执行下面的命令："></a>很明显，上面的语句需要在manager.run()之前运行。现在执行下面的命令：</h5><blockquote>
+<p>python manage.py hello<br>hello world</p>
+</blockquote>
+<h5 id="也可传给Command实例的run方法一个字典："><a href="#也可传给Command实例的run方法一个字典：" class="headerlink" title="也可传给Command实例的run方法一个字典："></a>也可传给Command实例的run方法一个字典：</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">manager.run(&#123;<span class="string">'hello'</span> : Hello()&#125;)</span><br></pre></td></tr></table></figure>
+<h5 id="Command-class-必须定义一个run方法。定义的位置和参数依赖于你的定义的命令的参数。详见下文。"><a href="#Command-class-必须定义一个run方法。定义的位置和参数依赖于你的定义的命令的参数。详见下文。" class="headerlink" title="Command class 必须定义一个run方法。定义的位置和参数依赖于你的定义的命令的参数。详见下文。"></a>Command class 必须定义一个run方法。定义的位置和参数依赖于你的定义的命令的参数。详见下文。</h5><h5 id="运行下面的命令获取可以使用的命令及其描述的列表："><a href="#运行下面的命令获取可以使用的命令及其描述的列表：" class="headerlink" title="运行下面的命令获取可以使用的命令及其描述的列表："></a>运行下面的命令获取可以使用的命令及其描述的列表：</h5><blockquote>
+<p>python manage.py</p>
+</blockquote>
+<h5 id="通过运行下面的命令获取一个特定命令的帮助-这将输出这个命令的docstring。"><a href="#通过运行下面的命令获取一个特定命令的帮助-这将输出这个命令的docstring。" class="headerlink" title="通过运行下面的命令获取一个特定命令的帮助,这将输出这个命令的docstring。"></a>通过运行下面的命令获取一个特定命令的帮助,这将输出这个命令的docstring。</h5><blockquote>
+<p>python manage.py runserver -h</p>
+</blockquote>
+<h5 id="上面的第一种方法是最适用的，但也是最麻烦的。对于简单的命令，只需要使用Command实例的-command修饰符。"><a href="#上面的第一种方法是最适用的，但也是最麻烦的。对于简单的命令，只需要使用Command实例的-command修饰符。" class="headerlink" title="上面的第一种方法是最适用的，但也是最麻烦的。对于简单的命令，只需要使用Command实例的@command修饰符。"></a>上面的第一种方法是最适用的，但也是最麻烦的。对于简单的命令，只需要使用Command实例的@command修饰符。</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@manager.command</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"Just say hello"</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"hello"</span></span><br></pre></td></tr></table></figure>
+<h5 id="这种方法创建的命令的运行方式和Command类创建的运行方式是相同的。"><a href="#这种方法创建的命令的运行方式和Command类创建的运行方式是相同的。" class="headerlink" title="这种方法创建的命令的运行方式和Command类创建的运行方式是相同的。"></a>这种方法创建的命令的运行方式和Command类创建的运行方式是相同的。</h5><blockquote>
+<p>python manage.py hello<br>hello</p>
+</blockquote>
+<h5 id="如果用Comman类来实现，下面的命令将输出manage类的docstring："><a href="#如果用Comman类来实现，下面的命令将输出manage类的docstring：" class="headerlink" title="如果用Comman类来实现，下面的命令将输出manage类的docstring："></a>如果用Comman类来实现，下面的命令将输出manage类的docstring：</h5><blockquote>
+<p>python manage.py -h<br>Just say hello</p>
+</blockquote>
+<h5 id="最后，-option修饰符适用于更精细的命令行控制："><a href="#最后，-option修饰符适用于更精细的命令行控制：" class="headerlink" title="最后，@option修饰符适用于更精细的命令行控制："></a>最后，@option修饰符适用于更精细的命令行控制：</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@manager.option('-n', '--name', help='Your name')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">(name)</span>:</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"hello"</span>, name</span><br></pre></td></tr></table></figure>
+<h5 id="后面会有更详细的对-option的介绍。"><a href="#后面会有更详细的对-option的介绍。" class="headerlink" title="后面会有更详细的对@option的介绍。"></a>后面会有更详细的对@option的介绍。</h5><hr>
+<hr>
+<h1 id="增加命令行参数"><a href="#增加命令行参数" class="headerlink" title="增加命令行参数"></a>增加命令行参数</h1><hr>
+<p>#####大多数命令都带有参数。还是上面的例子，如果不仅仅是打印”hello world”，还想输出一个额外的名字，如：</p>
+<blockquote>
+<p>python manage.py hello –name=Joe<br>hello Joe</p>
+</blockquote>
+<h5 id="或者短参数："><a href="#或者短参数：" class="headerlink" title="或者短参数："></a>或者短参数：</h5><blockquote>
+<p>python manage.py hello -n Joe</p>
+</blockquote>
+<h5 id="为实现这一功能，需要使用Command类的option-list属性。"><a href="#为实现这一功能，需要使用Command类的option-list属性。" class="headerlink" title="为实现这一功能，需要使用Command类的option_list属性。"></a>为实现这一功能，需要使用Command类的option_list属性。</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask.ext.script <span class="keyword">import</span> Command, Manager, Option</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Hello</span><span class="params">(Command)</span>:</span></span><br><span class="line"></span><br><span class="line">    option_list = (</span><br><span class="line">        Option(<span class="string">'--name'</span>, <span class="string">'-n'</span>, dest=<span class="string">'name'</span>),</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self, name)</span>:</span></span><br><span class="line">        <span class="keyword">print</span> <span class="string">"hello %s"</span> % name</span><br></pre></td></tr></table></figure>
+<h5 id="长参数和短参数都是存储在Option实例中。详见API部分。"><a href="#长参数和短参数都是存储在Option实例中。详见API部分。" class="headerlink" title="长参数和短参数都是存储在Option实例中。详见API部分。"></a>长参数和短参数都是存储在Option实例中。详见API部分。</h5><h5 id="另一种方法是为你的Command类定义一个get——options方法，这将在希望依赖运行实例返回值来得到参数时非常有效。"><a href="#另一种方法是为你的Command类定义一个get——options方法，这将在希望依赖运行实例返回值来得到参数时非常有效。" class="headerlink" title="另一种方法是为你的Command类定义一个get——options方法，这将在希望依赖运行实例返回值来得到参数时非常有效。"></a>另一种方法是为你的Command类定义一个get——options方法，这将在希望依赖运行实例返回值来得到参数时非常有效。</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Hello</span><span class="params">(Command)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, default_name=<span class="string">'Joe'</span>)</span>:</span></span><br><span class="line">        self.default_name=default_name</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_options</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> [</span><br><span class="line">            Option(<span class="string">'-n'</span>, <span class="string">'--name'</span>, dest=<span class="string">'name'</span>, default=self.default_name),</span><br><span class="line">        ]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self, name)</span>:</span></span><br><span class="line">        <span class="keyword">print</span> <span class="string">"hello"</span>,  name</span><br></pre></td></tr></table></figure>
+<h5 id="若使用-command修饰符，参数将直接自动的从函数的参数中获取："><a href="#若使用-command修饰符，参数将直接自动的从函数的参数中获取：" class="headerlink" title="若使用@command修饰符，参数将直接自动的从函数的参数中获取："></a>若使用@command修饰符，参数将直接自动的从函数的参数中获取：</h5><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@manager.command</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">(name)</span>:</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"hello"</span>, name</span><br><span class="line">```    </span><br><span class="line"></span><br><span class="line">&gt; python manage.py hello Joe</span><br><span class="line">&gt; hello Joe</span><br><span class="line"></span><br><span class="line"><span class="comment">##### 或者使用可选参数：</span></span><br><span class="line">```python</span><br><span class="line"><span class="meta">@manager.command</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">(name=<span class="string">"Fred"</span>)</span></span></span><br><span class="line">	print hello, name</span><br></pre></td></tr></table></figure>
+<h5 id="调用方法如下："><a href="#调用方法如下：" class="headerlink" title="调用方法如下："></a>调用方法如下：</h5><blockquote>
+<p>python manage.py hello –name=Joe<br>hello Joe</p>
+</blockquote>
+<h5 id="或者："><a href="#或者：" class="headerlink" title="或者："></a>或者：</h5><blockquote>
+<p>python manage.py hello -n Joe<br>hello Joe</p>
+</blockquote>
+<h5 id="这里需要注意："><a href="#这里需要注意：" class="headerlink" title="这里需要注意："></a>这里需要注意：</h5><h5 id="n-是由参数的第一个字母决定的。所以”name”-gt-“-n”"><a href="#n-是由参数的第一个字母决定的。所以”name”-gt-“-n”" class="headerlink" title="-n 是由参数的第一个字母决定的。所以”name” &gt; “-n”"></a>-n 是由参数的第一个字母决定的。所以”name” &gt; “-n”</h5><h5 id="其次，-h选项通常输出命令的帮助文档，所以避免使用h开头的参数。"><a href="#其次，-h选项通常输出命令的帮助文档，所以避免使用h开头的参数。" class="headerlink" title="其次，-h选项通常输出命令的帮助文档，所以避免使用h开头的参数。"></a>其次，-h选项通常输出命令的帮助文档，所以避免使用h开头的参数。</h5><h5 id="同时，需要注意选项参数是boolean值，例如："><a href="#同时，需要注意选项参数是boolean值，例如：" class="headerlink" title="同时，需要注意选项参数是boolean值，例如："></a>同时，需要注意选项参数是boolean值，例如：</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@manage.command</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">verify</span><span class="params">(verified=False)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Checks if verified</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"VERIFIED?"</span>, <span class="string">"YES"</span> <span class="keyword">if</span> verified <span class="keyword">else</span> <span class="string">"NO"</span></span><br></pre></td></tr></table></figure>
+<h5 id="只能这样调用："><a href="#只能这样调用：" class="headerlink" title="只能这样调用："></a>只能这样调用：</h5><blockquote>
+<p>python manage.py verify<br>VERIFIED? NO</p>
+</blockquote>
+<blockquote>
+<p>python manage.py verify -v<br>VERIFIED? YES</p>
+</blockquote>
+<blockquote>
+<p>python manage.py verify –verified<br>VERIFIED? YES</p>
+</blockquote>
+<h5 id="command修饰符随便简单好用，但在复杂情况下，-option是更好的选择："><a href="#command修饰符随便简单好用，但在复杂情况下，-option是更好的选择：" class="headerlink" title="@command修饰符随便简单好用，但在复杂情况下，@option是更好的选择："></a>@command修饰符随便简单好用，但在复杂情况下，@option是更好的选择：</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@manager.option('-n', '--name', dest='name', default='joe')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">(name)</span>:</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"hello"</span>, name</span><br><span class="line">```    </span><br><span class="line"><span class="comment">##### 可以增加更多的选项参数：</span></span><br><span class="line">```python</span><br><span class="line"><span class="meta">@manager.option('-n', '--name', dest='name', default='joe')</span></span><br><span class="line"><span class="meta">@manager.option('-u', '--url', dest='url', default=None)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">(name, url)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> url <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"hello"</span>, name</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"hello"</span>, name, <span class="string">"from"</span>, url</span><br></pre></td></tr></table></figure>
+<h5 id="可以这样调用："><a href="#可以这样调用：" class="headerlink" title="可以这样调用："></a>可以这样调用：</h5><blockquote>
+<p>python manage.py hello -n Joe -u reddit.com hello Joe from reddit.com</p>
+</blockquote>
+<h5 id="或者：-1"><a href="#或者：-1" class="headerlink" title="或者："></a>或者：</h5><blockquote>
+<p>python manage.py hello –name=Joe –url=reddit.com<br>hello Joe from reddit.com</p>
+</blockquote>
+<hr>
+<hr>
+<h1 id="向manager加入配置项"><a href="#向manager加入配置项" class="headerlink" title="向manager加入配置项"></a>向manager加入配置项</h1><hr>
+<h5 id="配置项也可以传给Manager实例。这是你可以设置传给Flask应用的配置项以便一条命令即可完成。例如，你可以使用一个标-志来为你的应用设置配置文件。例如："><a href="#配置项也可以传给Manager实例。这是你可以设置传给Flask应用的配置项以便一条命令即可完成。例如，你可以使用一个标-志来为你的应用设置配置文件。例如：" class="headerlink" title="配置项也可以传给Manager实例。这是你可以设置传给Flask应用的配置项以便一条命令即可完成。例如，你可以使用一个标 志来为你的应用设置配置文件。例如："></a>配置项也可以传给Manager实例。这是你可以设置传给Flask应用的配置项以便一条命令即可完成。例如，你可以使用一个标 志来为你的应用设置配置文件。例如：</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_app</span><span class="params">(config=None)</span>:</span></span><br><span class="line"></span><br><span class="line">    app = Flask(__name__)</span><br><span class="line">    <span class="keyword">if</span> config <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">        app.config.from_pyfile(config)</span><br><span class="line">    <span class="comment"># configure your app...</span></span><br><span class="line">    <span class="keyword">return</span> app</span><br></pre></td></tr></table></figure>
+<h5 id="可以使用命令行定义配置文件参数，例如使用一条命令设置数据库，可以根据生产环境和开发环境选用不同的配置文件。"><a href="#可以使用命令行定义配置文件参数，例如使用一条命令设置数据库，可以根据生产环境和开发环境选用不同的配置文件。" class="headerlink" title="可以使用命令行定义配置文件参数，例如使用一条命令设置数据库，可以根据生产环境和开发环境选用不同的配置文件。"></a>可以使用命令行定义配置文件参数，例如使用一条命令设置数据库，可以根据生产环境和开发环境选用不同的配置文件。</h5><h5 id="为实现传配置参数，可以使用add-option-方法，这和Option的参数一样。"><a href="#为实现传配置参数，可以使用add-option-方法，这和Option的参数一样。" class="headerlink" title="为实现传配置参数，可以使用add_option()方法，这和Option的参数一样。"></a>为实现传配置参数，可以使用add_option()方法，这和Option的参数一样。</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">manager.add_option(&apos;-c&apos;, &apos;--config&apos;, dest=&apos;config&apos;, required=False)</span><br></pre></td></tr></table></figure>
+<h5 id="同其他Flask-Script配置一样，可以在任何地方使用上面的语句，但确保在manager-run-之前执行。"><a href="#同其他Flask-Script配置一样，可以在任何地方使用上面的语句，但确保在manager-run-之前执行。" class="headerlink" title="同其他Flask-Script配置一样，可以在任何地方使用上面的语句，但确保在manager.run()之前执行。"></a>同其他Flask-Script配置一样，可以在任何地方使用上面的语句，但确保在manager.run()之前执行。</h5><h5 id="假设你有下面的命令："><a href="#假设你有下面的命令：" class="headerlink" title="假设你有下面的命令："></a>假设你有下面的命令：</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@manager.command</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">(name)</span>:</span></span><br><span class="line">    uppercase = app.config.get(<span class="string">'USE_UPPERCASE'</span>, <span class="keyword">False</span>)</span><br><span class="line">    <span class="keyword">if</span> uppercase:</span><br><span class="line">        name = name.upper()</span><br><span class="line">    <span class="keyword">print</span> hello, name</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>python manage.py hello joe -c dev.cfg<br>hello JOE</p>
+</blockquote>
+<h5 id="注意，”config“选项并没有传给上面的hello命令。"><a href="#注意，”config“选项并没有传给上面的hello命令。" class="headerlink" title="注意，”config“选项并没有传给上面的hello命令。"></a>注意，”config“选项并没有传给上面的hello命令。</h5><h5 id="为保证manage的选项能正常工作，需要传一个工厂函数给Manager的构造器，而不是一个Flask实例。上面既是可以简单的示-例。"><a href="#为保证manage的选项能正常工作，需要传一个工厂函数给Manager的构造器，而不是一个Flask实例。上面既是可以简单的示-例。" class="headerlink" title="为保证manage的选项能正常工作，需要传一个工厂函数给Manager的构造器，而不是一个Flask实例。上面既是可以简单的示 例。"></a>为保证manage的选项能正常工作，需要传一个工厂函数给Manager的构造器，而不是一个Flask实例。上面既是可以简单的示 例。</h5><hr>
+<hr>
+<h1 id="获取用户输入"><a href="#获取用户输入" class="headerlink" title="获取用户输入"></a>获取用户输入</h1><hr>
+<h5 id="Flask-Script拥有一组helper函数来获取用户在命令行中的输入，例如："><a href="#Flask-Script拥有一组helper函数来获取用户在命令行中的输入，例如：" class="headerlink" title="Flask-Script拥有一组helper函数来获取用户在命令行中的输入，例如："></a>Flask-Script拥有一组helper函数来获取用户在命令行中的输入，例如：</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask.ext.script <span class="keyword">import</span> Manager, prompt_bool</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> myapp <span class="keyword">import</span> app</span><br><span class="line"><span class="keyword">from</span> myapp.models <span class="keyword">import</span> db</span><br><span class="line"></span><br><span class="line">manager = Manager(app)</span><br><span class="line"></span><br><span class="line"><span class="meta">@manager.command</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dropdb</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">if</span> prompt_bool(</span><br><span class="line">        <span class="string">"Are you sure you want to lose all your data"</span>):</span><br><span class="line">        db.drop_all()</span><br></pre></td></tr></table></figure>
+<h5 id="执行如下："><a href="#执行如下：" class="headerlink" title="执行如下："></a>执行如下：</h5><blockquote>
+<p>python manage.py dropdb<br>Are you sure you want to lose all your data ? [N]</p>
+</blockquote>
+<p>#####从下文API中获取更多关于prompt functions的内容。</p>
+<hr>
+<hr>
+<h1 id="默认命令"><a href="#默认命令" class="headerlink" title="默认命令"></a>默认命令</h1><hr>
+<h5 id="Flask-Script拥有一对预设的命令，你可以加入或者定制：Server-and-Shell。"><a href="#Flask-Script拥有一对预设的命令，你可以加入或者定制：Server-and-Shell。" class="headerlink" title="Flask-Script拥有一对预设的命令，你可以加入或者定制：Server and Shell。"></a>Flask-Script拥有一对预设的命令，你可以加入或者定制：Server and Shell。</h5><h5 id="Server命令运行Flask的开发server，它带有一个可选的端口参数，默认是5000。"><a href="#Server命令运行Flask的开发server，它带有一个可选的端口参数，默认是5000。" class="headerlink" title="Server命令运行Flask的开发server，它带有一个可选的端口参数，默认是5000。"></a>Server命令运行Flask的开发server，它带有一个可选的端口参数，默认是5000。</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask.ext.script <span class="keyword">import</span> Server, Manager</span><br><span class="line"><span class="keyword">from</span> myapp <span class="keyword">import</span> create_app</span><br><span class="line"></span><br><span class="line">manager = Manager(create_app)</span><br><span class="line">manager.add_command(<span class="string">"runserver"</span>, Server())</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    manager.run()</span><br></pre></td></tr></table></figure>
+<h5 id="运行如下："><a href="#运行如下：" class="headerlink" title="运行如下："></a>运行如下：</h5><blockquote>
+<p>python manage.py runserver</p>
+</blockquote>
+<h5 id="Server命令有一组命令行参数，运行python-manage-py-runserver-h-获取详细信息。你也可以在构造函数中重新定义默认-行为："><a href="#Server命令有一组命令行参数，运行python-manage-py-runserver-h-获取详细信息。你也可以在构造函数中重新定义默认-行为：" class="headerlink" title="Server命令有一组命令行参数，运行python manage.py runserver -h 获取详细信息。你也可以在构造函数中重新定义默认 行为："></a>Server命令有一组命令行参数，运行python manage.py runserver -h 获取详细信息。你也可以在构造函数中重新定义默认 行为：</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">server = Server(host=&quot;0.0.0.0&quot;, port=9000)</span><br></pre></td></tr></table></figure>
+<h5 id="无需赘言，开发Server不是为生产环境准备的。"><a href="#无需赘言，开发Server不是为生产环境准备的。" class="headerlink" title="无需赘言，开发Server不是为生产环境准备的。"></a>无需赘言，开发Server不是为生产环境准备的。</h5><h5 id="Shell名令启动一个Python-shell。可以穿进去一个make-context参数，这个参数必须是一个字典。默认情况下，将返回你的-Flask应用实例。"><a href="#Shell名令启动一个Python-shell。可以穿进去一个make-context参数，这个参数必须是一个字典。默认情况下，将返回你的-Flask应用实例。" class="headerlink" title="Shell名令启动一个Python shell。可以穿进去一个make_context参数，这个参数必须是一个字典。默认情况下，将返回你的 Flask应用实例。"></a>Shell名令启动一个Python shell。可以穿进去一个make_context参数，这个参数必须是一个字典。默认情况下，将返回你的 Flask应用实例。</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> app</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> flask.ext.script <span class="keyword">import</span> Shell, Manager</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> myapp <span class="keyword">import</span> app</span><br><span class="line"><span class="keyword">from</span> myapp <span class="keyword">import</span> models</span><br><span class="line"><span class="keyword">from</span> myapp.models <span class="keyword">import</span> db</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_make_context</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> dict(app=app, db=db, models=models)</span><br><span class="line"></span><br><span class="line">manager = Manager(create_app)</span><br><span class="line">manager.add_command(<span class="string">"shell"</span>, Shell(make_context=_make_context))</span><br></pre></td></tr></table></figure>
+<h5 id="这将对于你希望在shell引入一组默认的包非常有利，无需再输入很多import语句。"><a href="#这将对于你希望在shell引入一组默认的包非常有利，无需再输入很多import语句。" class="headerlink" title="这将对于你希望在shell引入一组默认的包非常有利，无需再输入很多import语句。"></a>这将对于你希望在shell引入一组默认的包非常有利，无需再输入很多import语句。</h5><h5 id="Shell命令将使用IPthon，如果安装了的话。否则，默认使用标准Python-shell。你可以用两种方法关闭这一-行为：传use-ipython参数给Shell构造器，或者在命令行中传标记–no-ipython。"><a href="#Shell命令将使用IPthon，如果安装了的话。否则，默认使用标准Python-shell。你可以用两种方法关闭这一-行为：传use-ipython参数给Shell构造器，或者在命令行中传标记–no-ipython。" class="headerlink" title="Shell命令将使用IPthon，如果安装了的话。否则，默认使用标准Python shell。你可以用两种方法关闭这一 行为：传use_ipython参数给Shell构造器，或者在命令行中传标记–no-ipython。"></a>Shell命令将使用IPthon，如果安装了的话。否则，默认使用标准Python shell。你可以用两种方法关闭这一 行为：传use_ipython参数给Shell构造器，或者在命令行中传标记–no-ipython。</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shell = Shell(use_ipython=<span class="keyword">False</span>)</span><br></pre></td></tr></table></figure>
+<h5 id="也有一个shell修饰符，你可以在函数上下文中使用。"><a href="#也有一个shell修饰符，你可以在函数上下文中使用。" class="headerlink" title="也有一个shell修饰符，你可以在函数上下文中使用。"></a>也有一个shell修饰符，你可以在函数上下文中使用。</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@manager.shell</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">make_shell_context</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> dict(app=app, db=db, models=models)</span><br></pre></td></tr></table></figure>
+<h5 id="这将使这个命令成为shell的默认执行的命令。"><a href="#这将使这个命令成为shell的默认执行的命令。" class="headerlink" title="这将使这个命令成为shell的默认执行的命令。"></a>这将使这个命令成为shell的默认执行的命令。</h5><blockquote>
+<p>python manage.py shell</p>
+</blockquote>
+<h5 id="默认命令shell和runserver是默认引入的，并且带有这两个命令的默认选项。若你想用其他命令替代默认的命令，只要重写-add-command-或者修饰符。若你传给Manager的构造器一个with-default-commands-False参数，则这些命令不会被载入。"><a href="#默认命令shell和runserver是默认引入的，并且带有这两个命令的默认选项。若你想用其他命令替代默认的命令，只要重写-add-command-或者修饰符。若你传给Manager的构造器一个with-default-commands-False参数，则这些命令不会被载入。" class="headerlink" title="默认命令shell和runserver是默认引入的，并且带有这两个命令的默认选项。若你想用其他命令替代默认的命令，只要重写 add_command()或者修饰符。若你传给Manager的构造器一个with_default_commands=False参数，则这些命令不会被载入。"></a>默认命令shell和runserver是默认引入的，并且带有这两个命令的默认选项。若你想用其他命令替代默认的命令，只要重写 add_command()或者修饰符。若你传给Manager的构造器一个with_default_commands=False参数，则这些命令不会被载入。</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">manager = Manager(app, with_default_commands=<span class="keyword">False</span>)</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/python/" rel="tag"><i class="fa fa-tag"></i> python</a>
+            
+              <a href="/tags/flask/" rel="tag"><i class="fa fa-tag"></i> flask</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2018/02/12/flask的外部脚本的使用/" rel="next" title="flask的外部脚本的使用">
+                  <i class="fa fa-chevron-left"></i> flask的外部脚本的使用
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2018/02/12/flask连接mysql数据库/" rel="prev" title="flask连接mysql数据库">
+                  flask连接mysql数据库 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc" data-target="post-toc-wrap">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Flask扩展flask-script文档中文翻译"><span class="nav-number">1.</span> <span class="nav-text">Flask扩展flask-script文档中文翻译</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Flask-Script扩展提供向Flask插入外部脚本的功能。包括运行一个开发用的服务器，一个定制的-Python-shell，设置数据库的脚本，cronjobs，以及其他的运行在web应用之外的命令行任务。"><span class="nav-number">1.0.0.0.1.</span> <span class="nav-text">Flask-Script扩展提供向Flask插入外部脚本的功能。包括运行一个开发用的服务器，一个定制的 Python shell，设置数据库的脚本，cronjobs，以及其他的运行在web应用之外的命令行任务。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Flask-Script和Flask本身的工作方式类似。只需要定义和添加能从命令行中被Manager实例调用的命令即可。"><span class="nav-number">1.0.0.0.2.</span> <span class="nav-text">Flask-Script和Flask本身的工作方式类似。只需要定义和添加能从命令行中被Manager实例调用的命令即可。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#只要像上面一样定义你自己的命令脚本，就可以在命令行中如下调用他们："><span class="nav-number">1.0.0.0.3.</span> <span class="nav-text">只要像上面一样定义你自己的命令脚本，就可以在命令行中如下调用他们：</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装Flask-Script"><span class="nav-number">2.</span> <span class="nav-text">安装Flask-Script</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#可以使用pip或者easy-install安装："><span class="nav-number">2.0.0.0.1.</span> <span class="nav-text">可以使用pip或者easy_install安装：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#或者下载最新开发版本："><span class="nav-number">2.0.0.0.2.</span> <span class="nav-text">或者下载最新开发版本：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#如果你使用virtualenv，需保证把Flask-Script和你的Flask应用安装在同一virtualenv环境下"><span class="nav-number">2.0.0.0.3.</span> <span class="nav-text">如果你使用virtualenv，需保证把Flask-Script和你的Flask应用安装在同一virtualenv环境下</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建并且运行命令"><span class="nav-number">3.</span> <span class="nav-text">创建并且运行命令</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#首先，创建一个Python模块运行你的命令脚本。可以任意起名，例如manage-py。"><span class="nav-number">3.0.0.0.1.</span> <span class="nav-text">首先，创建一个Python模块运行你的命令脚本。可以任意起名，例如manage.py。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#无需把所有的命令都放在同一个文件里，例如，在一个大型项目中，可以把相关联的命令放在不同的文件里。"><span class="nav-number">3.0.0.0.2.</span> <span class="nav-text">无需把所有的命令都放在同一个文件里，例如，在一个大型项目中，可以把相关联的命令放在不同的文件里。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#在你的manage-py文件中，必须有一个Manager实例。Manager类将追踪所有的在命令行中调用的命令和处理过程的调用运行-情况"><span class="nav-number">3.0.0.0.3.</span> <span class="nav-text">在你的manage.py文件中，必须有一个Manager实例。Manager类将追踪所有的在命令行中调用的命令和处理过程的调用运行 情况:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#调用-manager-run-将启动Manger实例接收命令行中的命令。"><span class="nav-number">3.0.0.0.4.</span> <span class="nav-text">调用 manager.run()将启动Manger实例接收命令行中的命令。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Manager只有一个参数：一个Flask实例。如果你想用工场模式，那也可以是一个函数或者其他的返回Flask实例的玩意儿。"><span class="nav-number">3.0.0.0.5.</span> <span class="nav-text">Manager只有一个参数：一个Flask实例。如果你想用工场模式，那也可以是一个函数或者其他的返回Flask实例的玩意儿。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#其次，创建并且加入命令。有三种方法可创建命令："><span class="nav-number">3.0.0.0.6.</span> <span class="nav-text">其次，创建并且加入命令。有三种方法可创建命令：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#创建Command的子类"><span class="nav-number">3.0.0.0.7.</span> <span class="nav-text">创建Command的子类</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#使用-command-修饰符"><span class="nav-number">3.0.0.0.8.</span> <span class="nav-text">使用 @command 修饰符</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#使用-option-修饰符"><span class="nav-number">3.0.0.0.9.</span> <span class="nav-text">使用 @option 修饰符</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#下面是一个简单的例子，创建一个Hello命令，该命令只是简单的输出“hello-word”。"><span class="nav-number">3.0.0.0.10.</span> <span class="nav-text">下面是一个简单的例子，创建一个Hello命令，该命令只是简单的输出“hello word”。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#再把上面创建的Hello命令加入Manager实例："><span class="nav-number">3.0.0.0.11.</span> <span class="nav-text">再把上面创建的Hello命令加入Manager实例：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#很明显，上面的语句需要在manager-run-之前运行。现在执行下面的命令："><span class="nav-number">3.0.0.0.12.</span> <span class="nav-text">很明显，上面的语句需要在manager.run()之前运行。现在执行下面的命令：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#也可传给Command实例的run方法一个字典："><span class="nav-number">3.0.0.0.13.</span> <span class="nav-text">也可传给Command实例的run方法一个字典：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Command-class-必须定义一个run方法。定义的位置和参数依赖于你的定义的命令的参数。详见下文。"><span class="nav-number">3.0.0.0.14.</span> <span class="nav-text">Command class 必须定义一个run方法。定义的位置和参数依赖于你的定义的命令的参数。详见下文。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#运行下面的命令获取可以使用的命令及其描述的列表："><span class="nav-number">3.0.0.0.15.</span> <span class="nav-text">运行下面的命令获取可以使用的命令及其描述的列表：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#通过运行下面的命令获取一个特定命令的帮助-这将输出这个命令的docstring。"><span class="nav-number">3.0.0.0.16.</span> <span class="nav-text">通过运行下面的命令获取一个特定命令的帮助,这将输出这个命令的docstring。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#上面的第一种方法是最适用的，但也是最麻烦的。对于简单的命令，只需要使用Command实例的-command修饰符。"><span class="nav-number">3.0.0.0.17.</span> <span class="nav-text">上面的第一种方法是最适用的，但也是最麻烦的。对于简单的命令，只需要使用Command实例的@command修饰符。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#这种方法创建的命令的运行方式和Command类创建的运行方式是相同的。"><span class="nav-number">3.0.0.0.18.</span> <span class="nav-text">这种方法创建的命令的运行方式和Command类创建的运行方式是相同的。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#如果用Comman类来实现，下面的命令将输出manage类的docstring："><span class="nav-number">3.0.0.0.19.</span> <span class="nav-text">如果用Comman类来实现，下面的命令将输出manage类的docstring：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#最后，-option修饰符适用于更精细的命令行控制："><span class="nav-number">3.0.0.0.20.</span> <span class="nav-text">最后，@option修饰符适用于更精细的命令行控制：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#后面会有更详细的对-option的介绍。"><span class="nav-number">3.0.0.0.21.</span> <span class="nav-text">后面会有更详细的对@option的介绍。</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#增加命令行参数"><span class="nav-number">4.</span> <span class="nav-text">增加命令行参数</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#或者短参数："><span class="nav-number">4.0.0.0.1.</span> <span class="nav-text">或者短参数：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#为实现这一功能，需要使用Command类的option-list属性。"><span class="nav-number">4.0.0.0.2.</span> <span class="nav-text">为实现这一功能，需要使用Command类的option_list属性。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#长参数和短参数都是存储在Option实例中。详见API部分。"><span class="nav-number">4.0.0.0.3.</span> <span class="nav-text">长参数和短参数都是存储在Option实例中。详见API部分。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#另一种方法是为你的Command类定义一个get——options方法，这将在希望依赖运行实例返回值来得到参数时非常有效。"><span class="nav-number">4.0.0.0.4.</span> <span class="nav-text">另一种方法是为你的Command类定义一个get——options方法，这将在希望依赖运行实例返回值来得到参数时非常有效。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#若使用-command修饰符，参数将直接自动的从函数的参数中获取："><span class="nav-number">4.0.0.0.5.</span> <span class="nav-text">若使用@command修饰符，参数将直接自动的从函数的参数中获取：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#调用方法如下："><span class="nav-number">4.0.0.0.6.</span> <span class="nav-text">调用方法如下：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#或者："><span class="nav-number">4.0.0.0.7.</span> <span class="nav-text">或者：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#这里需要注意："><span class="nav-number">4.0.0.0.8.</span> <span class="nav-text">这里需要注意：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#n-是由参数的第一个字母决定的。所以”name”-gt-“-n”"><span class="nav-number">4.0.0.0.9.</span> <span class="nav-text">-n 是由参数的第一个字母决定的。所以”name” &gt; “-n”</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#其次，-h选项通常输出命令的帮助文档，所以避免使用h开头的参数。"><span class="nav-number">4.0.0.0.10.</span> <span class="nav-text">其次，-h选项通常输出命令的帮助文档，所以避免使用h开头的参数。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#同时，需要注意选项参数是boolean值，例如："><span class="nav-number">4.0.0.0.11.</span> <span class="nav-text">同时，需要注意选项参数是boolean值，例如：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#只能这样调用："><span class="nav-number">4.0.0.0.12.</span> <span class="nav-text">只能这样调用：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#command修饰符随便简单好用，但在复杂情况下，-option是更好的选择："><span class="nav-number">4.0.0.0.13.</span> <span class="nav-text">@command修饰符随便简单好用，但在复杂情况下，@option是更好的选择：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#可以这样调用："><span class="nav-number">4.0.0.0.14.</span> <span class="nav-text">可以这样调用：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#或者：-1"><span class="nav-number">4.0.0.0.15.</span> <span class="nav-text">或者：</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#向manager加入配置项"><span class="nav-number">5.</span> <span class="nav-text">向manager加入配置项</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#配置项也可以传给Manager实例。这是你可以设置传给Flask应用的配置项以便一条命令即可完成。例如，你可以使用一个标-志来为你的应用设置配置文件。例如："><span class="nav-number">5.0.0.0.1.</span> <span class="nav-text">配置项也可以传给Manager实例。这是你可以设置传给Flask应用的配置项以便一条命令即可完成。例如，你可以使用一个标 志来为你的应用设置配置文件。例如：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#可以使用命令行定义配置文件参数，例如使用一条命令设置数据库，可以根据生产环境和开发环境选用不同的配置文件。"><span class="nav-number">5.0.0.0.2.</span> <span class="nav-text">可以使用命令行定义配置文件参数，例如使用一条命令设置数据库，可以根据生产环境和开发环境选用不同的配置文件。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#为实现传配置参数，可以使用add-option-方法，这和Option的参数一样。"><span class="nav-number">5.0.0.0.3.</span> <span class="nav-text">为实现传配置参数，可以使用add_option()方法，这和Option的参数一样。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#同其他Flask-Script配置一样，可以在任何地方使用上面的语句，但确保在manager-run-之前执行。"><span class="nav-number">5.0.0.0.4.</span> <span class="nav-text">同其他Flask-Script配置一样，可以在任何地方使用上面的语句，但确保在manager.run()之前执行。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#假设你有下面的命令："><span class="nav-number">5.0.0.0.5.</span> <span class="nav-text">假设你有下面的命令：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#注意，”config“选项并没有传给上面的hello命令。"><span class="nav-number">5.0.0.0.6.</span> <span class="nav-text">注意，”config“选项并没有传给上面的hello命令。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#为保证manage的选项能正常工作，需要传一个工厂函数给Manager的构造器，而不是一个Flask实例。上面既是可以简单的示-例。"><span class="nav-number">5.0.0.0.7.</span> <span class="nav-text">为保证manage的选项能正常工作，需要传一个工厂函数给Manager的构造器，而不是一个Flask实例。上面既是可以简单的示 例。</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#获取用户输入"><span class="nav-number">6.</span> <span class="nav-text">获取用户输入</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Flask-Script拥有一组helper函数来获取用户在命令行中的输入，例如："><span class="nav-number">6.0.0.0.1.</span> <span class="nav-text">Flask-Script拥有一组helper函数来获取用户在命令行中的输入，例如：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#执行如下："><span class="nav-number">6.0.0.0.2.</span> <span class="nav-text">执行如下：</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#默认命令"><span class="nav-number">7.</span> <span class="nav-text">默认命令</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Flask-Script拥有一对预设的命令，你可以加入或者定制：Server-and-Shell。"><span class="nav-number">7.0.0.0.1.</span> <span class="nav-text">Flask-Script拥有一对预设的命令，你可以加入或者定制：Server and Shell。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Server命令运行Flask的开发server，它带有一个可选的端口参数，默认是5000。"><span class="nav-number">7.0.0.0.2.</span> <span class="nav-text">Server命令运行Flask的开发server，它带有一个可选的端口参数，默认是5000。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#运行如下："><span class="nav-number">7.0.0.0.3.</span> <span class="nav-text">运行如下：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Server命令有一组命令行参数，运行python-manage-py-runserver-h-获取详细信息。你也可以在构造函数中重新定义默认-行为："><span class="nav-number">7.0.0.0.4.</span> <span class="nav-text">Server命令有一组命令行参数，运行python manage.py runserver -h 获取详细信息。你也可以在构造函数中重新定义默认 行为：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#无需赘言，开发Server不是为生产环境准备的。"><span class="nav-number">7.0.0.0.5.</span> <span class="nav-text">无需赘言，开发Server不是为生产环境准备的。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Shell名令启动一个Python-shell。可以穿进去一个make-context参数，这个参数必须是一个字典。默认情况下，将返回你的-Flask应用实例。"><span class="nav-number">7.0.0.0.6.</span> <span class="nav-text">Shell名令启动一个Python shell。可以穿进去一个make_context参数，这个参数必须是一个字典。默认情况下，将返回你的 Flask应用实例。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#这将对于你希望在shell引入一组默认的包非常有利，无需再输入很多import语句。"><span class="nav-number">7.0.0.0.7.</span> <span class="nav-text">这将对于你希望在shell引入一组默认的包非常有利，无需再输入很多import语句。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Shell命令将使用IPthon，如果安装了的话。否则，默认使用标准Python-shell。你可以用两种方法关闭这一-行为：传use-ipython参数给Shell构造器，或者在命令行中传标记–no-ipython。"><span class="nav-number">7.0.0.0.8.</span> <span class="nav-text">Shell命令将使用IPthon，如果安装了的话。否则，默认使用标准Python shell。你可以用两种方法关闭这一 行为：传use_ipython参数给Shell构造器，或者在命令行中传标记–no-ipython。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#也有一个shell修饰符，你可以在函数上下文中使用。"><span class="nav-number">7.0.0.0.9.</span> <span class="nav-text">也有一个shell修饰符，你可以在函数上下文中使用。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#这将使这个命令成为shell的默认执行的命令。"><span class="nav-number">7.0.0.0.10.</span> <span class="nav-text">这将使这个命令成为shell的默认执行的命令。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#默认命令shell和runserver是默认引入的，并且带有这两个命令的默认选项。若你想用其他命令替代默认的命令，只要重写-add-command-或者修饰符。若你传给Manager的构造器一个with-default-commands-False参数，则这些命令不会被载入。"><span class="nav-number">7.0.0.0.11.</span> <span class="nav-text">默认命令shell和runserver是默认引入的，并且带有这两个命令的默认选项。若你想用其他命令替代默认的命令，只要重写 add_command()或者修饰符。若你传给Manager的构造器一个with_default_commands=False参数，则这些命令不会被载入。</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.png"
+      alt="随我">
+  <p class="site-author-name" itemprop="name">随我</p>
+  <div class="site-description" itemprop="description">用心做自己喜欢的事</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">98</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">77</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/ZhangJia97" title="GitHub &rarr; https://github.com/ZhangJia97" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:isuiwo@qq.com" title="E-Mail &rarr; mailto:isuiwo@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">随我</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.7.1</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共107.1k字</span>
+</div>
+
+<div class="BbeiAn-info">
+    <a target="_blank" href="http://beian.miit.gov.cn" rel="nofollow">豫ICP备18013715号-1</a> <!--a标签中增加nofollow属性，避免爬虫出站。-->
+</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.3.0"></script><script src="/js/motion.js?v=7.3.0"></script>
+<script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

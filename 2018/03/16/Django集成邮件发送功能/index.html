@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.ico?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.ico?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.ico?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.ico?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="由于之前的一些情况，为了防止有人用无效邮箱进行注册，所以这次在报名时添加了邮箱发送以及验证功能，用于验证邮箱是否有效，当然了，在强大的Django之下，集成邮件功能并不难，接下来我们看一下如何有效的在Django中集成邮件功能吧">
+<meta name="keywords" content="python,Django">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django集成邮件发送功能">
+<meta property="og:url" content="http://suiwo.xyz/2018/03/16/Django集成邮件发送功能/index.html">
+<meta property="og:site_name" content="随我的博客">
+<meta property="og:description" content="由于之前的一些情况，为了防止有人用无效邮箱进行注册，所以这次在报名时添加了邮箱发送以及验证功能，用于验证邮箱是否有效，当然了，在强大的Django之下，集成邮件功能并不难，接下来我们看一下如何有效的在Django中集成邮件功能吧">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-11-16T13:24:10.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Django集成邮件发送功能">
+<meta name="twitter:description" content="由于之前的一些情况，为了防止有人用无效邮箱进行注册，所以这次在报名时添加了邮箱发送以及验证功能，用于验证邮箱是否有效，当然了，在强大的Django之下，集成邮件功能并不难，接下来我们看一下如何有效的在Django中集成邮件功能吧">
+  <link rel="alternate" href="/atom.xml" title="随我的博客" type="application/atom+xml">
+  <link rel="canonical" href="http://suiwo.xyz/2018/03/16/Django集成邮件发送功能/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Django集成邮件发送功能 | 随我的博客</title>
+  <meta name="generator" content="Hexo 3.7.1">
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a href="https://github.com/ZhangJia97" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">随我的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录学习的点滴</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2018/03/16/Django集成邮件发送功能/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="随我">
+      <meta itemprop="description" content="用心做自己喜欢的事">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="随我的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Django集成邮件发送功能
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2018-03-16 22:58:19" itemprop="dateCreated datePublished" datetime="2018-03-16T22:58:19+08:00">2018-03-16</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2018-11-16 21:24:10" itemprop="dateModified" datetime="2018-11-16T21:24:10+08:00">2018-11-16</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Django/" itemprop="url" rel="index"><span itemprop="name">Django</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <div class="post-description">由于之前的一些情况，为了防止有人用无效邮箱进行注册，所以这次在报名时添加了邮箱发送以及验证功能，用于验证邮箱是否有效，当然了，在强大的Django之下，集成邮件功能并不难，接下来我们看一下如何有效的在Django中集成邮件功能吧</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="Django集成邮件发送功能"><a href="#Django集成邮件发送功能" class="headerlink" title="Django集成邮件发送功能"></a>Django集成邮件发送功能</h3><p>由于之前的一些情况，为了防止有人用无效邮箱进行注册，所以这次在报名时添加了邮箱发送以及验证功能，用于验证邮箱是否有效，当然了，在强大的Django之下，集成邮件功能并不难，接下来我们看一下如何有效的在Django中集成邮件功能吧</p>
+<hr>
+<h4 id="1-创建项目-（这里我就不赘述了，之前专门谢了一篇文章用于记录如何创建一个新的Django项目，传送门）"><a href="#1-创建项目-（这里我就不赘述了，之前专门谢了一篇文章用于记录如何创建一个新的Django项目，传送门）" class="headerlink" title="1.创建项目 （这里我就不赘述了，之前专门谢了一篇文章用于记录如何创建一个新的Django项目，传送门）"></a>1.创建项目 （这里我就不赘述了，之前专门谢了一篇文章用于记录如何创建一个新的Django项目，<a href="http://suiwo.xyz/2018/02/10/Django%E7%BD%91%E7%AB%99%E9%83%A8%E7%BD%B2%E5%89%8D%E6%9C%9F%E5%87%86%E5%A4%87/">传送门</a>）</h4><hr>
+<h4 id="2-在settings-py中配置与邮件相关的配置"><a href="#2-在settings-py中配置与邮件相关的配置" class="headerlink" title="2.在settings.py中配置与邮件相关的配置"></a>2.在settings.py中配置与邮件相关的配置</h4><p>代码如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">EMAIL_HOST = <span class="string">'smtp.qq.com'</span> <span class="comment">#邮箱服务商</span></span><br><span class="line">EMAIL_PORT = <span class="number">587</span> <span class="comment">#端口</span></span><br><span class="line">EMAIL_HOST_USER = <span class="string">'user'</span></span><br><span class="line">EMAIL_HOST_PASSWORD = <span class="string">'password'</span></span><br><span class="line">DEFAULT_FROM_EMAIL = <span class="string">'your Email Address'</span></span><br></pre></td></tr></table></figure></p>
+<p>只需要上面短短几行，就ok了，是不是很简单</p>
+<hr>
+<h4 id="3-邮件发送相关函数"><a href="#3-邮件发送相关函数" class="headerlink" title="3.邮件发送相关函数"></a>3.邮件发送相关函数</h4><p>models.py中添加邮箱验证相关类<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">EmailVerifyRecord</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    <span class="comment"># 验证码</span></span><br><span class="line">    code = models.CharField(max_length=<span class="number">20</span>, verbose_name=<span class="string">u"验证码"</span>)</span><br><span class="line">    email = models.EmailField(max_length=<span class="number">50</span>, verbose_name=<span class="string">u"邮箱"</span>)</span><br><span class="line">    <span class="comment"># 包含注册验证和找回验证</span></span><br><span class="line">    send_time = models.DateTimeField(verbose_name=<span class="string">u"发送时间"</span>, default=datetime.now)</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        verbose_name = <span class="string">u"邮箱验证码"</span></span><br><span class="line">        verbose_name_plural = verbose_name</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.email</span><br></pre></td></tr></table></figure></p>
+<p>验证码随机数生成函数<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 生成随机字符串用来验证邮箱</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">random_str</span><span class="params">(randomlength=<span class="number">8</span>)</span>:</span></span><br><span class="line">    str = <span class="string">''</span></span><br><span class="line">    chars = <span class="string">'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789'</span></span><br><span class="line">    length = len(chars) - <span class="number">1</span></span><br><span class="line">    random = Random()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(randomlength):</span><br><span class="line">        str += chars[random.randint(<span class="number">0</span>, length)]</span><br><span class="line">    <span class="keyword">return</span> str</span><br></pre></td></tr></table></figure></p>
+<p>邮箱发送函数<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sendEmail</span><span class="params">(email)</span>:</span></span><br><span class="line">    email_record = EmailVerifyRecord()</span><br><span class="line">    <span class="comment"># 将给用户发的信息保存在数据库中</span></span><br><span class="line">    code = random_str(<span class="number">16</span>) <span class="comment">#这个是生成验证连接的函数</span></span><br><span class="line">    email_record.code = code</span><br><span class="line">    email_record.email = email</span><br><span class="line">    email_record.save()</span><br><span class="line">    <span class="comment"># 初始化为空</span></span><br><span class="line">    email_title = <span class="string">""</span></span><br><span class="line">    email_body = <span class="string">""</span></span><br><span class="line">    email_title = <span class="string">"注册激活链接"</span></span><br><span class="line">    email_body = <span class="string">" 同学你好，欢迎参加本次计算机基础知识大赛，"</span>+<span class="string">"请点击下面的链接激活你的账号:http://127.0.0.1:8000/users/active/&#123;0&#125;"</span>.format(code)</span><br><span class="line">    <span class="comment"># 发送邮件</span></span><br><span class="line">    send_status = send_mail(email_title, email_body, DEFAULT_FROM_EMAIL, [email])</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h4 id="4-身份验证"><a href="#4-身份验证" class="headerlink" title="4.身份验证"></a>4.身份验证</h4><p>身份验证的url<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(<span class="string">r'^active/(?P&lt;active_code&gt;.*)/$'</span>, views.user_active, name=<span class="string">"user_active"</span>),  <span class="comment"># 提取出active后的所有字符赋给active_code</span></span><br></pre></td></tr></table></figure></p>
+<p>身份验证相关函数(通过url中传输的active_code，来判断是否验证成功)<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">user_active</span><span class="params">(request,active_code)</span>:</span></span><br><span class="line">    print(<span class="string">"可以1"</span>)</span><br><span class="line">    all_records = EmailVerifyRecord.objects.filter(code=active_code)</span><br><span class="line">    <span class="keyword">if</span> all_records:</span><br><span class="line">        <span class="keyword">for</span> record <span class="keyword">in</span> all_records:</span><br><span class="line">            email = record.email</span><br><span class="line">            <span class="comment"># 通过邮箱查找到对应的用户</span></span><br><span class="line">            user = models.User.objects.get(email=email)</span><br><span class="line">            <span class="comment"># 激活用户</span></span><br><span class="line">            user.is_active = <span class="keyword">True</span></span><br><span class="line">            user.save()</span><br><span class="line">        print(<span class="string">"可以"</span>)</span><br><span class="line">    print(<span class="string">"不行"</span>)</span><br></pre></td></tr></table></figure></p>
+<h4 id="5-总结"><a href="#5-总结" class="headerlink" title="5.总结"></a>5.总结</h4><blockquote>
+<p>通过上面的四步就可以把邮箱功能加入到Django项目中，为用户注册，密码找回等功能提供了一个验证本人身份的好方式<br>项目代码链接在这里<a href="https://github.com/ZhangJia97/sacc_sign" target="_blank" rel="noopener">传送门</a></p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/python/" rel="tag"><i class="fa fa-tag"></i> python</a>
+            
+              <a href="/tags/Django/" rel="tag"><i class="fa fa-tag"></i> Django</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2018/03/13/在搭建报名系统时遇到的django报错/" rel="next" title="在搭建报名系统时遇到的django报错">
+                  <i class="fa fa-chevron-left"></i> 在搭建报名系统时遇到的django报错
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2018/04/12/如何使用github+hexo搭建一个博客/" rel="prev" title="如何使用github+hexo搭建一个博客">
+                  如何使用github+hexo搭建一个博客 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc" data-target="post-toc-wrap">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Django集成邮件发送功能"><span class="nav-number">1.</span> <span class="nav-text">Django集成邮件发送功能</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-创建项目-（这里我就不赘述了，之前专门谢了一篇文章用于记录如何创建一个新的Django项目，传送门）"><span class="nav-number">1.1.</span> <span class="nav-text">1.创建项目 （这里我就不赘述了，之前专门谢了一篇文章用于记录如何创建一个新的Django项目，传送门）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-在settings-py中配置与邮件相关的配置"><span class="nav-number">1.2.</span> <span class="nav-text">2.在settings.py中配置与邮件相关的配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-邮件发送相关函数"><span class="nav-number">1.3.</span> <span class="nav-text">3.邮件发送相关函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-身份验证"><span class="nav-number">1.4.</span> <span class="nav-text">4.身份验证</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-总结"><span class="nav-number">1.5.</span> <span class="nav-text">5.总结</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.png"
+      alt="随我">
+  <p class="site-author-name" itemprop="name">随我</p>
+  <div class="site-description" itemprop="description">用心做自己喜欢的事</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">98</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">77</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/ZhangJia97" title="GitHub &rarr; https://github.com/ZhangJia97" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:isuiwo@qq.com" title="E-Mail &rarr; mailto:isuiwo@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">随我</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.7.1</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共107.1k字</span>
+</div>
+
+<div class="BbeiAn-info">
+    <a target="_blank" href="http://beian.miit.gov.cn" rel="nofollow">豫ICP备18013715号-1</a> <!--a标签中增加nofollow属性，避免爬虫出站。-->
+</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.3.0"></script><script src="/js/motion.js?v=7.3.0"></script>
+<script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
