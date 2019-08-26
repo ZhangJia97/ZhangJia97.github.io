@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,Springboot,Shiro," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="随我的博客" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Apache Shiro是一个强大且易用的Java安全框架,执行身份验证、授权、密码和会话管理。使用Shiro的易于理解的API,您可以快速、轻松地获得任何应用程序,从最小的移动应用程序到最大的网络和企业应用程序。">
+<meta name="keywords" content="Java,Springboot,Shiro">
+<meta property="og:type" content="article">
+<meta property="og:title" content="springboot集成Shiro">
+<meta property="og:url" content="http://suiwo.xyz/2019/07/20/springboot集成Shiro/index.html">
+<meta property="og:site_name" content="随我的博客">
+<meta property="og:description" content="Apache Shiro是一个强大且易用的Java安全框架,执行身份验证、授权、密码和会话管理。使用Shiro的易于理解的API,您可以快速、轻松地获得任何应用程序,从最小的移动应用程序到最大的网络和企业应用程序。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-31T08:46:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="springboot集成Shiro">
+<meta name="twitter:description" content="Apache Shiro是一个强大且易用的Java安全框架,执行身份验证、授权、密码和会话管理。使用Shiro的易于理解的API,您可以快速、轻松地获得任何应用程序,从最小的移动应用程序到最大的网络和企业应用程序。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://suiwo.xyz/2019/07/20/springboot集成Shiro/"/>
+
+
+
+
+
+  <title>springboot集成Shiro | 随我的博客</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">随我的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">记录学习的点滴</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-align-left"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2019/07/20/springboot集成Shiro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="随我">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="随我的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">springboot集成Shiro</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-20T15:55:45+08:00">
+                2019-07-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Springboot/" itemprop="url" rel="index">
+                    <span itemprop="name">Springboot</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  Apache Shiro是一个强大且易用的Java安全框架,执行身份验证、授权、密码和会话管理。使用Shiro的易于理解的API,您可以快速、轻松地获得任何应用程序,从最小的移动应用程序到最大的网络和企业应用程序。
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="一、介绍"><a href="#一、介绍" class="headerlink" title="一、介绍"></a>一、介绍</h2><h5 id="Apache-Shiro是一个强大且易用的Java安全框架-执行身份验证、授权、密码和会话管理。使用Shiro的易于理解的API-您可以快速、轻松地获得任何应用程序-从最小的移动应用程序到最大的网络和企业应用程序。本文是使用Shiro-JWT-Json-Web-Token-实现的，对于jwt部分有疑问的可以参考之前jwt相关文章，本博文中的一部分函数使用的是JWT那一篇文章文章所写的函数。"><a href="#Apache-Shiro是一个强大且易用的Java安全框架-执行身份验证、授权、密码和会话管理。使用Shiro的易于理解的API-您可以快速、轻松地获得任何应用程序-从最小的移动应用程序到最大的网络和企业应用程序。本文是使用Shiro-JWT-Json-Web-Token-实现的，对于jwt部分有疑问的可以参考之前jwt相关文章，本博文中的一部分函数使用的是JWT那一篇文章文章所写的函数。" class="headerlink" title="Apache Shiro是一个强大且易用的Java安全框架,执行身份验证、授权、密码和会话管理。使用Shiro的易于理解的API,您可以快速、轻松地获得任何应用程序,从最小的移动应用程序到最大的网络和企业应用程序。本文是使用Shiro + JWT(Json Web Token)实现的，对于jwt部分有疑问的可以参考之前jwt相关文章，本博文中的一部分函数使用的是JWT那一篇文章文章所写的函数。"></a>Apache Shiro是一个强大且易用的Java安全框架,执行身份验证、授权、密码和会话管理。使用Shiro的易于理解的API,您可以快速、轻松地获得任何应用程序,从最小的移动应用程序到最大的网络和企业应用程序。本文是使用Shiro + JWT(Json Web Token)实现的，对于jwt部分有疑问的可以参考之前jwt相关文章，本博文中的一部分函数使用的是JWT那一篇文章文章所写的函数。</h5><blockquote>
+<p>参考博文 <a href="https://blog.csdn.net/w_stronger/article/details/73109248" target="_blank" rel="noopener">https://blog.csdn.net/w_stronger/article/details/73109248</a> </p>
+</blockquote>
+<h2 id="二、创建项目"><a href="#二、创建项目" class="headerlink" title="二、创建项目"></a>二、创建项目</h2><h4 id="使用idea创建空项目并添加以下依赖"><a href="#使用idea创建空项目并添加以下依赖" class="headerlink" title="使用idea创建空项目并添加以下依赖"></a>使用idea创建空项目并添加以下依赖</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.shiro<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>shiro-spring<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.4.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="三、创建自定义Realm"><a href="#三、创建自定义Realm" class="headerlink" title="三、创建自定义Realm"></a>三、创建自定义Realm</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//MyRealm.java</span></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyRealm</span> <span class="keyword">extends</span> <span class="title">AuthorizingRealm</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//用户相关</span></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> UserDao userDao;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//shiro数据相关</span></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> ShiroService shiroService;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 大坑！，必须重写此方法，不然Shiro会报错</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">supports</span><span class="params">(AuthenticationToken token)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> token <span class="keyword">instanceof</span> JWTToken;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 只有当需要检测用户权限的时候才会调用此方法，例如checkRole,checkPermission之类的</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> AuthorizationInfo <span class="title">doGetAuthorizationInfo</span><span class="params">(PrincipalCollection principals)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//获取用户token</span></span><br><span class="line">        String token = (String) principals.getPrimaryPrincipal();</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//通过token获取用户信息</span></span><br><span class="line">        String username = JWTUtil.getUsername(token);</span><br><span class="line">        User user = userDao.getUserAllInfoByTel(username);</span><br><span class="line">        <span class="keyword">int</span> userId = user.getId();</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//获取用户拥有操作</span></span><br><span class="line">        Set&lt;String&gt; permsSet = shiroService.listUserPerms(userId);</span><br><span class="line">        SimpleAuthorizationInfo info = <span class="keyword">new</span> SimpleAuthorizationInfo();</span><br><span class="line">        info.addStringPermissions(permsSet);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//获取用户拥有角色</span></span><br><span class="line">        Set&lt;String&gt; rolesSet = shiroService.listUserRoles(userId);</span><br><span class="line">        info.setRoles(rolesSet);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> info;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 默认使用此方法进行用户名正确与否验证，错误抛出异常即可。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> AuthenticationInfo <span class="title">doGetAuthenticationInfo</span><span class="params">(AuthenticationToken auth)</span> <span class="keyword">throws</span> AuthenticationException </span>&#123;</span><br><span class="line">        String token = (String) auth.getCredentials();</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 解密获得username，用于和数据库进行对比，此部分的身份验证请参考我的JWT相关博文</span></span><br><span class="line">        String username = JWTUtil.getUsername(token);</span><br><span class="line">        <span class="keyword">if</span> (username == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> AuthenticationException(<span class="string">"Username or password error"</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        User user = userDao.getUserAllInfoByTel(username);</span><br><span class="line">        <span class="keyword">if</span> (user == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> AuthenticationException(<span class="string">"Username or password error"</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//验证信息</span></span><br><span class="line">        <span class="keyword">if</span> (!JWTUtil.verify(token, username, user.getPassword())) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> AuthenticationException(<span class="string">"Username or password error"</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> SimpleAuthenticationInfo(token, token, <span class="string">"myRealm"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="四、自定义JWT拦截器"><a href="#四、自定义JWT拦截器" class="headerlink" title="四、自定义JWT拦截器"></a>四、自定义JWT拦截器</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//JWTFilter.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JWTFilter</span> <span class="keyword">extends</span> <span class="title">BasicHttpAuthenticationFilter</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Logger logger = LoggerFactory.getLogger(getClass());</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 这里我们详细说明下为什么最终返回的都是true，即允许访问</span></span><br><span class="line"><span class="comment">     * 例如我们提供一个地址 GET /article</span></span><br><span class="line"><span class="comment">     * 登入用户和游客看到的内容是不同的</span></span><br><span class="line"><span class="comment">     * 如果在这里返回了false，请求会被直接拦截，用户看不到任何东西</span></span><br><span class="line"><span class="comment">     * 所以我们在这里返回true，Controller中可以通过 subject.isAuthenticated() 来判断用户是否登入</span></span><br><span class="line"><span class="comment">     * 如果有些资源只有登入用户才能访问，我们只需要在方法上面加上 <span class="doctag">@RequiresAuthentication</span> 注解即可</span></span><br><span class="line"><span class="comment">     * 但是这样做有一个缺点，就是不能够对GET,POST等请求进行分别过滤鉴权(因为我们重写了官方的方法)，但实际上对应用影响不大</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">isAccessAllowed</span><span class="params">(ServletRequest request, ServletResponse response, Object mappedValue)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 查看当前Header中是否携带Authorization属性(Token)，有的话就进行登录认证授权</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.isLoginAttempt(request, response)) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">// 进行Shiro的登录UserRealm</span></span><br><span class="line">                <span class="keyword">this</span>.executeLogin(request, response);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                <span class="comment">// 认证出现异常，传递错误信息msg</span></span><br><span class="line">                String msg = e.getMessage();</span><br><span class="line">                <span class="comment">// 获取应用异常(该Cause是导致抛出此throwable(异常)的throwable(异常))</span></span><br><span class="line">                Throwable throwable = e.getCause();</span><br><span class="line">                <span class="keyword">if</span> (throwable <span class="keyword">instanceof</span> SignatureVerificationException) &#123;</span><br><span class="line">                    <span class="comment">// 该异常为JWT的AccessToken认证失败(Token或者密钥不正确)</span></span><br><span class="line">                    msg = <span class="string">"Token或者密钥不正确("</span> + throwable.getMessage() + <span class="string">")"</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (throwable <span class="keyword">instanceof</span> TokenExpiredException) &#123;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="comment">// 应用异常不为空</span></span><br><span class="line">                    <span class="keyword">if</span> (throwable != <span class="keyword">null</span>) &#123;</span><br><span class="line">                        <span class="comment">// 获取应用异常msg</span></span><br><span class="line">                        msg = throwable.getMessage();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">/*</span></span><br><span class="line"><span class="comment">                  错误两种处理方式</span></span><br><span class="line"><span class="comment">                  1. 将非法请求转发到/401的Controller处理，抛出自定义无权访问异常被全局捕捉再返回Response信息</span></span><br><span class="line"><span class="comment">                  2. 无需转发，直接返回Response信息</span></span><br><span class="line"><span class="comment">                  一般使用第二种(更方便)</span></span><br><span class="line"><span class="comment">                 */</span></span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 没有携带Token</span></span><br><span class="line">            HttpServletRequest httpServletRequest = WebUtils.toHttp(request);</span><br><span class="line">            <span class="comment">// 获取当前请求类型</span></span><br><span class="line">            String httpMethod = httpServletRequest.getMethod();</span><br><span class="line">            <span class="comment">// 获取当前请求URI</span></span><br><span class="line">            String requestURI = httpServletRequest.getRequestURI();</span><br><span class="line">            logger.info(<span class="string">"当前请求 &#123;&#125; Authorization属性(Token)为空 请求类型 &#123;&#125;"</span>, requestURI, httpMethod);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 判断用户是否想要登入。</span></span><br><span class="line"><span class="comment">     * 检测header里面是否包含Authorization字段即可</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">isLoginAttempt</span><span class="params">(ServletRequest request, ServletResponse response)</span> </span>&#123;</span><br><span class="line">        HttpServletRequest req = (HttpServletRequest) request;</span><br><span class="line">        String authorization = req.getHeader(<span class="string">"AuthKey"</span>);</span><br><span class="line">        <span class="keyword">return</span> authorization != <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 进行AccessToken登录认证授权</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">executeLogin</span><span class="params">(ServletRequest request, ServletResponse response)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        HttpServletRequest httpServletRequest = (HttpServletRequest) request;</span><br><span class="line">        String authorization = httpServletRequest.getHeader(<span class="string">"AuthKey"</span>);</span><br><span class="line">        JWTToken token = <span class="keyword">new</span> JWTToken(authorization);</span><br><span class="line">        <span class="comment">// 提交给realm进行登入，如果错误他会抛出异常并被捕获</span></span><br><span class="line">        getSubject(request, response).login(token);</span><br><span class="line">        <span class="comment">// 如果没有抛出异常则代表登入成功，返回true</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 对跨域提供支持</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">preHandle</span><span class="params">(ServletRequest request, ServletResponse response)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        HttpServletRequest httpServletRequest = (HttpServletRequest) request;</span><br><span class="line">        HttpServletResponse httpServletResponse = (HttpServletResponse) response;</span><br><span class="line">        httpServletResponse.setHeader(<span class="string">"Access-control-Allow-Origin"</span>, httpServletRequest.getHeader(<span class="string">"Origin"</span>));</span><br><span class="line">        httpServletResponse.setHeader(<span class="string">"Access-Control-Allow-Methods"</span>, <span class="string">"GET,POST,OPTIONS,PUT,DELETE"</span>);</span><br><span class="line">        httpServletResponse.setHeader(<span class="string">"Access-Control-Allow-Headers"</span>, httpServletRequest.getHeader(<span class="string">"Access-Control-Request-Headers"</span>));</span><br><span class="line">        <span class="comment">// 跨域时会首先发送一个option请求，这里我们给option请求直接返回正常状态</span></span><br><span class="line">        <span class="keyword">if</span> (httpServletRequest.getMethod().equals(RequestMethod.OPTIONS.name())) &#123;</span><br><span class="line">            httpServletResponse.setStatus(HttpStatus.OK.value());</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.preHandle(request, response);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 将非法请求跳转到 /401</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">response401</span><span class="params">(ServletRequest req, ServletResponse resp)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            HttpServletResponse httpServletResponse = (HttpServletResponse) resp;</span><br><span class="line">            httpServletResponse.sendRedirect(<span class="string">"/401"</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            logger.error(e.getMessage());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="五、添加配置文件"><a href="#五、添加配置文件" class="headerlink" title="五、添加配置文件"></a>五、添加配置文件</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//ShiroConfig.java</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ShiroConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span>(<span class="string">"securityManager"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> DefaultWebSecurityManager <span class="title">getManager</span><span class="params">(MyRealm realm)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//使用自定义realm</span></span><br><span class="line">        DefaultWebSecurityManager manager = <span class="keyword">new</span> DefaultWebSecurityManager();</span><br><span class="line">        manager.setRealm(realm);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * 关闭shiro自带的session，详情见文档</span></span><br><span class="line"><span class="comment">         * http://shiro.apache.org/session-management.html#SessionManagement-StatelessApplications%28Sessionless%29</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        DefaultSubjectDAO subjectDAO = <span class="keyword">new</span> DefaultSubjectDAO();</span><br><span class="line">        DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = <span class="keyword">new</span> DefaultSessionStorageEvaluator();</span><br><span class="line">        defaultSessionStorageEvaluator.setSessionStorageEnabled(<span class="keyword">false</span>);</span><br><span class="line">        subjectDAO.setSessionStorageEvaluator(defaultSessionStorageEvaluator);</span><br><span class="line">        manager.setSubjectDAO(subjectDAO);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> manager;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span>(<span class="string">"shiroFilter"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ShiroFilterFactoryBean <span class="title">factory</span><span class="params">(DefaultWebSecurityManager securityManager)</span> </span>&#123;</span><br><span class="line">        ShiroFilterFactoryBean factoryBean = <span class="keyword">new</span> ShiroFilterFactoryBean();</span><br><span class="line">        factoryBean.setSecurityManager(securityManager);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 添加自己的过滤器并且取名为jwt</span></span><br><span class="line">        Map&lt;String, Filter&gt; filterMap = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        filterMap.put(<span class="string">"jwt"</span>, <span class="keyword">new</span> JWTFilter());</span><br><span class="line">        factoryBean.setFilters(filterMap);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * 自定义url规则</span></span><br><span class="line"><span class="comment">         * http://shiro.apache.org/web.html#urls-</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        Map&lt;String, String&gt; filterRuleMap = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        <span class="comment">// 所有请求通过我们自己的JWT Filter</span></span><br><span class="line">        filterRuleMap.put(<span class="string">"/users/login"</span>, <span class="string">"anon"</span>);</span><br><span class="line">        filterRuleMap.put(<span class="string">"/users"</span>, <span class="string">"jwt"</span>);</span><br><span class="line">        filterRuleMap.put(<span class="string">"/users/*"</span>, <span class="string">"jwt"</span>);</span><br><span class="line">        factoryBean.setFilterChainDefinitionMap(filterRuleMap);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> factoryBean;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 下面的代码是添加注解支持</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@DependsOn</span>(<span class="string">"lifecycleBeanPostProcessor"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> DefaultAdvisorAutoProxyCreator <span class="title">defaultAdvisorAutoProxyCreator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator = <span class="keyword">new</span> DefaultAdvisorAutoProxyCreator();</span><br><span class="line">        <span class="comment">// 强制使用cglib，防止重复代理和可能引起代理出错的问题</span></span><br><span class="line">        <span class="comment">// https://zhuanlan.zhihu.com/p/29161098</span></span><br><span class="line">        defaultAdvisorAutoProxyCreator.setProxyTargetClass(<span class="keyword">true</span>);</span><br><span class="line">        <span class="keyword">return</span> defaultAdvisorAutoProxyCreator;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> LifecycleBeanPostProcessor <span class="title">lifecycleBeanPostProcessor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> LifecycleBeanPostProcessor();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> AuthorizationAttributeSourceAdvisor <span class="title">authorizationAttributeSourceAdvisor</span><span class="params">(DefaultWebSecurityManager securityManager)</span> </span>&#123;</span><br><span class="line">        AuthorizationAttributeSourceAdvisor advisor = <span class="keyword">new</span> AuthorizationAttributeSourceAdvisor();</span><br><span class="line">        advisor.setSecurityManager(securityManager);</span><br><span class="line">        <span class="keyword">return</span> advisor;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注：一定要将所有需要判断拦截的请求使用自定义的拦截器进行拦截</p>
+</blockquote>
+<h2 id="6、使用注解对接口进行权限判断以及身份验证"><a href="#6、使用注解对接口进行权限判断以及身份验证" class="headerlink" title="6、使用注解对接口进行权限判断以及身份验证"></a>6、使用注解对接口进行权限判断以及身份验证</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 这个函数的意思是需要请求这个接口的用户角色需要时admin，</span></span><br><span class="line"><span class="comment"> * 同时具有sys:user:save的权限</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@PostMapping</span></span><br><span class="line"><span class="meta">@RequiresRoles</span>(<span class="string">"admin"</span>)</span><br><span class="line"><span class="meta">@RequiresPermissions</span>(value = <span class="string">"sys:user:save"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> RestResult <span class="title">addUser</span><span class="params">(@RequestBody User user)</span> </span>&#123;</span><br><span class="line">    logger.debug(<span class="string">"/users [Post] -&gt; user : &#123;&#125;"</span>, user);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> userService.insertUser(user);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        <span class="keyword">return</span> RestResultFactory.restResult(<span class="number">402</span>, <span class="string">"用户创建失败"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="7、对于常见注解的介绍"><a href="#7、对于常见注解的介绍" class="headerlink" title="7、对于常见注解的介绍"></a>7、对于常见注解的介绍</h2><h3 id="Shiro共有5个注解，接下来我们就详细说说吧"><a href="#Shiro共有5个注解，接下来我们就详细说说吧" class="headerlink" title="Shiro共有5个注解，接下来我们就详细说说吧"></a>Shiro共有5个注解，接下来我们就详细说说吧</h3><h4 id="1-RequiresAuthentication"><a href="#1-RequiresAuthentication" class="headerlink" title="1.RequiresAuthentication:"></a>1.RequiresAuthentication:</h4><ul>
+<li>使用该注解标注的类，实例，方法在访问或调用时，当前<code>Subject</code>必须在当前session中已经过认证。</li>
+</ul>
+<h4 id="2-RequiresGuest"><a href="#2-RequiresGuest" class="headerlink" title="2.RequiresGuest:"></a>2.RequiresGuest:</h4><ul>
+<li>使用该注解标注的类，实例，方法在访问或调用时，当前<code>Subject</code>可以是“gust”身份，不需要经过认证或者在原先的session中存在记录。</li>
+</ul>
+<h4 id="3-RequiresPermissions"><a href="#3-RequiresPermissions" class="headerlink" title="3.RequiresPermissions:"></a>3.RequiresPermissions:</h4><ul>
+<li>当前<code>Subject</code>需要拥有某些特定的权限时，才能执行被该注解标注的方法。如果当前<code>Subject</code>不具有这样的权限，则方法不会被执行。</li>
+</ul>
+<h4 id="4-RequiresRoles"><a href="#4-RequiresRoles" class="headerlink" title="4.RequiresRoles:"></a>4.RequiresRoles:</h4><ul>
+<li>当前<code>Subject</code>必须拥有所有指定的角色时，才能访问被该注解标注的方法。如果当前<code>Subject</code>不同时拥有所有指定角色，则方法不会执行还会抛出<code>AuthorizationException</code>异常。</li>
+</ul>
+<h4 id="5-RequiresUser"><a href="#5-RequiresUser" class="headerlink" title="5.RequiresUser"></a>5.RequiresUser</h4><ul>
+<li>当前<code>Subject</code>必须是应用的用户，才能访问或调用被该注解标注的类，实例，方法。</li>
+</ul>
+<h5 id="使用方法："><a href="#使用方法：" class="headerlink" title="使用方法："></a>使用方法：</h5><blockquote>
+<p>Shiro的认证注解处理是有内定的处理顺序的，如果有个多个注解的话，前面的通过了会继续检查后面的，若不通过则直接返回，处理顺序依次为（与实际声明顺序无关）：</p>
+<ol>
+<li>RequiresRoles </li>
+<li>RequiresPermissions </li>
+<li>RequiresAuthentication </li>
+<li>RequiresUser </li>
+<li>RequiresGuest<br>例如：你同时声明了RequiresRoles和RequiresPermissions，那就要求拥有此角色的同时还得拥有相应的权限。</li>
+</ol>
+</blockquote>
+<h5 id="1-RequiresRoles"><a href="#1-RequiresRoles" class="headerlink" title="1) RequiresRoles"></a>1) RequiresRoles</h5><blockquote>
+<p>可以用在Controller或者方法上。可以多个roles，多个roles时默认逻辑为 AND也就是所有具备所有role才能访问。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target</span>(&#123;ElementType.TYPE, ElementType.METHOD&#125;)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> RequiresRoles &#123;</span><br><span class="line">    String[] value();</span><br><span class="line">    <span class="function">Logical <span class="title">logical</span><span class="params">()</span> <span class="keyword">default</span> Logical.AND</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h5 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//属于user角色</span></span><br><span class="line"><span class="meta">@RequiresRoles</span>(<span class="string">"user"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//必须同时属于user和admin角色</span></span><br><span class="line"><span class="meta">@RequiresRoles</span>(&#123;<span class="string">"user"</span>,<span class="string">"admin"</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">//属于user或者admin之一;修改logical为OR 即可</span></span><br><span class="line"><span class="meta">@RequiresRoles</span>(value=&#123;<span class="string">"user"</span>,<span class="string">"admin"</span>&#125;,logical=Logical.OR)</span><br></pre></td></tr></table></figure>
+<h5 id="2-RequiresPermissions"><a href="#2-RequiresPermissions" class="headerlink" title="2) RequiresPermissions"></a>2) RequiresPermissions</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target</span>(&#123;ElementType.TYPE, ElementType.METHOD&#125;)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> RequiresPermissions &#123;</span><br><span class="line">    String[] value();</span><br><span class="line">    <span class="function">Logical <span class="title">logical</span><span class="params">()</span> <span class="keyword">default</span> Logical.AND</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//符合index:hello权限要求</span></span><br><span class="line"><span class="meta">@RequiresPermissions</span>(<span class="string">"index:hello"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//必须同时复核index:hello和index:world权限要求</span></span><br><span class="line"><span class="meta">@RequiresPermissions</span>(&#123;<span class="string">"index:hello"</span>,<span class="string">"index:world"</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">//符合index:hello或index:world权限要求即可</span></span><br><span class="line"><span class="meta">@RequiresPermissions</span>(value=&#123;<span class="string">"index:hello"</span>,<span class="string">"index:world"</span>&#125;,logical=Logical.OR)</span><br></pre></td></tr></table></figure>
+<h5 id="3-RequiresAuthentication，RequiresUser，RequiresGuest"><a href="#3-RequiresAuthentication，RequiresUser，RequiresGuest" class="headerlink" title="3) RequiresAuthentication，RequiresUser，RequiresGuest"></a>3) RequiresAuthentication，RequiresUser，RequiresGuest</h5><blockquote>
+<p>这三个的使用方法一样</p>
+<ul>
+<li>@RequiresAuthentication</li>
+<li>@RequiresUser</li>
+<li>@RequiresGusst</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>总结：总体来说，shiro的存在大大的降低了关于权限部分的开发时间，使我们有更多精力关注业务开发，也让我们能快速的开发出一个完善的权限系统，避免自己开发权限时出现的权限考虑不周到的情况</p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"><i class="fa fa-tag"></i> Java</a>
+          
+            <a href="/tags/Springboot/" rel="tag"><i class="fa fa-tag"></i> Springboot</a>
+          
+            <a href="/tags/Shiro/" rel="tag"><i class="fa fa-tag"></i> Shiro</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/16/如何使用JWT/" rel="next" title="如何使用JWT">
+                <i class="fa fa-chevron-left"></i> 如何使用JWT
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/22/springboot集成多线程功能/" rel="prev" title="springboot集成多线程功能">
+                springboot集成多线程功能 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+<span class="jiathis_txt">分享到：</span>
+<a class="jiathis_button_fav">收藏夹</a>
+<a class="jiathis_button_copy">复制网址</a>
+<a class="jiathis_button_email">邮件</a>
+<a class="jiathis_button_weixin">微信</a>
+<!-- <a class="jiathis_button_qzone">QQ空间</a>
+<a class="jiathis_button_tqq">腾讯微博</a> -->
+<a class="jiathis_button_douban">豆瓣</a>
+<a class="jiathis_button_share">一键分享</a>
+
+<a href="http://www.jiathis.com/share?uid=2140465" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+  data_track_clickback:true,
+  summary:"",
+  shortUrl:false,
+  hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="随我" />
+            
+              <p class="site-author-name" itemprop="name">随我</p>
+              <p class="site-description motion-element" itemprop="description">用心做自己喜欢的事</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">98</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">77</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+            <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=298 height=52 src="//music.163.com/outchain/player?type=2&id=1321616516&auto=0&height=32"></iframe>
+          </nav>
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ZhangJia97" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zhjia97@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/qq_38542085" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-CSDN"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、介绍"><span class="nav-number">1.</span> <span class="nav-text">一、介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Apache-Shiro是一个强大且易用的Java安全框架-执行身份验证、授权、密码和会话管理。使用Shiro的易于理解的API-您可以快速、轻松地获得任何应用程序-从最小的移动应用程序到最大的网络和企业应用程序。本文是使用Shiro-JWT-Json-Web-Token-实现的，对于jwt部分有疑问的可以参考之前jwt相关文章，本博文中的一部分函数使用的是JWT那一篇文章文章所写的函数。"><span class="nav-number">1.0.0.1.</span> <span class="nav-text">Apache Shiro是一个强大且易用的Java安全框架,执行身份验证、授权、密码和会话管理。使用Shiro的易于理解的API,您可以快速、轻松地获得任何应用程序,从最小的移动应用程序到最大的网络和企业应用程序。本文是使用Shiro + JWT(Json Web Token)实现的，对于jwt部分有疑问的可以参考之前jwt相关文章，本博文中的一部分函数使用的是JWT那一篇文章文章所写的函数。</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、创建项目"><span class="nav-number">2.</span> <span class="nav-text">二、创建项目</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用idea创建空项目并添加以下依赖"><span class="nav-number">2.0.1.</span> <span class="nav-text">使用idea创建空项目并添加以下依赖</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、创建自定义Realm"><span class="nav-number">3.</span> <span class="nav-text">三、创建自定义Realm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、自定义JWT拦截器"><span class="nav-number">4.</span> <span class="nav-text">四、自定义JWT拦截器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、添加配置文件"><span class="nav-number">5.</span> <span class="nav-text">五、添加配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6、使用注解对接口进行权限判断以及身份验证"><span class="nav-number">6.</span> <span class="nav-text">6、使用注解对接口进行权限判断以及身份验证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7、对于常见注解的介绍"><span class="nav-number">7.</span> <span class="nav-text">7、对于常见注解的介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Shiro共有5个注解，接下来我们就详细说说吧"><span class="nav-number">7.1.</span> <span class="nav-text">Shiro共有5个注解，接下来我们就详细说说吧</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-RequiresAuthentication"><span class="nav-number">7.1.1.</span> <span class="nav-text">1.RequiresAuthentication:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-RequiresGuest"><span class="nav-number">7.1.2.</span> <span class="nav-text">2.RequiresGuest:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-RequiresPermissions"><span class="nav-number">7.1.3.</span> <span class="nav-text">3.RequiresPermissions:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-RequiresRoles"><span class="nav-number">7.1.4.</span> <span class="nav-text">4.RequiresRoles:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-RequiresUser"><span class="nav-number">7.1.5.</span> <span class="nav-text">5.RequiresUser</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#使用方法："><span class="nav-number">7.1.5.1.</span> <span class="nav-text">使用方法：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-RequiresRoles"><span class="nav-number">7.1.5.2.</span> <span class="nav-text">1) RequiresRoles</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#示例"><span class="nav-number">7.1.5.3.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-RequiresPermissions"><span class="nav-number">7.1.5.4.</span> <span class="nav-text">2) RequiresPermissions</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#示例-1"><span class="nav-number">7.1.5.5.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-RequiresAuthentication，RequiresUser，RequiresGuest"><span class="nav-number">7.1.5.6.</span> <span class="nav-text">3) RequiresAuthentication，RequiresUser，RequiresGuest</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">随我</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+<br><a href="http://www.miitbeian.gov.cn">豫ICP备18013715号-1</a>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

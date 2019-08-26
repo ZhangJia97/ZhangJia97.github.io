@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="redis,分布式,SNOWFLAKE," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="随我的博客" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="在复杂分布式系统中，往往需要对大量的数据和消息进行唯一标识。这个时候如何创建连续不重复的就尤为重要了，下面我们就整理一下常见的id生成器以及使用redis去实现一个id生成器">
+<meta name="keywords" content="redis,分布式,SNOWFLAKE">
+<meta property="og:type" content="article">
+<meta property="og:title" content="创建一个基于redis的id生成器">
+<meta property="og:url" content="http://suiwo.xyz/2019/08/26/创建一个基于redis的id生成器/index.html">
+<meta property="og:site_name" content="随我的博客">
+<meta property="og:description" content="在复杂分布式系统中，往往需要对大量的数据和消息进行唯一标识。这个时候如何创建连续不重复的就尤为重要了，下面我们就整理一下常见的id生成器以及使用redis去实现一个id生成器">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-08-26T05:24:15.885Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="创建一个基于redis的id生成器">
+<meta name="twitter:description" content="在复杂分布式系统中，往往需要对大量的数据和消息进行唯一标识。这个时候如何创建连续不重复的就尤为重要了，下面我们就整理一下常见的id生成器以及使用redis去实现一个id生成器">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://suiwo.xyz/2019/08/26/创建一个基于redis的id生成器/"/>
+
+
+
+
+
+  <title>创建一个基于redis的id生成器 | 随我的博客</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">随我的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">记录学习的点滴</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-align-left"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2019/08/26/创建一个基于redis的id生成器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="随我">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="随我的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">创建一个基于redis的id生成器</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-26T13:17:10+08:00">
+                2019-08-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/redis/" itemprop="url" rel="index">
+                    <span itemprop="name">redis</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  在复杂分布式系统中，往往需要对大量的数据和消息进行唯一标识。这个时候如何创建连续不重复的就尤为重要了，下面我们就整理一下常见的id生成器以及使用redis去实现一个id生成器
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>参考文章：</p>
+<ul>
+<li><a href="https://blog.csdn.net/hengyunabc/article/details/44244951" target="_blank" rel="noopener">https://blog.csdn.net/hengyunabc/article/details/44244951</a></li>
+<li><a href="https://www.jianshu.com/p/955909e1bd71" target="_blank" rel="noopener">https://www.jianshu.com/p/955909e1bd71</a></li>
+<li><a href="https://tech.meituan.com/2017/04/21/mt-leaf.html" target="_blank" rel="noopener">https://tech.meituan.com/2017/04/21/mt-leaf.html</a></li>
+</ul>
+<p>参考项目：<a href="https://github.com/hengyunabc/redis-id-generator值。" target="_blank" rel="noopener">https://github.com/hengyunabc/redis-id-generator值。</a><br>evalsha教程：<a href="https://www.runoob.com/redis/scripting-evalsha.html" target="_blank" rel="noopener">https://www.runoob.com/redis/scripting-evalsha.html</a><br>eval教程：<a href="https://www.runoob.com/redis/scripting-eval.html" target="_blank" rel="noopener">https://www.runoob.com/redis/scripting-eval.html</a></p>
+<h3 id="一、分布式id生成器需要满足的要求"><a href="#一、分布式id生成器需要满足的要求" class="headerlink" title="一、分布式id生成器需要满足的要求"></a>一、分布式id生成器需要满足的要求</h3><p>作为一个分布式id生成器要满足以下的要求</p>
+<h4 id="1-全局唯一"><a href="#1-全局唯一" class="headerlink" title="1.全局唯一"></a>1.全局唯一</h4><h4 id="2-尽可能保证id的递增"><a href="#2-尽可能保证id的递增" class="headerlink" title="2.尽可能保证id的递增"></a>2.尽可能保证id的递增</h4><p>因为在查询的时候经常会有例如分页以及排序之类的需求，这个时候如果主键的id本身能够体现出时许效率会更加好。而对于常见的排序还有分页，我们解决办法有两种：</p>
+<ol>
+<li>在数据表中添加一个时间字段，对其创建一个普通索引。</li>
+<li>id本生就是按照时间大致有序的。</li>
+</ol>
+<p>因为常见的普通索引的访问效率是比聚集索引要慢的，所以我们尽可能使用第二种解决方案</p>
+<h4 id="3-其他的一些要求"><a href="#3-其他的一些要求" class="headerlink" title="3.其他的一些要求"></a>3.其他的一些要求</h4><ol>
+<li>id要尽可能的短，这样可以减少存储的空间以及增加查询的效率。</li>
+<li>要有足够数量的id可以使用，不然当数据量非常大时，id耗尽就不行了</li>
+<li>要考虑不同机器之间的时间不一致问题</li>
+<li>QPS尽量要高，这样就可以，否则例如像类SNOWFLAKE算法会在64位ID中利用部分位数（如12）表示单位时间内生成的ID序号，这部分序号用完了，这个单位时间就不能再生成序号了</li>
+</ol>
+<h3 id="二、常见的id生成器方案："><a href="#二、常见的id生成器方案：" class="headerlink" title="二、常见的id生成器方案："></a>二、常见的id生成器方案：</h3><h4 id="1-利用mysql数据库的自增主键特性"><a href="#1-利用mysql数据库的自增主键特性" class="headerlink" title="1.利用mysql数据库的自增主键特性"></a>1.利用mysql数据库的自增主键特性</h4><h5 id="优点："><a href="#优点：" class="headerlink" title="优点："></a>优点：</h5><ul>
+<li>简单，代码方便，性能还行</li>
+<li>数字的id是递增的，方便进行分页和排序</li>
+</ul>
+<h5 id="缺点："><a href="#缺点：" class="headerlink" title="缺点："></a>缺点：</h5><ul>
+<li>不同的数据库语法和实现不同，实现数据迁移或者多数据库版本的时候可能会出现一些问题</li>
+<li>我们常见的是一主多从数据库，这会产生单点故障，以及性能瓶颈</li>
+<li>数据量大时需要考虑分库分表</li>
+</ul>
+<h5 id="优化方案："><a href="#优化方案：" class="headerlink" title="优化方案："></a>优化方案：</h5><ul>
+<li>使用多个master，对每个master设置的初始id不同，步长不同，例如有四个master，我们可以让master1生成（1，5，9），master2生成（2，6，10），master3生成（3，7，11），master4生成（4，8，12），这样可以降低单个数据库的压力</li>
+</ul>
+<h4 id="2-UUID"><a href="#2-UUID" class="headerlink" title="2.UUID"></a>2.UUID</h4><p>常见的一种分布式id生成器，可以利用数据库也可以利用代码。</p>
+<h5 id="优点：-1"><a href="#优点：-1" class="headerlink" title="优点："></a>优点：</h5><ul>
+<li>简单，方便</li>
+<li>生成id的性能好，基本上不会有性能问题</li>
+<li>全球唯一，对于数据库合并，迁移等问题不会存在冲突</li>
+</ul>
+<h5 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h5><ul>
+<li>不是有序的</li>
+<li>UUID的字符串长度较长，查询效率不高，且消耗存储空间比较大，如果是海量数据库就需要考虑存储量的问题了</li>
+<li>可读性差</li>
+</ul>
+<h4 id="redis生成id"><a href="#redis生成id" class="headerlink" title="redis生成id"></a>redis生成id</h4><p>redis的大致原理和普通数据库的生成原理是大致相同的，只不过redis不是使用自增组件，而是使用原子操作 INCR和INCRBY来实现。</p>
+<h5 id="优点：-2"><a href="#优点：-2" class="headerlink" title="优点："></a>优点：</h5><ul>
+<li>不依赖于数据库，灵活方便，且性能优于数据库。<br>数字ID天然排序，对分页或者需要排序的结果很有帮助。</li>
+</ul>
+<h5 id="缺点：-1"><a href="#缺点：-1" class="headerlink" title="缺点："></a>缺点：</h5><ul>
+<li>如果系统中没有Redis，还需要引入新的组件，增加系统复杂度。</li>
+<li>需要编码和配置的工作量比较大。</li>
+</ul>
+<h4 id="snowflake算法"><a href="#snowflake算法" class="headerlink" title="snowflake算法"></a>snowflake算法</h4><blockquote>
+<ol>
+<li>一个ID由64位生成</li>
+<li>41bit作为时间戳，记录当前时间到标记的起始时间（如到2018.1.1）差，精确到毫秒，那么服务可用时长为(1&lt;&lt;41)/(1000<em> 60 </em> 60 <em> 24 </em> 365) = 69.73年</li>
+<li>10bit作为机器ID，也就是可以有1024台机器</li>
+<li>12bit作为序列号，代表单位时间（这里是毫秒）内允许生成的ID总数，也就是1ms内允许生成4096个ID</li>
+</ol>
+</blockquote>
+<h5 id="优点：-3"><a href="#优点：-3" class="headerlink" title="优点："></a>优点：</h5><ul>
+<li>不依赖于数据库，灵活方便，且性能优于数据库。</li>
+<li>ID按照时间在单机上是递增的。</li>
+</ul>
+<h5 id="缺点：-2"><a href="#缺点：-2" class="headerlink" title="缺点："></a>缺点：</h5><ul>
+<li>在单机上是递增的，但是由于涉及到分布式环境，每台机器上的时钟不可能完全同步，也许有时候也会出现不是全局递增的情况。</li>
+</ul>
+<h4 id="类SNOWFLAKE算法"><a href="#类SNOWFLAKE算法" class="headerlink" title="类SNOWFLAKE算法"></a>类SNOWFLAKE算法</h4><blockquote>
+<p>SNOWFLAKE给出的主要是一个思想，把ID划分为多个段，有不同的含义，可以结合自己的要求进行重新划分。按照个人理解，时间戳位数少了，机器位数多了，序列号位数多了。借鉴snowflake的思想，结合各公司的业务逻辑和并发量，可以实现自己的分布式ID生成算法。</p>
+</blockquote>
+<p>举例，假设某公司ID生成器服务的需求如下：</p>
+<ul>
+<li>单机高峰并发量小于1W，预计未来5年单机高峰并发量小于10W</li>
+<li>有2个机房，预计未来5年机房数量小于4个</li>
+<li>每个机房机器数小于100台</li>
+<li>目前有5个业务线有ID生成需求，预计未来业务线数量小于10个</li>
+</ul>
+<p>分析过程如下：</p>
+<ul>
+<li>高位取从2017年1月1日到现在的毫秒数（假设系统ID生成器服务在这个时间之后上线），假设系统至少运行10年，那至少需要10年 <em> 365天 </em> 24小时 <em> 3600秒 </em> 1000毫秒 = 320 * 10 ^ 9，差不多预留39bit给毫秒数</li>
+<li>每秒的单机高峰并发量小于10W，即平均每毫秒的单机高峰并发量小于100，差不多预留7bit给每毫秒内序列号</li>
+<li>5年内机房数小于4个，预留2bit给机房标识</li>
+<li>每个机房小于100台机器，预留7bit给每个机房内的服务器标识</li>
+<li>业务线小于10个，预留4bit给业务线标识</li>
+</ul>
+<p>这样设计的64bit标识，可以保证：</p>
+<ul>
+<li>每个业务线、每个机房、每个机器生成的ID都是不同的</li>
+<li>同一个机器，每个毫秒内生成的ID都是不同的</li>
+<li>同一个机器，同一个毫秒内，以序列号区区分保证生成的ID是不同的</li>
+<li>将毫秒数放在最高位，保证生成的ID是趋势递增的</li>
+</ul>
+<h5 id="缺点：-3"><a href="#缺点：-3" class="headerlink" title="缺点："></a>缺点：</h5><ul>
+<li>由于“没有一个全局时钟”，每台服务器分配的ID是绝对递增的，但从全局看，生成的ID只是趋势递增的（有些服务器的时间早，有些服务器的时间晚）</li>
+</ul>
+<h3 id="三、实现一个简易的redis的id生成器"><a href="#三、实现一个简易的redis的id生成器" class="headerlink" title="三、实现一个简易的redis的id生成器"></a>三、实现一个简易的redis的id生成器</h3><p>通过redis实现一个基于SNOWFLAKE算法的id生成器<br>利用redis的lua脚本执行功能，在每个节点上通过lua脚本生成唯一id，其中使用的是雪花算法。<br>生成的ID是64位的：</p>
+<ul>
+<li>使用41 bit来存放时间，精确到毫秒，可以使用41年。</li>
+<li>使用12 bit来存放逻辑分片ID，最大分片ID是4095</li>
+<li>使用10 bit来存放自增长ID，意味着每个节点，每毫秒最多可以生成1024个ID</li>
+</ul>
+<p>比如GTM时间 <code>Fri Mar 13 10:00:00 CST 2015</code> ，它的距1970年的毫秒数是 1426212000000，假定分片ID是53，自增长序列是4，则生成的ID是：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 左移22位，指代最前面14bit的存储信息，再左移10位表示中间存储分片信息的12bit</span></span><br><span class="line"><span class="number">5981966696448054276</span> = <span class="number">1426212000000</span> &lt;&lt; <span class="number">22</span> + <span class="number">53</span> &lt;&lt; <span class="number">10</span> + <span class="number">4</span></span><br></pre></td></tr></table></figure></p>
+<p>redis提供了TIME命令，可以取得redis服务器上的秒数和微秒数。因些lua脚本返回的是一个四元组。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">second, microSecond, partition, seq</span><br></pre></td></tr></table></figure></p>
+<p>客户端要自己处理，生成最终ID。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">((second * <span class="number">1000</span> + microSecond / <span class="number">1000</span>) &lt;&lt; (<span class="number">12</span> + <span class="number">10</span>)) + (shardId &lt;&lt; <span class="number">10</span>) + seq;</span><br></pre></td></tr></table></figure></p>
+<p>seq对应的是集群中的节点值<br>如集群里有3个节点，则节点1返回的seq是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0, 3, 6, 9, 12 ...</span><br></pre></td></tr></table></figure></p>
+<p>节点2返回的seq是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1, 4, 7, 10, 13 ...</span><br></pre></td></tr></table></figure></p>
+<p>节点3返回的seq是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2, 5, 8, 11, 14 ...</span><br></pre></td></tr></table></figure></p>
+<p>我们可以将lua脚本转换成sha1值，然后通过EVALSHA指令传递这个<br>下面我们直接看代码<br>项目主程序<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		String tab = <span class="string">"order"</span>;</span><br><span class="line">		<span class="keyword">long</span> userId = <span class="number">123456789</span>;</span><br><span class="line"></span><br><span class="line">		IdGenerator idGenerator = IdGenerator.builder()</span><br><span class="line">				.addHost(<span class="string">"127.0.0.1"</span>, <span class="number">6379</span>, <span class="string">"c5809078fa6d652e0b0232d552a9d06d37fe819c"</span>)</span><br><span class="line"><span class="comment">//				.addHost("127.0.0.1", 7379, "accb7a987d4fb0fd85c57dc5a609529f80ec3722")</span></span><br><span class="line"><span class="comment">//				.addHost("127.0.0.1", 8379, "f55f781ca4a00a133728488e15a554c070b17255")</span></span><br><span class="line">				.build();</span><br><span class="line"></span><br><span class="line">		<span class="keyword">long</span> id = idGenerator.next(tab, userId);</span><br><span class="line"></span><br><span class="line">		System.out.println(<span class="string">"id:"</span> + id);</span><br><span class="line">		List&lt;Long&gt; result = IdGenerator.parseId(id);</span><br><span class="line"></span><br><span class="line">		System.out.println(<span class="string">"miliSeconds:"</span> + result.get(<span class="number">0</span>) + <span class="string">", partition:"</span></span><br><span class="line">				+ result.get(<span class="number">1</span>) + <span class="string">", seq:"</span> + result.get(<span class="number">2</span>));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>id生成器相关代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IdGenerator</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(IdGenerator.class);</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * JedisPool, luaSha</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	List&lt;Pair&lt;JedisPool, String&gt;&gt; jedisPoolList;</span><br><span class="line">	<span class="keyword">int</span> retryTimes;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">int</span> index = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="title">IdGenerator</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="title">IdGenerator</span><span class="params">(List&lt;Pair&lt;JedisPool, String&gt;&gt; jedisPoolList,</span></span></span><br><span class="line"><span class="function"><span class="params">			<span class="keyword">int</span> retryTimes)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.jedisPoolList = jedisPoolList;</span><br><span class="line">		<span class="keyword">this</span>.retryTimes = retryTimes;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">static</span> <span class="keyword">public</span> IdGeneratorBuilder <span class="title">builder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> IdGeneratorBuilder();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">IdGeneratorBuilder</span> </span>&#123;</span><br><span class="line">		List&lt;Pair&lt;JedisPool, String&gt;&gt; jedisPoolList = <span class="keyword">new</span> ArrayList();</span><br><span class="line">		<span class="keyword">int</span> retryTimes = <span class="number">5</span>;</span><br><span class="line"></span><br><span class="line">		<span class="function"><span class="keyword">public</span> IdGeneratorBuilder <span class="title">addHost</span><span class="params">(String host, <span class="keyword">int</span> port, String luaSha)</span> </span>&#123;</span><br><span class="line">			jedisPoolList.add(Pair.of(<span class="keyword">new</span> JedisPool(host, port), luaSha));</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="function"><span class="keyword">public</span> IdGeneratorBuilder <span class="title">retryTimes</span><span class="params">(<span class="keyword">int</span> retryTimes)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">this</span>.retryTimes = retryTimes;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="function"><span class="keyword">public</span> IdGenerator <span class="title">build</span><span class="params">()</span> </span>&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">new</span> IdGenerator(jedisPoolList, retryTimes);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">next</span><span class="params">(String tab)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> next(tab, <span class="number">0</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">next</span><span class="params">(String tab, <span class="keyword">long</span> shardId)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; retryTimes; ++i) &#123;</span><br><span class="line">			Long id = innerNext(tab, shardId);</span><br><span class="line">			<span class="keyword">if</span> (id != <span class="keyword">null</span>) &#123;</span><br><span class="line">				<span class="keyword">return</span> id;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Can not generate id!"</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function">Long <span class="title">innerNext</span><span class="params">(String tab, <span class="keyword">long</span> shardId)</span> </span>&#123;</span><br><span class="line">		index++;</span><br><span class="line">		Pair&lt;JedisPool, String&gt; pair = jedisPoolList.get(index</span><br><span class="line">				% jedisPoolList.size());</span><br><span class="line">		JedisPool jedisPool = pair.getLeft();</span><br><span class="line"></span><br><span class="line">		String luaSha = pair.getRight();</span><br><span class="line">		Jedis jedis = <span class="keyword">null</span>;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			jedis = jedisPool.getResource();</span><br><span class="line">			List&lt;Long&gt; result = (List&lt;Long&gt;) jedis.evalsha(luaSha, <span class="number">2</span>, tab, <span class="string">""</span> + shardId);</span><br><span class="line">			<span class="keyword">long</span> id = buildId(result.get(<span class="number">0</span>), result.get(<span class="number">1</span>), result.get(<span class="number">2</span>),</span><br><span class="line">					result.get(<span class="number">3</span>));</span><br><span class="line">			<span class="keyword">return</span> id;</span><br><span class="line">		&#125; <span class="keyword">catch</span> (JedisConnectionException e) &#123;</span><br><span class="line">			<span class="keyword">if</span> (jedis != <span class="keyword">null</span>) &#123;</span><br><span class="line">				jedisPool.returnBrokenResource(jedis);</span><br><span class="line">			&#125;</span><br><span class="line">			logger.error(<span class="string">"generate id error!"</span>, e);</span><br><span class="line">		&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> (jedis != <span class="keyword">null</span>) &#123;</span><br><span class="line">				jedisPool.returnResource(jedis);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> <span class="title">buildId</span><span class="params">(<span class="keyword">long</span> second, <span class="keyword">long</span> microSecond, <span class="keyword">long</span> shardId,</span></span></span><br><span class="line"><span class="function"><span class="params">			<span class="keyword">long</span> seq)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">long</span> miliSecond = (second * <span class="number">1000</span> + microSecond / <span class="number">1000</span>);</span><br><span class="line">		<span class="keyword">return</span> (miliSecond &lt;&lt; (<span class="number">12</span> + <span class="number">10</span>)) + (shardId &lt;&lt; <span class="number">10</span>) + seq;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;Long&gt; <span class="title">parseId</span><span class="params">(<span class="keyword">long</span> id)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">long</span> miliSecond = id &gt;&gt;&gt; <span class="number">22</span>;</span><br><span class="line">		<span class="comment">// 2 ^ 12 = 0xFFF</span></span><br><span class="line">		<span class="keyword">long</span> shardId = (id &amp; (<span class="number">0xFFF</span> &lt;&lt; <span class="number">10</span>)) &gt;&gt; <span class="number">10</span>;</span><br><span class="line">		<span class="keyword">long</span> seq = id &amp; <span class="number">0x3FF</span>;</span><br><span class="line"></span><br><span class="line">		List&lt;Long&gt; re = <span class="keyword">new</span> ArrayList&lt;Long&gt;(<span class="number">4</span>);</span><br><span class="line">		re.add(miliSecond);</span><br><span class="line">		re.add(shardId);</span><br><span class="line">		re.add(seq);</span><br><span class="line">		<span class="keyword">return</span> re;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>至此我们的基于redis的id生成器就完成了</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/redis/" rel="tag"><i class="fa fa-tag"></i> redis</a>
+          
+            <a href="/tags/分布式/" rel="tag"><i class="fa fa-tag"></i> 分布式</a>
+          
+            <a href="/tags/SNOWFLAKE/" rel="tag"><i class="fa fa-tag"></i> SNOWFLAKE</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/20/手写SpringMVC，剑指优秀开源框架灵魂/" rel="next" title="手写SpringMVC，剑指优秀开源框架灵魂">
+                <i class="fa fa-chevron-left"></i> 手写SpringMVC，剑指优秀开源框架灵魂
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+<span class="jiathis_txt">分享到：</span>
+<a class="jiathis_button_fav">收藏夹</a>
+<a class="jiathis_button_copy">复制网址</a>
+<a class="jiathis_button_email">邮件</a>
+<a class="jiathis_button_weixin">微信</a>
+<!-- <a class="jiathis_button_qzone">QQ空间</a>
+<a class="jiathis_button_tqq">腾讯微博</a> -->
+<a class="jiathis_button_douban">豆瓣</a>
+<a class="jiathis_button_share">一键分享</a>
+
+<a href="http://www.jiathis.com/share?uid=2140465" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+  data_track_clickback:true,
+  summary:"",
+  shortUrl:false,
+  hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="随我" />
+            
+              <p class="site-author-name" itemprop="name">随我</p>
+              <p class="site-description motion-element" itemprop="description">用心做自己喜欢的事</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">98</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">77</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+            <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=298 height=52 src="//music.163.com/outchain/player?type=2&id=1321616516&auto=0&height=32"></iframe>
+          </nav>
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ZhangJia97" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zhjia97@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/qq_38542085" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-CSDN"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、分布式id生成器需要满足的要求"><span class="nav-number">1.</span> <span class="nav-text">一、分布式id生成器需要满足的要求</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-全局唯一"><span class="nav-number">1.1.</span> <span class="nav-text">1.全局唯一</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-尽可能保证id的递增"><span class="nav-number">1.2.</span> <span class="nav-text">2.尽可能保证id的递增</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-其他的一些要求"><span class="nav-number">1.3.</span> <span class="nav-text">3.其他的一些要求</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、常见的id生成器方案："><span class="nav-number">2.</span> <span class="nav-text">二、常见的id生成器方案：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-利用mysql数据库的自增主键特性"><span class="nav-number">2.1.</span> <span class="nav-text">1.利用mysql数据库的自增主键特性</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#优点："><span class="nav-number">2.1.1.</span> <span class="nav-text">优点：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#缺点："><span class="nav-number">2.1.2.</span> <span class="nav-text">缺点：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#优化方案："><span class="nav-number">2.1.3.</span> <span class="nav-text">优化方案：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-UUID"><span class="nav-number">2.2.</span> <span class="nav-text">2.UUID</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#优点：-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">优点：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#缺点"><span class="nav-number">2.2.2.</span> <span class="nav-text">缺点</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#redis生成id"><span class="nav-number">2.3.</span> <span class="nav-text">redis生成id</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#优点：-2"><span class="nav-number">2.3.1.</span> <span class="nav-text">优点：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#缺点：-1"><span class="nav-number">2.3.2.</span> <span class="nav-text">缺点：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#snowflake算法"><span class="nav-number">2.4.</span> <span class="nav-text">snowflake算法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#优点：-3"><span class="nav-number">2.4.1.</span> <span class="nav-text">优点：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#缺点：-2"><span class="nav-number">2.4.2.</span> <span class="nav-text">缺点：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#类SNOWFLAKE算法"><span class="nav-number">2.5.</span> <span class="nav-text">类SNOWFLAKE算法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#缺点：-3"><span class="nav-number">2.5.1.</span> <span class="nav-text">缺点：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、实现一个简易的redis的id生成器"><span class="nav-number">3.</span> <span class="nav-text">三、实现一个简易的redis的id生成器</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">随我</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+<br><a href="http://www.miitbeian.gov.cn">豫ICP备18013715号-1</a>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

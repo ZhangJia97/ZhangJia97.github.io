@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,Java多线程," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="随我的博客" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="本文对面试中常见的一些Java多线程相关知识点或者问题的总结">
+<meta name="keywords" content="Java,Java多线程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="常见面试题的基础总结（Java多线程篇）">
+<meta property="og:url" content="http://suiwo.xyz/2019/04/13/常见面试题的基础总结（Java多线程篇）/index.html">
+<meta property="og:site_name" content="随我的博客">
+<meta property="og:description" content="本文对面试中常见的一些Java多线程相关知识点或者问题的总结">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://suiwo.xyz/images/常见面试题的基础总结（Java多线程篇）/050B0CED-D039-4035-8797-81F8E8EE7C9E.png">
+<meta property="og:image" content="http://suiwo.xyz/images/常见面试题的基础总结（Java多线程篇）/627EF93D-E74D-4B44-ABAC-B280E924CAC6.png">
+<meta property="og:image" content="http://suiwo.xyz/images/常见面试题的基础总结（Java多线程篇）/C55F6694-EB22-47DE-AE3B-0C5A53383AEE.png">
+<meta property="og:updated_time" content="2019-04-18T01:23:02.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="常见面试题的基础总结（Java多线程篇）">
+<meta name="twitter:description" content="本文对面试中常见的一些Java多线程相关知识点或者问题的总结">
+<meta name="twitter:image" content="http://suiwo.xyz/images/常见面试题的基础总结（Java多线程篇）/050B0CED-D039-4035-8797-81F8E8EE7C9E.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://suiwo.xyz/2019/04/13/常见面试题的基础总结（Java多线程篇）/"/>
+
+
+
+
+
+  <title>常见面试题的基础总结（Java多线程篇） | 随我的博客</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">随我的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">记录学习的点滴</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-align-left"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2019/04/13/常见面试题的基础总结（Java多线程篇）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="随我">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="随我的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">常见面试题的基础总结（Java多线程篇）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-13T12:15:39+08:00">
+                2019-04-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  本文对面试中常见的一些Java多线程相关知识点或者问题的总结
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>由于这些内容都是比较早之前进行的整理的，所以有的部分是参考了他人的博文，但是由于是之前找的，所以具体的博文链接找不到了，如果原博主看到这个文章或者有人知道其中部分内容的原博文，请与我联系，我将加上原链接，谢谢</p>
+</blockquote>
+<hr>
+<h3 id="1、进程和线程的区别"><a href="#1、进程和线程的区别" class="headerlink" title="1、进程和线程的区别"></a>1、进程和线程的区别</h3><ul>
+<li>运行一个程序会产生一个进程，进程包括至少一个线程</li>
+<li>每个进程对应一个JVM实例，多个线程则是共享JVM的堆</li>
+<li>Java采用单线程编程模型，程序会自动创建主线程</li>
+<li>主线程可以创建子线程，原则上要后于子线程完成执行</li>
+</ul>
+<h3 id="2、Thead和Runnable什么关系"><a href="#2、Thead和Runnable什么关系" class="headerlink" title="2、Thead和Runnable什么关系"></a>2、Thead和Runnable什么关系</h3><p>Thread是实现了Runnable接口的类，使得run支持多线程<br>应为类的单一继承原则，所以推荐多使用Runnable接口</p>
+<h3 id="3、如何给run（）传参"><a href="#3、如何给run（）传参" class="headerlink" title="3、如何给run（）传参"></a>3、如何给run（）传参</h3><ul>
+<li>构造函数传参</li>
+<li>成员变量传参 比如常见的set方法</li>
+<li>回调函数传参<br>参考：<a href="https://blog.csdn.net/saycheesenn/article/details/52956331" target="_blank" rel="noopener">https://blog.csdn.net/saycheesenn/article/details/52956331</a></li>
+</ul>
+<h3 id="4、如何实现处理线程的返回值"><a href="#4、如何实现处理线程的返回值" class="headerlink" title="4、如何实现处理线程的返回值"></a>4、如何实现处理线程的返回值</h3><ul>
+<li>主线程等待法  主线程等待子线程执行完毕</li>
+<li>使用join（）阻塞当前线程等待执行完毕</li>
+<li>通过Callable接口实现：通过FutureTask或者线程池获取</li>
+</ul>
+<p>如果使用FutureTask可以使用<code>isDone</code>方法可以判断是否执行完成</p>
+<p><img src="/images/常见面试题的基础总结（Java多线程篇）/050B0CED-D039-4035-8797-81F8E8EE7C9E.png" alt="这里写图片描述"></p>
+<p>对于线程池</p>
+<p><img src="/images/常见面试题的基础总结（Java多线程篇）/627EF93D-E74D-4B44-ABAC-B280E924CAC6.png" alt="这里写图片描述"></p>
+<h3 id="5、线程的状态："><a href="#5、线程的状态：" class="headerlink" title="5、线程的状态："></a>5、线程的状态：</h3><ul>
+<li>新建：创建后还未启动的线程</li>
+<li>运行：包含Runnable和Ready状态</li>
+<li>无限期等待：需要显式唤醒 例如没有设置Timeout参数的<code>Object.wait()</code> 和 <code>Thread.join()</code></li>
+<li>期限等待：在一定时间后会由系统自动唤醒  例如<code>Thread.sleep()</code>，设置了参数的<code>Object.wait()</code>和 <code>Thread.join()</code></li>
+<li>阻塞状态：等待获取排它锁</li>
+<li>结束：已终止线程的状态，线程已经结束执行</li>
+</ul>
+<h3 id="6、sleep和wait区别"><a href="#6、sleep和wait区别" class="headerlink" title="6、sleep和wait区别"></a>6、sleep和wait区别</h3><ul>
+<li>sleep是Thread类的方法，wait是Object类的方法</li>
+<li>sleep可以在任何地方使用</li>
+<li>wait只能在<code>synchronized</code>方法或者<code>synchronized</code>块中使用</li>
+<li>wait是通知当前线程等待然后释放对象锁，notify也是，所以如果没有获取对象锁就是没有意义的了</li>
+</ul>
+<h3 id="7、notify和notifyAll的区别"><a href="#7、notify和notifyAll的区别" class="headerlink" title="7、notify和notifyAll的区别"></a>7、notify和notifyAll的区别</h3><p>首先建立两个概念：</p>
+<blockquote>
+<p>锁池：假设对象A已经拥有了某个对象的锁，而其他线程想要调用这个对象的synchronize方法，所以其他线程会进入阻塞状态进入锁池等待锁的释放</p>
+</blockquote>
+<blockquote>
+<p>等待池：假设线程A调用了某个对象的wait方法，线程A就会释放当前的锁然后进入等待池，进入等待池的线程不会去竞争锁</p>
+</blockquote>
+<ul>
+<li>notifyAll会让所有处于等待池的线程全部进入锁池去竞争获取锁的机会</li>
+<li>notify只会随机选取一个处于等待池中的线程进入锁池去竞争获取锁得机会</li>
+</ul>
+<h3 id="8、Yield"><a href="#8、Yield" class="headerlink" title="8、Yield"></a>8、Yield</h3><ul>
+<li>当调用Thread.yield方法函数时，会给线程调度器一个当前线程愿意让出CPU使用的暗示，但是线程调度器可能会忽略这个暗示</li>
+</ul>
+<h3 id="9、如何中断线程"><a href="#9、如何中断线程" class="headerlink" title="9、如何中断线程"></a>9、如何中断线程</h3><ul>
+<li>通过调用<code>stop（）</code>方法停止线程，通过<code>suspend</code>和<code>resume</code>方法（已经弃用）</li>
+<li>调用<code>interrupt()</code>，通知线程应该中断了<ul>
+<li>如果线程处于被阻塞状态，那么线程将立即退出被阻塞状态，并抛出一个<code>InterruptedException</code>异常</li>
+<li>如果线程处于正常活动状态，那么该线程的中断标志位将设置为true，被设置的中断标志位的线程将继续正常运行不受影响。</li>
+</ul>
+</li>
+<li>正常运行的任务是，经常检查本线程的中断标志位，如果被设置了中断标志就自行停止线程</li>
+<li>如果线程处于活动状态，那么僵该线程的中断标志位设置为true，将设置中断标志的线程将继续正常运行，不受影响。</li>
+</ul>
+<h3 id="10、线程状态间的转换"><a href="#10、线程状态间的转换" class="headerlink" title="10、线程状态间的转换"></a>10、线程状态间的转换</h3><p><img src="/images/常见面试题的基础总结（Java多线程篇）/C55F6694-EB22-47DE-AE3B-0C5A53383AEE.png" alt="这里写图片描述"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"><i class="fa fa-tag"></i> Java</a>
+          
+            <a href="/tags/Java多线程/" rel="tag"><i class="fa fa-tag"></i> Java多线程</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/13/常见面试题的基础总结（JavaGC篇）/" rel="next" title="常见面试题的基础总结（JavaGC篇）">
+                <i class="fa fa-chevron-left"></i> 常见面试题的基础总结（JavaGC篇）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/13/常见面试题的基础总结（JVM篇）/" rel="prev" title="常见面试题的基础总结（JVM篇）">
+                常见面试题的基础总结（JVM篇） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+<span class="jiathis_txt">分享到：</span>
+<a class="jiathis_button_fav">收藏夹</a>
+<a class="jiathis_button_copy">复制网址</a>
+<a class="jiathis_button_email">邮件</a>
+<a class="jiathis_button_weixin">微信</a>
+<!-- <a class="jiathis_button_qzone">QQ空间</a>
+<a class="jiathis_button_tqq">腾讯微博</a> -->
+<a class="jiathis_button_douban">豆瓣</a>
+<a class="jiathis_button_share">一键分享</a>
+
+<a href="http://www.jiathis.com/share?uid=2140465" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+  data_track_clickback:true,
+  summary:"",
+  shortUrl:false,
+  hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="随我" />
+            
+              <p class="site-author-name" itemprop="name">随我</p>
+              <p class="site-description motion-element" itemprop="description">用心做自己喜欢的事</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">98</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">77</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+            <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=298 height=52 src="//music.163.com/outchain/player?type=2&id=1321616516&auto=0&height=32"></iframe>
+          </nav>
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ZhangJia97" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zhjia97@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/qq_38542085" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-CSDN"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、进程和线程的区别"><span class="nav-number">1.</span> <span class="nav-text">1、进程和线程的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、Thead和Runnable什么关系"><span class="nav-number">2.</span> <span class="nav-text">2、Thead和Runnable什么关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、如何给run（）传参"><span class="nav-number">3.</span> <span class="nav-text">3、如何给run（）传参</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、如何实现处理线程的返回值"><span class="nav-number">4.</span> <span class="nav-text">4、如何实现处理线程的返回值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5、线程的状态："><span class="nav-number">5.</span> <span class="nav-text">5、线程的状态：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6、sleep和wait区别"><span class="nav-number">6.</span> <span class="nav-text">6、sleep和wait区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7、notify和notifyAll的区别"><span class="nav-number">7.</span> <span class="nav-text">7、notify和notifyAll的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8、Yield"><span class="nav-number">8.</span> <span class="nav-text">8、Yield</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9、如何中断线程"><span class="nav-number">9.</span> <span class="nav-text">9、如何中断线程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10、线程状态间的转换"><span class="nav-number">10.</span> <span class="nav-text">10、线程状态间的转换</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">随我</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+<br><a href="http://www.miitbeian.gov.cn">豫ICP备18013715号-1</a>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
