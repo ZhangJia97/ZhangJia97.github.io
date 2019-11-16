@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.ico?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.ico?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.ico?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.ico?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="iTerm2是mac系统下的一款非常好用的终端工具，它比系统自带的Terminal好用得多。有丰富的特色功能供，比如快捷键、分屏、定制终端主题颜色等；这些功能极大的提高我们敲命令的效率，强烈推荐每一个程序员都尝试和习惯使用这款工具。">
+<meta name="keywords" content="iTerm2,zsh">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用iTerm2和OhMyZsh实现一个强大终端">
+<meta property="og:url" content="http://suiwo.xyz/2019/11/16/使用iTerm2和OhMyZsh实现一个强大终端/index.html">
+<meta property="og:site_name" content="随我的博客">
+<meta property="og:description" content="iTerm2是mac系统下的一款非常好用的终端工具，它比系统自带的Terminal好用得多。有丰富的特色功能供，比如快捷键、分屏、定制终端主题颜色等；这些功能极大的提高我们敲命令的效率，强烈推荐每一个程序员都尝试和习惯使用这款工具。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://suiwo.xyz/images/使用iTerm2和OhMyZsh实现一个强大终端/67CBDB40-30BD-436F-AE5D-4F153F59FA45.png">
+<meta property="og:image" content="http://suiwo.xyz/images/使用iTerm2和OhMyZsh实现一个强大终端/2411388-d80b6825cd00fb0d.png">
+<meta property="og:updated_time" content="2019-11-16T15:19:43.641Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用iTerm2和OhMyZsh实现一个强大终端">
+<meta name="twitter:description" content="iTerm2是mac系统下的一款非常好用的终端工具，它比系统自带的Terminal好用得多。有丰富的特色功能供，比如快捷键、分屏、定制终端主题颜色等；这些功能极大的提高我们敲命令的效率，强烈推荐每一个程序员都尝试和习惯使用这款工具。">
+<meta name="twitter:image" content="http://suiwo.xyz/images/使用iTerm2和OhMyZsh实现一个强大终端/67CBDB40-30BD-436F-AE5D-4F153F59FA45.png">
+  <link rel="alternate" href="/atom.xml" title="随我的博客" type="application/atom+xml">
+  <link rel="canonical" href="http://suiwo.xyz/2019/11/16/使用iTerm2和OhMyZsh实现一个强大终端/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>使用iTerm2和OhMyZsh实现一个强大终端 | 随我的博客</title>
+  <meta name="generator" content="Hexo 3.7.1">
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a href="https://github.com/ZhangJia97" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">随我的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录学习的点滴</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2019/11/16/使用iTerm2和OhMyZsh实现一个强大终端/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="随我">
+      <meta itemprop="description" content="用心做自己喜欢的事">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="随我的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">使用iTerm2和OhMyZsh实现一个强大终端
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-11-16 22:45:10" itemprop="dateCreated datePublished" datetime="2019-11-16T22:45:10+08:00">2019-11-16</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/开发工具/" itemprop="url" rel="index"><span itemprop="name">开发工具</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <div class="post-description">iTerm2是mac系统下的一款非常好用的终端工具，它比系统自带的Terminal好用得多。有丰富的特色功能供，比如快捷键、分屏、定制终端主题颜色等；这些功能极大的提高我们敲命令的效率，强烈推荐每一个程序员都尝试和习惯使用这款工具。</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>参考文章：<br><a href="https://blog.csdn.net/qianghaohao/article/details/79440961" target="_blank" rel="noopener">https://blog.csdn.net/qianghaohao/article/details/79440961</a><br><a href="https://www.jianshu.com/p/9c3439cc3bdb" target="_blank" rel="noopener">https://www.jianshu.com/p/9c3439cc3bdb</a><br><a href="https://www.jianshu.com/p/d194d29e488c?open_source=weibo_search" target="_blank" rel="noopener">https://www.jianshu.com/p/d194d29e488c?open_source=weibo_search</a></p>
+<p>首先我们看一下最终效果<br><img src="/images/使用iTerm2和OhMyZsh实现一个强大终端/67CBDB40-30BD-436F-AE5D-4F153F59FA45.png" alt="这里写图片描述"></p>
+<h3 id="一、下载iTerm2"><a href="#一、下载iTerm2" class="headerlink" title="一、下载iTerm2"></a>一、下载iTerm2</h3><p>官网下载地址：<a href="https://www.iterm2.com/" target="_blank" rel="noopener">https://www.iterm2.com/</a></p>
+<h3 id="二、安装zsh"><a href="#二、安装zsh" class="headerlink" title="二、安装zsh"></a>二、安装<code>zsh</code></h3><p><code>zsh</code>一般Mac已经自带了，无需额外安装。可以用<code>cat /etc/shells</code>查看zsh是否安装，如果列出了<code>/bin/zsh</code>则表明zsh已经安装了。<br>接下来修改iTerm2终端的默认Shell，可以用<code>echo $SHELL</code>查看当前Shell是什么，如果不是<code>/bin/zsh</code>则用如下命令修改iTerm2的默认Shell为<code>zsh</code><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chsh -s /bin/bash</span><br></pre></td></tr></table></figure></p>
+<p>这个是默认的样子<br><img src="/images/使用iTerm2和OhMyZsh实现一个强大终端/2411388-d80b6825cd00fb0d.png" alt="这里写图片描述"></p>
+<h3 id="三、安装安装Oh-my-zsh"><a href="#三、安装安装Oh-my-zsh" class="headerlink" title="三、安装安装Oh my zsh"></a>三、安装安装<code>Oh my zsh</code></h3><blockquote>
+<p>zsh的功能极其强大，只是配置过于复杂，起初只有极客才在用。后来，有个穷极无聊的程序员可能是实在看不下去广大猿友一直只能使用单调的bash, 于是他创建了一个名为oh-my-zsh的开源项目<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># curl 安装方式</span></span><br><span class="line">sh -c <span class="string">"<span class="variable">$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)</span>"</span></span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># wget 安装方式</span></span><br><span class="line">sh -c <span class="string">"<span class="variable">$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)</span>"</span></span><br></pre></td></tr></table></figure>
+<p>在安装过程中我们发现总是出现无法下载instal.sh文件的情况，所以下面是install.sh文件的源码<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br></pre></td><td class="code"><pre><span class="line">main() &#123;</span><br><span class="line"><span class="meta">  #</span><span class="bash"> Use colors, but only <span class="keyword">if</span> connected to a terminal, and that terminal</span></span><br><span class="line"><span class="meta">  #</span><span class="bash"> supports them.</span></span><br><span class="line">  if which tput &gt;/dev/null 2&gt;&amp;1; then</span><br><span class="line">      ncolors=$(tput colors)</span><br><span class="line">  fi</span><br><span class="line">  if [ -t 1 ] &amp;&amp; [ -n "$ncolors" ] &amp;&amp; [ "$ncolors" -ge 8 ]; then</span><br><span class="line">    RED="$(tput setaf 1)"</span><br><span class="line">    GREEN="$(tput setaf 2)"</span><br><span class="line">    YELLOW="$(tput setaf 3)"</span><br><span class="line">    BLUE="$(tput setaf 4)"</span><br><span class="line">    BOLD="$(tput bold)"</span><br><span class="line">    NORMAL="$(tput sgr0)"</span><br><span class="line">  else</span><br><span class="line">    RED=""</span><br><span class="line">    GREEN=""</span><br><span class="line">    YELLOW=""</span><br><span class="line">    BLUE=""</span><br><span class="line">    BOLD=""</span><br><span class="line">    NORMAL=""</span><br><span class="line">  fi</span><br><span class="line"></span><br><span class="line"><span class="meta">  #</span><span class="bash"> Only <span class="built_in">enable</span> <span class="built_in">exit</span>-on-error after the non-critical colorization stuff,</span></span><br><span class="line"><span class="meta">  #</span><span class="bash"> <span class="built_in">which</span> may fail on systems lacking tput or terminfo</span></span><br><span class="line">  set -e</span><br><span class="line"></span><br><span class="line">  CHECK_ZSH_INSTALLED=$(grep /zsh$ /etc/shells | wc -l)</span><br><span class="line">  if [ ! $CHECK_ZSH_INSTALLED -ge 1 ]; then</span><br><span class="line">    printf "$&#123;YELLOW&#125;Zsh is not installed!$&#123;NORMAL&#125; Please install zsh first!\n"</span><br><span class="line">    exit</span><br><span class="line">  fi</span><br><span class="line">  unset CHECK_ZSH_INSTALLED</span><br><span class="line"></span><br><span class="line">  if [ ! -n "$ZSH" ]; then</span><br><span class="line">    ZSH=~/.oh-my-zsh</span><br><span class="line">  fi</span><br><span class="line"></span><br><span class="line">  if [ -d "$ZSH" ]; then</span><br><span class="line">    printf "$&#123;YELLOW&#125;You already have Oh My Zsh installed.$&#123;NORMAL&#125;\n"</span><br><span class="line">    printf "You'll need to remove $ZSH if you want to re-install.\n"</span><br><span class="line">    exit</span><br><span class="line">  fi</span><br><span class="line"></span><br><span class="line"><span class="meta">  #</span><span class="bash"> Prevent the cloned repository from having insecure permissions. Failing to <span class="keyword">do</span></span></span><br><span class="line"><span class="meta">  #</span><span class="bash"> so causes compinit() calls to fail with <span class="string">"command not found: compdef"</span> errors</span></span><br><span class="line"><span class="meta">  #</span><span class="bash"> <span class="keyword">for</span> users with insecure umasks (e.g., <span class="string">"002"</span>, allowing group writability). Note</span></span><br><span class="line"><span class="meta">  #</span><span class="bash"> that this will be ignored under Cygwin by default, as Windows ACLs take</span></span><br><span class="line"><span class="meta">  #</span><span class="bash"> precedence over umasks except <span class="keyword">for</span> filesystems mounted with option <span class="string">"noacl"</span>.</span></span><br><span class="line">  umask g-w,o-w</span><br><span class="line"></span><br><span class="line">  printf "$&#123;BLUE&#125;Cloning Oh My Zsh...$&#123;NORMAL&#125;\n"</span><br><span class="line">  hash git &gt;/dev/null 2&gt;&amp;1 || &#123;</span><br><span class="line">    echo "Error: git is not installed"</span><br><span class="line">    exit 1</span><br><span class="line">  &#125;</span><br><span class="line"><span class="meta">  #</span><span class="bash"> The Windows (MSYS) Git is not compatible with normal use on cygwin</span></span><br><span class="line">  if [ "$OSTYPE" = cygwin ]; then</span><br><span class="line">    if git --version | grep msysgit &gt; /dev/null; then</span><br><span class="line">      echo "Error: Windows/MSYS Git is not supported on Cygwin"</span><br><span class="line">      echo "Error: Make sure the Cygwin git package is installed and is first on the path"</span><br><span class="line">      exit 1</span><br><span class="line">    fi</span><br><span class="line">  fi</span><br><span class="line">  env git clone --depth=1 https://github.com/robbyrussell/oh-my-zsh.git $ZSH || &#123;</span><br><span class="line">    printf "Error: git clone of oh-my-zsh repo failed\n"</span><br><span class="line">    exit 1</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  printf "$&#123;BLUE&#125;Looking for an existing zsh config...$&#123;NORMAL&#125;\n"</span><br><span class="line">  if [ -f ~/.zshrc ] || [ -h ~/.zshrc ]; then</span><br><span class="line">    printf "$&#123;YELLOW&#125;Found ~/.zshrc.$&#123;NORMAL&#125; $&#123;GREEN&#125;Backing up to ~/.zshrc.pre-oh-my-zsh$&#123;NORMAL&#125;\n";</span><br><span class="line">    mv ~/.zshrc ~/.zshrc.pre-oh-my-zsh;</span><br><span class="line">  fi</span><br><span class="line"></span><br><span class="line">  printf "$&#123;BLUE&#125;Using the Oh My Zsh template file and adding it to ~/.zshrc$&#123;NORMAL&#125;\n"</span><br><span class="line">  cp $ZSH/templates/zshrc.zsh-template ~/.zshrc</span><br><span class="line">  sed "/^export ZSH=/ c\\</span><br><span class="line">  export ZSH=$ZSH</span><br><span class="line">  " ~/.zshrc &gt; ~/.zshrc-omztemp</span><br><span class="line">  mv -f ~/.zshrc-omztemp ~/.zshrc</span><br><span class="line"></span><br><span class="line"><span class="meta">  #</span><span class="bash"> If this user<span class="string">'s login shell is not already "zsh", attempt to switch.</span></span></span><br><span class="line">  TEST_CURRENT_SHELL=$(expr "$SHELL" : '.*/\(.*\)')</span><br><span class="line">  if [ "$TEST_CURRENT_SHELL" != "zsh" ]; then</span><br><span class="line">    # If this platform provides a "chsh" command (not Cygwin), do it, man!</span><br><span class="line">    if hash chsh &gt;/dev/null 2&gt;&amp;1; then</span><br><span class="line">      printf "$&#123;BLUE&#125;Time to change your default shell to zsh!$&#123;NORMAL&#125;\n"</span><br><span class="line">      chsh -s $(grep /zsh$ /etc/shells | tail -1)</span><br><span class="line">    # Else, suggest the user do so manually.</span><br><span class="line">    else</span><br><span class="line">      printf "I can't change your shell automatically because this system does not have chsh.\n"</span><br><span class="line">      printf "$&#123;BLUE&#125;Please manually change your default shell to zsh!$&#123;NORMAL&#125;\n"</span><br><span class="line">    fi</span><br><span class="line">  fi</span><br><span class="line"></span><br><span class="line">  printf "$&#123;GREEN&#125;"</span><br><span class="line">  echo '         __                                     __   '</span><br><span class="line">  echo '  ____  / /_     ____ ___  __  __   ____  _____/ /_  '</span><br><span class="line">  echo ' / __ \/ __ \   / __ `__ \/ / / /  /_  / / ___/ __ \ '</span><br><span class="line">  echo '/ /_/ / / / /  / / / / / / /_/ /    / /_(__  ) / / / '</span><br><span class="line">  echo '\____/_/ /_/  /_/ /_/ /_/\__, /    /___/____/_/ /_/  '</span><br><span class="line">  echo '                        /____/                       ....is now installed!'</span><br><span class="line">  echo ''</span><br><span class="line">  echo ''</span><br><span class="line">  echo 'Please look over the ~/.zshrc file to select plugins, themes, and options.'</span><br><span class="line">  echo ''</span><br><span class="line">  echo 'p.s. Follow us at https://twitter.com/ohmyzsh.'</span><br><span class="line">  echo ''</span><br><span class="line">  echo 'p.p.s. Get stickers and t-shirts at https://shop.planetargon.com.'</span><br><span class="line">  echo ''</span><br><span class="line">  printf "$&#123;NORMAL&#125;"</span><br><span class="line">  env zsh</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">main</span><br></pre></td></tr></table></figure></p>
+<p>之后执行即可<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh -c <span class="string">"<span class="variable">$(curl -fsSL install.sh)</span>"</span></span><br></pre></td></tr></table></figure></p>
+<p>下面我们进行主题修改，主题简介链接：<a href="https://github.com/robbyrussell/oh-my-zsh/wiki/themes" target="_blank" rel="noopener">https://github.com/robbyrussell/oh-my-zsh/wiki/themes</a></p>
+<p>打开配置文件<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi ~/.zshrc</span><br></pre></td></tr></table></figure></p>
+<p>并将主题换成自己喜爱的主题<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ZSH_THEME=<span class="string">"agnoster"</span></span><br></pre></td></tr></table></figure></p>
+<p>更新配置<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> ~/.zshrc</span><br></pre></td></tr></table></figure></p>
+<h3 id="安装PowerFonts字体"><a href="#安装PowerFonts字体" class="headerlink" title="安装PowerFonts字体"></a>安装PowerFonts字体</h3><p>有的同学会发现，执行完上一步后，使用可能会出现乱码，这是因为我们缺少PowerFonts字体<br>安装字体库需要首先将项目git clone至本地，然后执行源码中的install.sh。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git@github.com:powerline/fonts.git</span><br><span class="line"><span class="built_in">cd</span> fonts</span><br><span class="line">./install.sh</span><br></pre></td></tr></table></figure></p>
+<p>安装好字体库之后，我们来设置iTerm2的字体，具体的操作是<code>iTerm2 -&gt; Preferences -&gt; Profiles -&gt; Text</code>，在Font区域选中<code>Change Font</code>，然后找到<code>Roboto Mono for Powerline</code>字体。</p>
+<h3 id="安装配色方案"><a href="#安装配色方案" class="headerlink" title="安装配色方案"></a>安装配色方案</h3><p>配色方案在使用VIM或Colorful Log时会变得非常有用，同时界面也不会一片黑绿一样死板。</p>
+<p>同样使用git clone的方式下载源码进行安装：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/Desktop/OpenSource</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/altercation/solarized</span><br><span class="line"><span class="built_in">cd</span> solarized/iterm2-colors-solarized/</span><br><span class="line">open .</span><br></pre></td></tr></table></figure></p>
+<p>在打开的finder窗口中，双击<code>Solarized Dark.itermcolors</code>和<code>Solarized Light.itermcolors</code>即可安装明暗两种配色：<br>再次进入<code>iTerm2 -&gt; Preferences -&gt; Profiles -&gt; Colors -&gt; Color Presets</code>中根据个人喜好选择<code>solarized dark</code>和<code>solarized light</code>两种配色中的一种即可。</p>
+<h3 id="增加高亮"><a href="#增加高亮" class="headerlink" title="增加高亮"></a>增加高亮</h3><p>这是oh my zsh的一个插件，安装方式与theme大同小异：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/.oh-my-zsh/custom/plugins/</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/zsh-users/zsh-syntax-highlighting.git</span><br><span class="line">vi ~/.zshrc</span><br></pre></td></tr></table></figure></p>
+<p>这时我们再次打开zshrc文件进行编辑。找到plugins，此时plugins中应该已经有了git，我们需要把高亮插件也加上：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">plugins=(</span><br><span class="line">git</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">plugins=(</span><br><span class="line">git</span><br><span class="line">zsh-syntax-highlighting</span><br><span class="line">zsh-autosuggestions</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>请务必保证插件顺序，<code>zsh-syntax-highlighting</code>必须在最后一个。</p>
+<p>然后在文件的最后一行添加：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh</span><br></pre></td></tr></table></figure></p>
+<p>执行命令使刚才的修改生效：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> ~/.zshrc</span><br></pre></td></tr></table></figure></p>
+<h3 id="安装命令补全"><a href="#安装命令补全" class="headerlink" title="安装命令补全"></a>安装命令补全</h3><p>跟代码高亮的安装方式一样，这也是一个zsh的插件，叫做zsh-autosuggestion，用于命令建议和补全。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/.oh-my-zsh/custom/plugins/</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/zsh-users/zsh-autosuggestions</span><br><span class="line">vi ~/.zshrc</span><br></pre></td></tr></table></figure></p>
+<p>之后将插件加入zsh配置与上一个一致</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/iTerm2/" rel="tag"><i class="fa fa-tag"></i> iTerm2</a>
+            
+              <a href="/tags/zsh/" rel="tag"><i class="fa fa-tag"></i> zsh</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/11/07/Kafka初试/" rel="next" title="Kafka初试">
+                  <i class="fa fa-chevron-left"></i> Kafka初试
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc" data-target="post-toc-wrap">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、下载iTerm2"><span class="nav-number">1.</span> <span class="nav-text">一、下载iTerm2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、安装zsh"><span class="nav-number">2.</span> <span class="nav-text">二、安装zsh</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、安装安装Oh-my-zsh"><span class="nav-number">3.</span> <span class="nav-text">三、安装安装Oh my zsh</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装PowerFonts字体"><span class="nav-number">4.</span> <span class="nav-text">安装PowerFonts字体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装配色方案"><span class="nav-number">5.</span> <span class="nav-text">安装配色方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#增加高亮"><span class="nav-number">6.</span> <span class="nav-text">增加高亮</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装命令补全"><span class="nav-number">7.</span> <span class="nav-text">安装命令补全</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.png"
+      alt="随我">
+  <p class="site-author-name" itemprop="name">随我</p>
+  <div class="site-description" itemprop="description">用心做自己喜欢的事</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">100</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">81</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/ZhangJia97" title="GitHub &rarr; https://github.com/ZhangJia97" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:isuiwo@qq.com" title="E-Mail &rarr; mailto:isuiwo@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      友链
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://wqf1234.github.io/" title="https://wqf1234.github.io/" rel="noopener" target="_blank">AC的博客</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/qq_38542085" title="https://blog.csdn.net/qq_38542085" rel="noopener" target="_blank">随我的CSDN</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">随我</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.7.1</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共109k字</span>
+</div>
+
+<div class="BbeiAn-info">
+    <a target="_blank" href="http://beian.miit.gov.cn" rel="nofollow">豫ICP备18013715号-1</a> <!--a标签中增加nofollow属性，避免爬虫出站。-->
+</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.3.0"></script><script src="/js/motion.js?v=7.3.0"></script>
+<script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
