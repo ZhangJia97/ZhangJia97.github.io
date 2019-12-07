@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://suiwo.xyz/"/>
-  <updated>2019-11-16T16:05:12.484Z</updated>
+  <updated>2019-12-07T07:39:37.120Z</updated>
   <id>http://suiwo.xyz/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>hadoop伪分布式集群安装</title>
+    <link href="http://suiwo.xyz/2019/12/07/hadoop%E4%BC%AA%E5%88%86%E5%B8%83%E5%BC%8F%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/"/>
+    <id>http://suiwo.xyz/2019/12/07/hadoop伪分布式集群安装/</id>
+    <published>2019-12-07T07:09:20.000Z</published>
+    <updated>2019-12-07T07:39:37.120Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="一、下载hadoop安装包"><a href="#一、下载hadoop安装包" class="headerlink" title="一、下载hadoop安装包"></a>一、下载hadoop安装包</h2><p>hadoop安装包分为apache官方以及CDH，具体区别在此不做介绍，本次搭建选择的是<code>hadoop-2.6.0-cdh5.7.0</code>版本<br>下载路径<a href="http://archive.cloudera.com/cdh5/" target="_blank" rel="noopener">http://archive.cloudera.com/cdh5/</a></p><h2 id="二、配置hadoop"><a href="#二、配置hadoop" class="headerlink" title="二、配置hadoop"></a>二、配置hadoop</h2><p>hadoop相关配置文件在/etc目录下<br>我们需要修改的文件有<br><code>core-site.xml</code>，<code>hadoop-env.sh</code>，<code>hdfs-site.xml</code></p><h3 id="1-对hadoop-env-sh文件中的JAVA-HOME进行一下配置"><a href="#1-对hadoop-env-sh文件中的JAVA-HOME进行一下配置" class="headerlink" title="1.对hadoop-env.sh文件中的JAVA_HOME进行一下配置"></a>1.对<code>hadoop-env.sh</code>文件中的<code>JAVA_HOME</code>进行一下配置</h3><h3 id="2-在hdfs-site-xml文件中添加配置"><a href="#2-在hdfs-site-xml文件中添加配置" class="headerlink" title="2.在hdfs-site.xml文件中添加配置"></a>2.在<code>hdfs-site.xml</code>文件中添加配置</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 存储副本的数量，因为我们是伪分布式，所以副本数量为1 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.replication<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>1<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- namenode相关信息存储路径 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.namenode.name.dir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>file:/XXX/Hadoop/dfs/name<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- datanode相关信息存储路径 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.datanode.data.dir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>file:/XXX/Hadoop/dfs/data<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure><p>配置好之后我们需要创建<code>/XXX/Hadoop/dfs/name</code>和<code>/XXX/Hadoop/dfs/data</code>这两个文件</p><h3 id="3-配置core-site-xml"><a href="#3-配置core-site-xml" class="headerlink" title="3.配置core-site.xml"></a>3.配置<code>core-site.xml</code></h3><p>我们在core-site.xml文件下进行一下配置<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 表明我们hdfs的默认ip --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>fs.defaultFS<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>hdfs://localhost:9000<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 表明我们tmp文件的路径 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>hadoop.tmp.dir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>/XXX/Hadoop/tmp<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure></p><p>之后我们需要进到/bin目录下面执行<code>./hdfs namenode -format</code>对namenode进行格式化<br>如果看到下面这段话则说明格式化成功<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">19/12/07 15:04:31 INFO util.ExitUtil: Exiting with status 0</span><br></pre></td></tr></table></figure></p><h2 id="三、启动"><a href="#三、启动" class="headerlink" title="三、启动"></a>三、启动</h2><ol><li>/sbin目录下面使用<code>./start-dfs.sh</code>启动hdfs集群</li><li>使用<code>./hdfs dfs -ls /</code>查看hdfs根目录为空</li><li>然后我们在执行<code>./hdfs dfs -mkdir /test</code>之后再查询会发现根目录已经存在/test文件</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      本文是尝试搭建一个伪分布式的hadoop集群为之后的Hbase集群做准备
+    
+    </summary>
+    
+      <category term="大数据" scheme="http://suiwo.xyz/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+    
+      <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
+    
+      <category term="HDFS" scheme="http://suiwo.xyz/tags/HDFS/"/>
+    
+      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+  </entry>
   
   <entry>
     <title>使用iTerm2和OhMyZsh实现一个强大终端</title>
@@ -487,30 +513,6 @@
       <category term="Springboot" scheme="http://suiwo.xyz/tags/Springboot/"/>
     
       <category term="POI" scheme="http://suiwo.xyz/tags/POI/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Java遍历一个类的所有属性和值</title>
-    <link href="http://suiwo.xyz/2019/08/08/Java%E9%81%8D%E5%8E%86%E4%B8%80%E4%B8%AA%E7%B1%BB%E7%9A%84%E6%89%80%E6%9C%89%E5%B1%9E%E6%80%A7%E5%92%8C%E5%80%BC/"/>
-    <id>http://suiwo.xyz/2019/08/08/Java遍历一个类的所有属性和值/</id>
-    <published>2019-08-08T08:11:38.000Z</published>
-    <updated>2019-08-08T08:12:53.657Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote><p>今天在尝试使用Java反射来实现Java导出数据库数据到Excel中，然后在尝试获取类所有的属性的时候，由于对于反射的不熟练，然后找到了一篇博文，所以在此进行记录，以供未来参考，原博文地址:<br><a href="https://blog.csdn.net/ztx114/article/details/78274314" target="_blank" rel="noopener">https://blog.csdn.net/ztx114/article/details/78274314</a></p></blockquote><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">bianLi</span><span class="params">(Object obj)</span></span>&#123;</span><br><span class="line"> Field[] fields = obj.getClass().getDeclaredFields();</span><br><span class="line"> <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span> , len = fields.length; i &lt; len; i++) &#123;</span><br><span class="line"> <span class="comment">// 对于每个属性，获取属性名</span></span><br><span class="line"> String varName = fields[i].getName();</span><br><span class="line"> <span class="keyword">try</span> &#123;</span><br><span class="line"> <span class="comment">// 获取原来的访问控制权限</span></span><br><span class="line"> <span class="keyword">boolean</span> accessFlag = fields[i].isAccessible();</span><br><span class="line"> <span class="comment">// 修改访问控制权限</span></span><br><span class="line"> fields[i].setAccessible(<span class="keyword">true</span>);</span><br><span class="line"> <span class="comment">// 获取在对象f中属性fields[i]对应的对象中的变量</span></span><br><span class="line"> Object o;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">o = fields[i].get(obj);</span><br><span class="line">System.err.println(<span class="string">"传入的对象中包含一个如下的变量："</span> + varName + <span class="string">" = "</span> + o);</span><br><span class="line">&#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</span><br><span class="line"><span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">e.printStackTrace();</span><br><span class="line">&#125;</span><br><span class="line"> <span class="comment">// 恢复访问控制权限</span></span><br><span class="line"> fields[i].setAccessible(accessFlag);</span><br><span class="line"> &#125; <span class="keyword">catch</span> (IllegalArgumentException ex) &#123;</span><br><span class="line"> ex.printStackTrace();</span><br><span class="line"> &#125; </span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      今天在尝试使用Java反射来实现Java导出数据库数据到Excel中，然后在尝试获取类所有的属性的时候，由于对于反射的不熟练，然后找到了一篇博文，所以在此进行记录，以供未来参考。
-    
-    </summary>
-    
-      <category term="Java" scheme="http://suiwo.xyz/categories/Java/"/>
-    
-    
-      <category term="Java" scheme="http://suiwo.xyz/tags/Java/"/>
-    
-      <category term="反射" scheme="http://suiwo.xyz/tags/%E5%8F%8D%E5%B0%84/"/>
     
   </entry>
   
