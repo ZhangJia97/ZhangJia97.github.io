@@ -62,7 +62,7 @@
 <meta property="og:site_name" content="随我的博客">
 <meta property="og:description" content="本文是尝试搭建基于Hadoop集群的HBase的伪分布式集群">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-12-08T07:33:02.921Z">
+<meta property="og:updated_time" content="2019-12-08T10:06:08.878Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="HBase伪分布式集群安装">
 <meta name="twitter:description" content="本文是尝试搭建基于Hadoop集群的HBase的伪分布式集群">
@@ -266,7 +266,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="一、下载HBase安装包"><a href="#一、下载HBase安装包" class="headerlink" title="一、下载HBase安装包"></a>一、下载HBase安装包</h2><p>为了防HBase和Hadoop版本间冲突，可以在CDH上下载和Hadoop兼容的HBase版本，本次搭建选择的是<code>hbase-1.2.0</code><br>下载路径：<a href="http://archive.cloudera.com/cdh5/" target="_blank" rel="noopener">http://archive.cloudera.com/cdh5/</a></p>
+        <h2 id="一、下载HBase安装包"><a href="#一、下载HBase安装包" class="headerlink" title="一、下载HBase安装包"></a>一、下载HBase安装包</h2><p>为了防止HBase和Hadoop版本间冲突，可以在CDH上下载和Hadoop兼容的HBase版本，本次搭建选择的是<code>hbase-1.2.0</code><br>下载路径：<a href="http://archive.cloudera.com/cdh5/" target="_blank" rel="noopener">http://archive.cloudera.com/cdh5/</a></p>
 <hr>
 <h2 id="二、配置伪分布式环境"><a href="#二、配置伪分布式环境" class="headerlink" title="二、配置伪分布式环境"></a>二、配置伪分布式环境</h2><blockquote>
 <p>HBase相关配置文件在<code>/conf</code>文件之下,我们需要修改的配置文件有<code>hbase-env.sh</code>和<code>hbase-site.xml</code></p>
