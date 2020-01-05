@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.ico?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.ico?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.ico?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.ico?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="很久之前曾经总结了郝斌老师的对汉诺塔问题的解析，当时还暂时不能彻底理解，今天又重温一下汉诺塔问题，并尝试使用递归与非递归两种方式来进行实现">
+<meta name="keywords" content="数据结构与算法,递归,汉诺塔问题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="汉诺塔问题总结">
+<meta property="og:url" content="http://suiwo.xyz/2020/01/04/汉诺塔问题总结/index.html">
+<meta property="og:site_name" content="随我的博客">
+<meta property="og:description" content="很久之前曾经总结了郝斌老师的对汉诺塔问题的解析，当时还暂时不能彻底理解，今天又重温一下汉诺塔问题，并尝试使用递归与非递归两种方式来进行实现">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-01-05T09:42:33.638Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="汉诺塔问题总结">
+<meta name="twitter:description" content="很久之前曾经总结了郝斌老师的对汉诺塔问题的解析，当时还暂时不能彻底理解，今天又重温一下汉诺塔问题，并尝试使用递归与非递归两种方式来进行实现">
+  <link rel="alternate" href="/atom.xml" title="随我的博客" type="application/atom+xml">
+  <link rel="canonical" href="http://suiwo.xyz/2020/01/04/汉诺塔问题总结/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>汉诺塔问题总结 | 随我的博客</title>
+  <meta name="generator" content="Hexo 3.7.1">
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a href="https://github.com/ZhangJia97" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">随我的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录学习的点滴</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2020/01/04/汉诺塔问题总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="随我">
+      <meta itemprop="description" content="用心做自己喜欢的事">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="随我的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">汉诺塔问题总结
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2020-01-04 23:27:30" itemprop="dateCreated datePublished" datetime="2020-01-04T23:27:30+08:00">2020-01-04</time>
+            </span>
+          
+
+          
+            <div class="post-description">很久之前曾经总结了郝斌老师的对汉诺塔问题的解析，当时还暂时不能彻底理解，今天又重温一下汉诺塔问题，并尝试使用递归与非递归两种方式来进行实现</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="一、基本递归实现"><a href="#一、基本递归实现" class="headerlink" title="一、基本递归实现"></a>一、基本递归实现</h2><p>下面是普遍的汉诺塔问题的递归解法代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Hanoi</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">hanoi</span><span class="params">(<span class="keyword">int</span> n, String x, String y, String z)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (n == <span class="number">1</span>)&#123;</span><br><span class="line">            System.out.println(x + <span class="string">" -&gt; "</span> + z);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            hanoi(n - <span class="number">1</span>, x, z, y);</span><br><span class="line">            System.out.println(x + <span class="string">" -&gt; "</span> + z);</span><br><span class="line">            hanoi(n - <span class="number">1</span>, y, x, z);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        hanoi(<span class="number">3</span>, <span class="string">"x"</span>, <span class="string">"y"</span>, <span class="string">"z"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<p>输出如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">x -&gt; z</span><br><span class="line">x -&gt; y</span><br><span class="line">z -&gt; y</span><br><span class="line">x -&gt; z</span><br><span class="line">y -&gt; x</span><br><span class="line">y -&gt; z</span><br><span class="line">x -&gt; z</span><br></pre></td></tr></table></figure>
+<hr>
+<hr>
+<h2 id="二、基本非递归实现"><a href="#二、基本非递归实现" class="headerlink" title="二、基本非递归实现"></a>二、基本非递归实现</h2><p>非递归实现的方式本质就是尝试使用栈来模拟递归</p>
+<h4 id="1-创建一个保存状态的类"><a href="#1-创建一个保存状态的类" class="headerlink" title="1.创建一个保存状态的类"></a>1.创建一个保存状态的类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">State</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span> n; <span class="comment">// 当前层数</span></span><br><span class="line">    <span class="keyword">public</span> String x; <span class="comment">// 起始柱</span></span><br><span class="line">    <span class="keyword">public</span> String y; <span class="comment">// 辅助柱</span></span><br><span class="line">    <span class="keyword">public</span> String z; <span class="comment">// 目标柱</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">State</span><span class="params">(<span class="keyword">int</span> n, String x, String y, String z)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.n = n;</span><br><span class="line">        <span class="keyword">this</span>.x = x;</span><br><span class="line">        <span class="keyword">this</span>.y = y;</span><br><span class="line">        <span class="keyword">this</span>.z = z;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="2-实现主程序"><a href="#2-实现主程序" class="headerlink" title="2.实现主程序"></a>2.实现主程序</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Hanoi</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hanoi</span><span class="params">(<span class="keyword">int</span> n, String x, String y, String z)</span> </span>&#123;</span><br><span class="line">        Stack&lt;State&gt; s = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">        s.push(<span class="keyword">new</span> State(n, x, y, z));</span><br><span class="line">        State state;</span><br><span class="line">        <span class="keyword">while</span> (!s.empty() &amp;&amp; (state = s.pop()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (state.n == <span class="number">1</span>) &#123;</span><br><span class="line">                System.out.println(state.x + <span class="string">" -&gt; "</span> + state.y);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// 栈结构先进后出，所以需要逆序进栈，这部分是理解重点，用栈模拟递归</span></span><br><span class="line">                s.push(<span class="keyword">new</span> State(state.n - <span class="number">1</span>, state.y, state.x, state.z));</span><br><span class="line">                s.push(<span class="keyword">new</span> State(<span class="number">1</span>, state.x, state.y, state.z));</span><br><span class="line">                s.push(<span class="keyword">new</span> State(state.n - <span class="number">1</span>, state.x, state.z, state.y));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Hanoi hanoi = <span class="keyword">new</span> Hanoi();</span><br><span class="line">        System.out.println();</span><br><span class="line">        System.out.println(<span class="string">"非递归方式："</span>);</span><br><span class="line">        Hanoi.hanoi(<span class="number">3</span>, <span class="string">"x"</span>, <span class="string">"y"</span>, <span class="string">"z"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="3-输出结果"><a href="#3-输出结果" class="headerlink" title="3.输出结果"></a>3.输出结果</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">非递归方式：</span><br><span class="line">x -&gt; z</span><br><span class="line">x -&gt; y</span><br><span class="line">z -&gt; y</span><br><span class="line">x -&gt; z</span><br><span class="line">y -&gt; x</span><br><span class="line">y -&gt; z</span><br><span class="line">x -&gt; z</span><br></pre></td></tr></table></figure>
+<hr>
+<hr>
+<h2 id="三、汉诺塔问题扩展"><a href="#三、汉诺塔问题扩展" class="headerlink" title="三、汉诺塔问题扩展"></a>三、汉诺塔问题扩展</h2><p>我们尝试更改一下题目要求，不只是需要输出交换步骤，我们还需要记录交换过程中的三个柱子的圆盘存在情况</p>
+<h4 id="1-创建柱子类"><a href="#1-创建柱子类" class="headerlink" title="1.创建柱子类"></a>1.创建柱子类</h4><p>该类用于表示汉诺塔的每一个柱子，并且这个类将记录每个柱子上的圆盘情况<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HanoiPillar</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span> n; <span class="comment">// 记录传递hanoi的圆盘数量</span></span><br><span class="line">    <span class="keyword">public</span> String name; <span class="comment">// 柱子名称</span></span><br><span class="line">    <span class="keyword">public</span> ArrayList&lt;Integer&gt; arr = <span class="keyword">new</span> ArrayList&lt;&gt;(); <span class="comment">//用于记录当前柱子上所存在的圆盘</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化A柱</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HanoiPillar</span><span class="params">(<span class="keyword">int</span> n, String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.n = n;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = n; i &gt; <span class="number">0</span>; i--) &#123;</span><br><span class="line">            <span class="keyword">this</span>.arr.add(i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化B柱和C柱</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HanoiPillar</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断该柱子上方是否为顶部盘子</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">top</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">boolean</span> result = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">if</span> (!arr.isEmpty() &amp;&amp; arr.size() != <span class="number">0</span> &amp;&amp; arr.get(arr.size() - <span class="number">1</span>) == <span class="number">1</span>) &#123;</span><br><span class="line">            result = <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">moveTo</span><span class="params">(HanoiPillar hanoiPillar)</span> </span>&#123;</span><br><span class="line">        hanoiPillar.arr.add(<span class="keyword">this</span>.getDiskSize());</span><br><span class="line">        <span class="keyword">this</span>.arr.remove(<span class="keyword">this</span>.arr.size() - <span class="number">1</span>);</span><br><span class="line">        System.out.println(<span class="keyword">this</span>.name + <span class="string">" -&gt; "</span> + hanoiPillar.name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 得到当前柱子的圆盘的列表，转化为String</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getStore</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        StringBuilder result = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.arr.size() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="keyword">this</span>.arr.size() - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">                result.append(<span class="keyword">this</span>.arr.get(i)).append(<span class="string">","</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result.length() == <span class="number">0</span> ? <span class="string">"null"</span> : result.toString().trim();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 得到该柱子中最小的圆盘的数值。以1、2、3、4、......、n来表示各个圆盘的大小。并且方便比较</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">getDiskSize</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.arr.get(<span class="keyword">this</span>.arr.size() - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h4 id="2-实现主程序-1"><a href="#2-实现主程序-1" class="headerlink" title="2.实现主程序"></a>2.实现主程序</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Hanoi</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> n;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> step;</span><br><span class="line">    <span class="keyword">private</span> HanoiPillar a;</span><br><span class="line">    <span class="keyword">private</span> HanoiPillar b;</span><br><span class="line">    <span class="keyword">private</span> HanoiPillar c;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hanoi</span><span class="params">(<span class="keyword">int</span> n, String a, String b, String c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.step = (<span class="keyword">int</span>) (Math.pow(<span class="number">2</span>, n) - <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">this</span>.a = <span class="keyword">new</span> HanoiPillar(n, a);</span><br><span class="line">        <span class="keyword">this</span>.b = <span class="keyword">new</span> HanoiPillar(b);</span><br><span class="line">        <span class="keyword">this</span>.c = <span class="keyword">new</span> HanoiPillar(c);</span><br><span class="line">        <span class="keyword">this</span>.n = n;</span><br><span class="line">        <span class="keyword">if</span> (n % <span class="number">2</span> != <span class="number">0</span>) &#123;</span><br><span class="line">            HanoiPillar tmp = <span class="keyword">this</span>.b;</span><br><span class="line">            <span class="keyword">this</span>.b = <span class="keyword">this</span>.c;</span><br><span class="line">            <span class="keyword">this</span>.c = tmp;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">this</span>.step &gt; <span class="number">0</span>) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 进行top的移动</span></span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.a.top()) &#123;</span><br><span class="line">                list();</span><br><span class="line">                <span class="keyword">this</span>.a.moveTo(<span class="keyword">this</span>.b);</span><br><span class="line">                <span class="keyword">this</span>.step--;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">this</span>.b.top()) &#123;</span><br><span class="line">                list();</span><br><span class="line">                <span class="keyword">this</span>.b.moveTo(<span class="keyword">this</span>.c);</span><br><span class="line">                <span class="keyword">this</span>.step--;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">this</span>.c.top()) &#123;</span><br><span class="line">                list();</span><br><span class="line">                <span class="keyword">this</span>.c.moveTo(<span class="keyword">this</span>.a);</span><br><span class="line">                <span class="keyword">this</span>.step--;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 因为step为奇数，而最后完成后step=0；</span></span><br><span class="line">            <span class="comment">// 同时可以理解为最后一次移动一定是top移动，所以需要进行一次循环判断</span></span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.step == <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 执行第二步移动</span></span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.a.top()) &#123;</span><br><span class="line">                move2(<span class="keyword">this</span>.b, <span class="keyword">this</span>.c);</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">this</span>.b.top()) &#123;</span><br><span class="line">                move2(<span class="keyword">this</span>.a, <span class="keyword">this</span>.c);</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">this</span>.c.top()) &#123;</span><br><span class="line">                move2(<span class="keyword">this</span>.a, <span class="keyword">this</span>.b);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        list();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">list</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (n % <span class="number">2</span> == <span class="number">0</span>) &#123;</span><br><span class="line">            System.out.print(<span class="keyword">this</span>.a.name + <span class="string">"柱："</span> + <span class="keyword">this</span>.a.getStore() +</span><br><span class="line">                    <span class="string">"		"</span> + <span class="keyword">this</span>.b.name + <span class="string">"柱："</span> + <span class="keyword">this</span>.b.getStore() +</span><br><span class="line">                    <span class="string">"		"</span> + <span class="keyword">this</span>.c.name + <span class="string">"柱："</span> + <span class="keyword">this</span>.c.getStore() + <span class="string">"			"</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            System.out.print(<span class="keyword">this</span>.a.name + <span class="string">"柱："</span> + <span class="keyword">this</span>.a.getStore() +</span><br><span class="line">                    <span class="string">"		"</span> + <span class="keyword">this</span>.c.name + <span class="string">"柱："</span> + <span class="keyword">this</span>.c.getStore() +</span><br><span class="line">                    <span class="string">"		"</span> + <span class="keyword">this</span>.b.name + <span class="string">"柱："</span> + <span class="keyword">this</span>.b.getStore() + <span class="string">"			"</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 执行第二部移动</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">move2</span><span class="params">(HanoiPillar a, HanoiPillar b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (a.arr.size() == <span class="number">0</span>) &#123; <span class="comment">// a柱为空，则将b上层的盘子移到a</span></span><br><span class="line">            list();</span><br><span class="line">            b.moveTo(a);</span><br><span class="line">            <span class="keyword">this</span>.step--;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (b.arr.size() == <span class="number">0</span>) &#123; <span class="comment">// b柱为空，则将a上层的盘子移到b</span></span><br><span class="line">            list();</span><br><span class="line">            a.moveTo(b);</span><br><span class="line">            <span class="keyword">this</span>.step--;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (a.getDiskSize() &gt; b.getDiskSize()) &#123; <span class="comment">// 由于b盘子小于a盘子，所以将b的top盘子移动到a的top盘子</span></span><br><span class="line">            list();</span><br><span class="line">            b.moveTo(a);</span><br><span class="line">            <span class="keyword">this</span>.step--;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123; <span class="comment">// 由于a盘子小于b盘子，所以将a的top盘子移动到b的top盘子</span></span><br><span class="line">            list();</span><br><span class="line">            a.moveTo(b);</span><br><span class="line">            <span class="keyword">this</span>.step--;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Hanoi hanoi = <span class="keyword">new</span> Hanoi();</span><br><span class="line">        Hanoi.hanoi(<span class="number">3</span>, <span class="string">"A"</span>, <span class="string">"B"</span>, <span class="string">"C"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="3-输出结果-1"><a href="#3-输出结果-1" class="headerlink" title="3.输出结果"></a>3.输出结果</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">A柱：<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,		B柱：<span class="keyword">null</span>		C柱：<span class="keyword">null</span>       A -&gt; C</span><br><span class="line">A柱：<span class="number">2</span>,<span class="number">3</span>,		B柱：<span class="keyword">null</span>		C柱：<span class="number">1</span>,			    A -&gt; B</span><br><span class="line">A柱：<span class="number">3</span>,		        B柱：<span class="number">2</span>,		        C柱：<span class="number">1</span>,			    C -&gt; B</span><br><span class="line">A柱：<span class="number">3</span>,		        B柱：<span class="number">1</span>,<span class="number">2</span>,		C柱：<span class="keyword">null</span>			A -&gt; C</span><br><span class="line">A柱：<span class="keyword">null</span>		B柱：<span class="number">1</span>,<span class="number">2</span>,		C柱：<span class="number">3</span>,			    B -&gt; A</span><br><span class="line">A柱：<span class="number">1</span>,		        B柱：<span class="number">2</span>,		        C柱：<span class="number">3</span>,			    B -&gt; C</span><br><span class="line">A柱：<span class="number">1</span>,		        B柱：<span class="keyword">null</span>		C柱：<span class="number">2</span>,<span class="number">3</span>,		    A -&gt; C</span><br><span class="line">A柱：<span class="keyword">null</span>		B柱：<span class="keyword">null</span>		C柱：<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,</span><br></pre></td></tr></table></figure>
+<hr>
+<hr>
+<h2 id="四、汉诺塔问题改编（递归实现）"><a href="#四、汉诺塔问题改编（递归实现）" class="headerlink" title="四、汉诺塔问题改编（递归实现）"></a>四、汉诺塔问题改编（递归实现）</h2><p>今天在做《程序员代码面试指南：IT名企算法与数据结构题目最优解（第二版）》时，遇到了一个稍微复杂一些的汉诺塔问题，但是理解之后发现本体只是在上面简易递归的基础上进行优化。</p>
+<h4 id="1-题目要求"><a href="#1-题目要求" class="headerlink" title="1.题目要求"></a>1.题目要求</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">【题目】</span><br><span class="line"> *  汉诺塔问题比较经典，这里修改一下游戏规则：</span><br><span class="line"> *  现在限制不能从最左侧的塔直接移动到最右侧，也不能从最右侧直接移动到最左侧，而是必须经过中间。</span><br><span class="line"> *  求当塔有N层的时候，打印最优移动过程和最优移动总步数。</span><br><span class="line"> *  1.如果希望从“左”移到“中”，打印“Move 1 from left to mid”。</span><br><span class="line"> *  2.如果希望从“中”移到“左”，打印“Move 1 from mid to left”。</span><br><span class="line"> *  3.如果希望从“中”移到“右”，打印“Move 1 from mid to right”。</span><br><span class="line"> *  4.如果希望从“右”移到“中”，打印“Move 1 from right to mid”。</span><br><span class="line"> *  5.如果希望从“左”移到“右”，打印“Move 1 from left to mid”和“Move 1 from mid to right”。</span><br><span class="line"> *  6.如果希望从“右”移到“左”，打印“Move 1 from right to mid”和“Move 1 from mid to left”。</span><br><span class="line"> *</span><br><span class="line"> *  例如，当塔数为两层时，最上层的塔记为1，最下层的塔记为2，则打印：</span><br><span class="line"> *  Move 1 from left to mid</span><br><span class="line"> *  Move 1 from mid to right</span><br><span class="line"> *  Move 2 from left to mid</span><br><span class="line"> *  Move 1 from right to mid</span><br><span class="line"> *  Move 1 from mid to left</span><br><span class="line"> *  Move 2 from mid to right</span><br><span class="line"> *  Move 1 from left to mid</span><br><span class="line"> *  Move 1 from mid to right</span><br><span class="line"> *  It wi11 move 8 steps.</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="2-情况分析"><a href="#2-情况分析" class="headerlink" title="2.情况分析"></a>2.情况分析</h4><p>首先我们尝试使用递归方式实现，然后进行常见情况分析</p>
+<ol>
+<li>假设剩余N层塔都在<code>左</code>，希望全都移到<code>中</code>，则有下面三个步骤<ol>
+<li>将1~N-1层从<code>左</code>移到<code>右</code>，该过程为递归</li>
+<li>将N层从<code>左</code>移到<code>中</code></li>
+<li>将1~N-1层从<code>右</code>移到<code>中</code>，该过程为递归</li>
+</ol>
+</li>
+</ol>
+<ol start="2">
+<li>假设剩余N层塔都是从<code>中</code>移到<code>右</code>，或者从<code>中</code>移到<code>左</code>，或者从有<code>右</code>到<code>中</code>，其实原理与情况1相同，所以不做赘述</li>
+</ol>
+<ol start="3">
+<li>假设剩余N层塔都在<code>左</code>，希望都移到<code>右</code>，则有下面五个步骤<ol>
+<li>将1~N-1层从<code>左</code>移到<code>右</code>，该过程为递归</li>
+<li>将N层从<code>左</code>移到<code>中</code></li>
+<li>将1~N-1层从<code>右</code>移到<code>左</code>，此过程为递归</li>
+<li>将N层从<code>中</code>移到<code>右</code></li>
+<li>将1~N-1层从<code>左</code>移到<code>右</code>，此过程为递归</li>
+</ol>
+</li>
+</ol>
+<hr>
+<h4 id="3-实现主程序"><a href="#3-实现主程序" class="headerlink" title="3.实现主程序"></a>3.实现主程序</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Hanoi</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hanoiProblem</span> <span class="params">(<span class="keyword">int</span> num, String left, String mid,</span></span></span><br><span class="line"><span class="function"><span class="params">                              String right)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (num &lt; <span class="number">1</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> process(num, left, mid, right, left, right);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">process</span><span class="params">(<span class="keyword">int</span> num, String left, String mid, String right,</span></span></span><br><span class="line"><span class="function"><span class="params">                       String from, String to)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (num == <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (from.equals(mid) || to.equals(mid)) &#123;</span><br><span class="line">                System.out.println(<span class="string">"Move 1 from "</span> + from + <span class="string">" to "</span> + to);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                System.out.println(<span class="string">"Move 1 from "</span> + from + <span class="string">" to "</span> + mid);</span><br><span class="line">                System.out.println(<span class="string">"Move 1 from "</span> + mid + <span class="string">" to "</span> + to);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (from.equals(mid) || to.equals(mid)) &#123;</span><br><span class="line">            String another = (from.equals(left) || to.equals(left)) ? right : left;</span><br><span class="line">            <span class="keyword">int</span> part1 = process(num - <span class="number">1</span>, left, mid, right, from, another);</span><br><span class="line">            <span class="keyword">int</span> part2 = <span class="number">1</span>;</span><br><span class="line">            System.out.println(<span class="string">"Move "</span> + num + <span class="string">" from "</span> + from + <span class="string">" to "</span> + to);</span><br><span class="line">            <span class="keyword">int</span> part3 = process(num - <span class="number">1</span>, left, mid, right, another, to);</span><br><span class="line">            <span class="keyword">return</span> part1 + part2 + part3;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">int</span> part1 = process(num - <span class="number">1</span>, left, mid, right, from, to);</span><br><span class="line">            <span class="keyword">int</span> part2 = <span class="number">1</span>;</span><br><span class="line">            System.out.println(<span class="string">"Move "</span> + num + <span class="string">" from "</span> + from + <span class="string">" to "</span> + mid);</span><br><span class="line">            <span class="keyword">int</span> part3 = process(num - <span class="number">1</span>, left, mid, right, to, from);</span><br><span class="line">            <span class="keyword">int</span> part4 = <span class="number">1</span>;</span><br><span class="line">            System.out.println(<span class="string">"Move "</span> + num + <span class="string">" from "</span> + mid + <span class="string">" to "</span> + to);</span><br><span class="line">            <span class="keyword">int</span> part5 = process(num - <span class="number">1</span>, left, mid, right, from, to);</span><br><span class="line">            <span class="keyword">return</span> part1 + part2 + part3 + part4 + part5;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Hanoi hanoi = <span class="keyword">new</span> Hanoi();</span><br><span class="line">        hanoi.hanoiProblem(<span class="number">3</span>, <span class="string">"x"</span>, <span class="string">"y"</span>, <span class="string">"z"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="4-输出结果"><a href="#4-输出结果" class="headerlink" title="4.输出结果"></a>4.输出结果</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">Move 1 from x to y</span><br><span class="line">Move 1 from y to z</span><br><span class="line">Move 2 from x to y</span><br><span class="line">Move 1 from z to y</span><br><span class="line">Move 1 from y to x</span><br><span class="line">Move 2 from y to z</span><br><span class="line">Move 1 from x to y</span><br><span class="line">Move 1 from y to z</span><br><span class="line">Move 3 from x to y</span><br><span class="line">Move 1 from z to y</span><br><span class="line">Move 1 from y to x</span><br><span class="line">Move 2 from z to y</span><br><span class="line">Move 1 from x to y</span><br><span class="line">Move 1 from y to z</span><br><span class="line">Move 2 from y to x</span><br><span class="line">Move 1 from z to y</span><br><span class="line">Move 1 from y to x</span><br><span class="line">Move 3 from y to z</span><br><span class="line">Move 1 from x to y</span><br><span class="line">Move 1 from y to z</span><br><span class="line">Move 2 from x to y</span><br><span class="line">Move 1 from z to y</span><br><span class="line">Move 1 from y to x</span><br><span class="line">Move 2 from y to z</span><br><span class="line">Move 1 from x to y</span><br><span class="line">Move 1 from y to z</span><br></pre></td></tr></table></figure>
+<hr>
+<hr>
+<h2 id="五、汉诺塔问题改编（非递归实现）"><a href="#五、汉诺塔问题改编（非递归实现）" class="headerlink" title="五、汉诺塔问题改编（非递归实现）"></a>五、汉诺塔问题改编（非递归实现）</h2><h4 id="1-题目分析"><a href="#1-题目分析" class="headerlink" title="1.题目分析"></a>1.题目分析</h4><blockquote>
+<p>我们把左、中、右三个地点抽象成栈，依次记为LS、MS和RS。最初所有的塔都在LS上。那么如上4个动作就可以看作是：某一个栈（from）把栈顶元素弹出，然后压入到另一个栈里（to），作为这一个栈（to）的栈顶。</p>
+</blockquote>
+<blockquote>
+<p>例如，如果是7层塔，在最初时所有的塔都在LS上，LS从栈顶到栈底就依次是1～7，如果现在发生了“左”到“中”的动作，这个动作对应的操作是LS栈将栈顶元素1弹出，然后1压入到MS栈中，成为MS的栈顶。其他操作同理。</p>
+</blockquote>
+<p>一个动作能发生的先决条件是<em>不违反小压大的原则</em>。<br>from栈弹出的元素num如果想压入到to栈中，那么num的值必须小于当前to栈的栈顶。还有一个原则不是很明显，但也是非常重要的，叫<em>相邻不可逆原则</em>，解释如下：</p>
+<ol>
+<li>我们把4个动作依次定义为：<code>L-＞M</code>、<code>M-＞L</code>、<code>M-＞R</code>和<code>R-＞M</code>。</li>
+<li>很明显，<code>L-＞M</code>和<code>M-＞L</code>过程互为逆过程，<code>M-＞R</code>和<code>R-＞M</code>互为逆过程。</li>
+<li>在修改后的汉诺塔游戏中，如果想走出最少步数，那么任何两个相邻的动作都不是互为逆过程的。举个例子：如果上一步的动作是 <code>L-＞M</code>，那么这一步绝不可能是 <code>M-＞L</code>，直观地解释为：你在上一步把一个栈顶数从“左”移动到“中”，这一步为什么又要移回去呢？这必然不是取得最小步数的走法。同理，<code>M-＞R</code>动作和<code>R-＞M</code>动作也不可能相邻发生。</li>
+</ol>
+<p>有了小压大和相邻不可逆原则后，可以推导出两个十分有用的结论–非递归的方法核心结论：</p>
+<ol>
+<li>游戏的第一个动作一定是<code>L-＞M</code>，这是显而易见的。</li>
+<li>在走出最少步数过程中的任何时刻，4个动作中只有一个动作不违反小压大和相邻不可逆原则，另外三个动作一定都会违反。</li>
+</ol>
+<p>对于结论2，现在进行简单的证明。<br>因为游戏的第一个动作已经确定是<code>L-＞M</code>，则以后的每一步都会有前一步的动作。</p>
+<h5 id="假设前一步的动作是L-＞M："><a href="#假设前一步的动作是L-＞M：" class="headerlink" title="假设前一步的动作是L-＞M："></a>假设前一步的动作是<code>L-＞M</code>：</h5><ol>
+<li>根据小压大原则，<code>L-＞M</code>的动作不会重复发生。</li>
+<li>根据相邻不可逆原则，<code>M-＞L</code>的动作也不该发生。</li>
+<li>根据小压大原则，<code>M-＞R</code>和<code>R-＞M</code>只会有一个达标。</li>
+</ol>
+<h5 id="假设前一步的动作是M-＞L："><a href="#假设前一步的动作是M-＞L：" class="headerlink" title="假设前一步的动作是M-＞L："></a>假设前一步的动作是<code>M-＞L</code>：</h5><ol>
+<li>根据小压大原则，<code>M-＞L</code>的动作不会重复发生。</li>
+<li>根据相邻不可逆原则，<code>L-＞M</code>的动作也不该发生。</li>
+<li>根据小压大原则，<code>M-＞R</code>和<code>R-＞M</code>只会有一个达标。</li>
+</ol>
+<h5 id="假设前一步的动作是M-＞R："><a href="#假设前一步的动作是M-＞R：" class="headerlink" title="假设前一步的动作是M-＞R："></a>假设前一步的动作是<code>M-＞R</code>：</h5><ol>
+<li>根据小压大原则，<code>M-＞R</code>的动作不会重复发生。</li>
+<li>根据相邻不可逆原则，<code>R-＞M</code>的动作也不该发生。</li>
+<li>根据小压大原则，<code>L-＞M</code>和<code>M-＞L</code>只会有一个达标。</li>
+</ol>
+<h5 id="假设前一步的动作是R-＞M："><a href="#假设前一步的动作是R-＞M：" class="headerlink" title="假设前一步的动作是R-＞M："></a>假设前一步的动作是<code>R-＞M</code>：</h5><ol>
+<li>根据小压大原则，<code>R-＞M</code>的动作不会重复发生。</li>
+<li>根据相邻不可逆原则，<code>M-＞R</code>的动作也不该发生。</li>
+<li>根据小压大原则，<code>L-＞M</code>和<code>M-＞L</code>只会有一个达标。</li>
+</ol>
+<p>综上所述，每一步只会有一个动作达标。那么只要每走一步都根据这两个原则考查所有的动作就可以，哪个动作达标就走哪个动作，反正每次都只有一个动作满足要求，按顺序走下来即可</p>
+<h4 id="2-实现主程序-2"><a href="#2-实现主程序-2" class="headerlink" title="2.实现主程序"></a>2.实现主程序</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Hanoi</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hanoiProblem</span><span class="params">(<span class="keyword">int</span> num, String left, String mid, String right)</span> </span>&#123;</span><br><span class="line">        Stack&lt;Integer&gt; lS = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">        Stack&lt;Integer&gt; mS = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">        Stack&lt;Integer&gt; rS = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">        <span class="comment">// 初始化这四个栈，可以避免栈溢出问题，同时可以使while循环中的四个函数无论谁在前，都必定会限制性 l -&gt; m</span></span><br><span class="line">        lS.push(Integer.MAX_VALUE);<span class="comment">//最大值：2147483647(2的7次方-1)</span></span><br><span class="line">        mS.push(Integer.MAX_VALUE);</span><br><span class="line">        rS.push(Integer.MAX_VALUE);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = num; i &gt; <span class="number">0</span>; i--) &#123;<span class="comment">//将数字(最小数字在栈顶)压入左栈[1,2,3]</span></span><br><span class="line">            lS.push(i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//调用枚举，记录上一步操作 创建一个数组而不是直接创建一个Action对象是为了使用引用传递而不是值传递</span></span><br><span class="line">        Action[] record = &#123;Action.No&#125;;</span><br><span class="line">        <span class="keyword">int</span> step = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">//size();stack类从vector继承的方法；返回此向量中的组件数</span></span><br><span class="line">        <span class="keyword">while</span> (rS.size() != num + <span class="number">1</span>) &#123;<span class="comment">//当右栈未将数字全部存入时</span></span><br><span class="line">            <span class="comment">//按顺序移动,下面这四个函数顺序并不影响因为每次必定只会有一个函数是满足条件的</span></span><br><span class="line">            step += fStackToStack(record, Action.MToL, Action.LToM, lS, mS, left, mid);</span><br><span class="line">            step += fStackToStack(record, Action.LToM, Action.MToL, mS, lS, mid, left);</span><br><span class="line">            step += fStackToStack(record, Action.RToM, Action.MToR, mS, rS, mid, right);</span><br><span class="line">            step += fStackToStack(record, Action.MToR, Action.RToM, rS, mS, left, mid);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> step;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">fStackToStack</span><span class="params">(Action[] record,</span></span></span><br><span class="line"><span class="function"><span class="params">                                    Action preNoAet,</span></span></span><br><span class="line"><span class="function"><span class="params">                                    Action nowAct,</span></span></span><br><span class="line"><span class="function"><span class="params">                                    Stack&lt;Integer&gt; fStack,</span></span></span><br><span class="line"><span class="function"><span class="params">                                    Stack&lt;Integer&gt; tStack,</span></span></span><br><span class="line"><span class="function"><span class="params">                                    String from,</span></span></span><br><span class="line"><span class="function"><span class="params">                                    String to)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// fStack.peek() &lt; tStack.peek() 必然可以保证 record[0] != nowAct 两条件互斥</span></span><br><span class="line">        <span class="keyword">if</span> (record[<span class="number">0</span>] != preNoAet &amp;&amp; fStack.peek() &lt; tStack.peek()) &#123;<span class="comment">//发生移动且必须小的数字往大的数字上移动</span></span><br><span class="line">            tStack.push(fStack.pop());<span class="comment">//fStack 移动到 tStack 且删掉from的栈顶元素</span></span><br><span class="line">            System.out.println(<span class="string">"Move "</span> + tStack.peek() + <span class="string">" from "</span> + from + <span class="string">" to "</span> + to);</span><br><span class="line">            record[<span class="number">0</span>] = nowAct;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Hanoi Hanoi = <span class="keyword">new</span> Hanoi();</span><br><span class="line">        <span class="keyword">int</span> step = hanoi.hanoiProblem(<span class="number">3</span>, <span class="string">"左"</span>, <span class="string">"中"</span>, <span class="string">"右"</span>);</span><br><span class="line">        System.out.println(<span class="string">"总共需要"</span> + step + <span class="string">"步"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">enum</span> Action &#123;</span><br><span class="line">        No, <span class="comment">// 无操作</span></span><br><span class="line">        LToM, <span class="comment">// 从左移到中</span></span><br><span class="line">        MToL, <span class="comment">// 从中移到左</span></span><br><span class="line">        MToR, <span class="comment">// 从中移到右</span></span><br><span class="line">        RToM <span class="comment">// 从右移到中</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="3-输出结果-2"><a href="#3-输出结果-2" class="headerlink" title="3.输出结果"></a>3.输出结果</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">Move 1 from 左 to 中</span><br><span class="line">Move 1 from 中 to 右</span><br><span class="line">Move 2 from 左 to 中</span><br><span class="line">Move 1 from 左 to 中</span><br><span class="line">Move 1 from 中 to 左</span><br><span class="line">Move 2 from 中 to 右</span><br><span class="line">Move 1 from 左 to 中</span><br><span class="line">Move 1 from 中 to 右</span><br><span class="line">Move 3 from 左 to 中</span><br><span class="line">Move 1 from 左 to 中</span><br><span class="line">Move 1 from 中 to 左</span><br><span class="line">Move 2 from 左 to 中</span><br><span class="line">Move 1 from 左 to 中</span><br><span class="line">Move 1 from 中 to 右</span><br><span class="line">Move 2 from 中 to 左</span><br><span class="line">Move 1 from 左 to 中</span><br><span class="line">Move 1 from 中 to 左</span><br><span class="line">Move 3 from 中 to 右</span><br><span class="line">Move 1 from 左 to 中</span><br><span class="line">Move 1 from 中 to 右</span><br><span class="line">Move 2 from 左 to 中</span><br><span class="line">Move 1 from 左 to 中</span><br><span class="line">Move 1 from 中 to 左</span><br><span class="line">Move 2 from 中 to 右</span><br><span class="line">Move 1 from 左 to 中</span><br><span class="line">Move 1 from 中 to 右</span><br><span class="line">总共需要26步</span><br></pre></td></tr></table></figure>
+<p>参考视频<br><a href="https://www.bilibili.com/video/av31023017?from=search&amp;seid=15595573244367663980" target="_blank" rel="noopener">https://www.bilibili.com/video/av31023017?from=search&amp;seid=15595573244367663980</a></p>
+<p>参考文章<br><a href="https://blog.csdn.net/weixin_42636076/article/details/81031580" target="_blank" rel="noopener">https://blog.csdn.net/weixin_42636076/article/details/81031580</a><br><a href="https://www.jb51.net/article/128701.htm" target="_blank" rel="noopener">https://www.jb51.net/article/128701.htm</a></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/数据结构与算法/" rel="tag"><i class="fa fa-tag"></i> 数据结构与算法</a>
+            
+              <a href="/tags/递归/" rel="tag"><i class="fa fa-tag"></i> 递归</a>
+            
+              <a href="/tags/汉诺塔问题/" rel="tag"><i class="fa fa-tag"></i> 汉诺塔问题</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/12/17/HBase中使用过滤器筛选数据/" rel="next" title="HBase中使用过滤器筛选数据">
+                  <i class="fa fa-chevron-left"></i> HBase中使用过滤器筛选数据
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc" data-target="post-toc-wrap">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、基本递归实现"><span class="nav-number">1.</span> <span class="nav-text">一、基本递归实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、基本非递归实现"><span class="nav-number">2.</span> <span class="nav-text">二、基本非递归实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-创建一个保存状态的类"><span class="nav-number">2.0.1.</span> <span class="nav-text">1.创建一个保存状态的类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-实现主程序"><span class="nav-number">2.0.2.</span> <span class="nav-text">2.实现主程序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-输出结果"><span class="nav-number">2.0.3.</span> <span class="nav-text">3.输出结果</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、汉诺塔问题扩展"><span class="nav-number">3.</span> <span class="nav-text">三、汉诺塔问题扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-创建柱子类"><span class="nav-number">3.0.1.</span> <span class="nav-text">1.创建柱子类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-实现主程序-1"><span class="nav-number">3.0.2.</span> <span class="nav-text">2.实现主程序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-输出结果-1"><span class="nav-number">3.0.3.</span> <span class="nav-text">3.输出结果</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、汉诺塔问题改编（递归实现）"><span class="nav-number">4.</span> <span class="nav-text">四、汉诺塔问题改编（递归实现）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-题目要求"><span class="nav-number">4.0.1.</span> <span class="nav-text">1.题目要求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-情况分析"><span class="nav-number">4.0.2.</span> <span class="nav-text">2.情况分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-实现主程序"><span class="nav-number">4.0.3.</span> <span class="nav-text">3.实现主程序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-输出结果"><span class="nav-number">4.0.4.</span> <span class="nav-text">4.输出结果</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、汉诺塔问题改编（非递归实现）"><span class="nav-number">5.</span> <span class="nav-text">五、汉诺塔问题改编（非递归实现）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-题目分析"><span class="nav-number">5.0.1.</span> <span class="nav-text">1.题目分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#假设前一步的动作是L-＞M："><span class="nav-number">5.0.1.1.</span> <span class="nav-text">假设前一步的动作是L-＞M：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#假设前一步的动作是M-＞L："><span class="nav-number">5.0.1.2.</span> <span class="nav-text">假设前一步的动作是M-＞L：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#假设前一步的动作是M-＞R："><span class="nav-number">5.0.1.3.</span> <span class="nav-text">假设前一步的动作是M-＞R：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#假设前一步的动作是R-＞M："><span class="nav-number">5.0.1.4.</span> <span class="nav-text">假设前一步的动作是R-＞M：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-实现主程序-2"><span class="nav-number">5.0.2.</span> <span class="nav-text">2.实现主程序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-输出结果-2"><span class="nav-number">5.0.3.</span> <span class="nav-text">3.输出结果</span></a></li></ol></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.png"
+      alt="随我">
+  <p class="site-author-name" itemprop="name">随我</p>
+  <div class="site-description" itemprop="description">用心做自己喜欢的事</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">106</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">86</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/ZhangJia97" title="GitHub &rarr; https://github.com/ZhangJia97" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:isuiwo@qq.com" title="E-Mail &rarr; mailto:isuiwo@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      友链
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://wqf1234.github.io/" title="https://wqf1234.github.io/" rel="noopener" target="_blank">AC的博客</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/qq_38542085" title="https://blog.csdn.net/qq_38542085" rel="noopener" target="_blank">随我的CSDN</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">随我</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.7.1</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共117.9k字</span>
+</div>
+
+<div class="BbeiAn-info">
+    <a target="_blank" href="http://beian.miit.gov.cn" rel="nofollow">豫ICP备18013715号-1</a> <!--a标签中增加nofollow属性，避免爬虫出站。-->
+</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.3.0"></script><script src="/js/motion.js?v=7.3.0"></script>
+<script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

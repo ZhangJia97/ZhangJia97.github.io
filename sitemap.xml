@@ -2,23 +2,37 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://suiwo.xyz/2019/12/17/HBase%E4%B8%AD%E4%BD%BF%E7%94%A8%E8%BF%87%E6%BB%A4%E5%99%A8%E7%AD%9B%E9%80%89%E6%95%B0%E6%8D%AE/</loc>
+    <loc>http://suiwo.xyz/2020/01/04/%E6%B1%89%E8%AF%BA%E5%A1%94%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/</loc>
     
-    <lastmod>2019-12-17T14:02:38.748Z</lastmod>
+    <lastmod>2020-01-05T09:42:33.638Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://suiwo.xyz/2019/12/08/HBase%E4%BC%AA%E5%88%86%E5%B8%83%E5%BC%8F%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/</loc>
     
-    <lastmod>2019-12-17T13:57:46.746Z</lastmod>
+    <lastmod>2020-01-04T15:41:48.299Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://suiwo.xyz/2019/12/07/hadoop%E4%BC%AA%E5%88%86%E5%B8%83%E5%BC%8F%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/</loc>
+    
+    <lastmod>2020-01-04T15:41:45.987Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://suiwo.xyz/2019/12/17/HBase%E4%B8%AD%E4%BD%BF%E7%94%A8%E8%BF%87%E6%BB%A4%E5%99%A8%E7%AD%9B%E9%80%89%E6%95%B0%E6%8D%AE/</loc>
+    
+    <lastmod>2020-01-04T15:41:44.335Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://suiwo.xyz/2019/12/09/%E4%BD%BF%E7%94%A8Java%E6%93%8D%E4%BD%9CHBase%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
     
-    <lastmod>2019-12-17T13:48:39.055Z</lastmod>
+    <lastmod>2020-01-04T15:41:42.264Z</lastmod>
     
   </url>
   
@@ -26,13 +40,6 @@
     <loc>http://suiwo.xyz/2019/12/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%BD%91%E8%AF%BE%E6%80%BB%E7%BB%93/</loc>
     
     <lastmod>2019-12-10T16:38:24.648Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://suiwo.xyz/2019/12/07/hadoop%E4%BC%AA%E5%88%86%E5%B8%83%E5%BC%8F%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/</loc>
-    
-    <lastmod>2019-12-09T04:38:22.562Z</lastmod>
     
   </url>
   
