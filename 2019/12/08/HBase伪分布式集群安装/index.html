@@ -62,7 +62,7 @@
 <meta property="og:site_name" content="随我的博客">
 <meta property="og:description" content="HBase – Hadoop Database，是一个高可靠性、高性能、面向列、可伸缩的分布式存储系统，利用HBase技术可在廉价PC Server上搭建起大规模结构化存储集群。本文尝试搭建基于Hadoop集群的HBase的伪分布式集群">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-01-04T15:41:48.299Z">
+<meta property="og:updated_time" content="2020-01-08T09:05:15.525Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="HBase伪分布式集群安装">
 <meta name="twitter:description" content="HBase – Hadoop Database，是一个高可靠性、高性能、面向列、可伸缩的分布式存储系统，利用HBase技术可在廉价PC Server上搭建起大规模结构化存储集群。本文尝试搭建基于Hadoop集群的HBase的伪分布式集群">
@@ -310,6 +310,8 @@
 </li>
 <li>至此HBase的伪分布式集群安装完毕</li>
 </ol>
+<h2 id="配置web管理界面"><a href="#配置web管理界面" class="headerlink" title="配置web管理界面"></a>配置web管理界面</h2><p>1.0.0之后的版本的hbase的master web 默认是不运行的，所以需要自己配置默认端口。<br>在hbase-site.xml中加入一下内容即可<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 新增的配置 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.master.info.port<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>60010<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 新增的配置 --&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>之后访问<code>localhost:60010</code>即可访问</p>
 
     </div>
 
@@ -400,7 +402,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、下载HBase安装包"><span class="nav-number">1.</span> <span class="nav-text">一、下载HBase安装包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、配置伪分布式环境"><span class="nav-number">2.</span> <span class="nav-text">二、配置伪分布式环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、-启动"><span class="nav-number">3.</span> <span class="nav-text">三、 启动</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、下载HBase安装包"><span class="nav-number">1.</span> <span class="nav-text">一、下载HBase安装包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、配置伪分布式环境"><span class="nav-number">2.</span> <span class="nav-text">二、配置伪分布式环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、-启动"><span class="nav-number">3.</span> <span class="nav-text">三、 启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置web管理界面"><span class="nav-number">4.</span> <span class="nav-text">配置web管理界面</span></a></li></ol></div>
         
       </div>
       <!--/noindex-->
@@ -733,7 +735,7 @@
   <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共117.9k字</span>
+  <span class="post-count">博客全站共118k字</span>
 </div>
 
 <div class="BbeiAn-info">
