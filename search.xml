@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[HDFS高可用集群搭建]]></title>
+    <url>%2F2020%2F04%2F20%2FHDFS%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA%2F</url>
+    <content type="text"><![CDATA[环境 CentOS 7 JAVA 1.8 Zookeeper 2.9.2 Hadoop 3.4.14 一、简单HDFS集群中存在的问题及解决办法 如何解决NameNode的单节点问题 多个NameNode备份原NameNode数据 如何解决多个NameNode是集群脑裂问题 使用QJM，QJM（Quorum Journal Manager）是Hadoop专门为Namenode共享存储开发的组件。其集群运行一组Journal Node，每个Journal 节点暴露一个简单的RPC接口，允许Namenode读取和写入数据，数据存放在Journal节点的本地磁盘。当Namenode写入edit log时，它向集群的所有Journal Node发送写入请求，当多数节点回复确认成功写入之后，edit log就认为是成功写入。例如有3个Journal Node，Namenode如果收到来自2个节点的确认消息，则认为写入成功。 而在故障自动转移的处理上，引入了监控Namenode状态的ZookeeperFailController（ZKFC）。ZKFC一般运行在Namenode的宿主机器上，与Zookeeper集群协作完成故障的自动转移。整个集群架构图如下： 在HA集群中如何ZK与NameNode active 出现网络延迟问题这种情况，ZK会自动将NameNode standby切换为活跃节点，这个时候就出现了多个active节点，也就意味着现有集群面临脑裂问题 使用JournalNode 负责NameNode的edit log同步 JournalNode隔离机制，保证在一个时刻只有一个NameNode active，使用ssh登录到NameNode节点使用kill命令杀死NameNode。 二、集群规划1. 相关要求： 节点个数最好是奇数个 3个节点 每个zookeeper服务会启动至少三个端口 1.client处理 2.内部数据原子广播 3.内部选举投票端口 2. 服务器相关信息 hostname 所运行服务 IP地址 zk1 zkNode1 按照实际IP地址 zk2 zkNode2 按照实际IP地址 zk3 zkNode3 按照实际IP地址 hadoop1 NameNode(active) &amp; DataNode &amp; JournalNode &amp; ZKFC 按照实际IP地址 hadoop2 NameNode(standby) &amp; DataNode &amp; JournalNode &amp; ZKFC 按照实际IP地址 hadoop3 DataNode &amp; JournalNode &amp; ZKFC 按照实际IP地址 3. 共同配置(1) 修改所有机器hostname1vi /etc/hostname (2) 配置hosts文件，将ip地址与主机名进行映射1vi /etc/hosts (3) 重启机器 (4) 配置ssh免密登录，实现start-dfs.sh执行的机器可以免密登录其他的NameNode和DataNode节点12341. hadoop1: ssh-keygen -t -rsa2. hadoop1: ssh-copy-id hadoop13. hadoop1: ssh-copy-id hadoop24. hadoop1: ssh-copy-id hadoop3 (5) 配置JAVA环境 (6) 修改环境变量12345678910#进入配置文件vi /etc/profile# 添加如下配置export JAVA_HOME=/usr/java/jdk1.8.0_251-amd64export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/libexport PATH=$JAVA_HOME/bin:$PATH# 更新配置source /etc/profile 三、zk集群搭建1. 解压zookeeper文件1tar -zxvf zookeeper文件 2. 在每一个zk节点上创建zk的数据目录1mkdir /home/zkdata 3. 在每一个节点存放zk数据的目录中必须创建一个myid文件123zk1: echo "1" &gt;&gt; /home/zkdata/myidzk2: echo "2" &gt;&gt; /home/zkdata/myidzk3: echo "3" &gt;&gt; /home/zkdata/myid 4. 创建zookeeper的基础配置文件zoo.cfg1vi /home/zkdata/zoo.cfg 配置内容如下1234567891011# 3001为client端口# 3002为原子广播端口# 3003为选举投票端口tickTime=2000initLimit=10syncLimit=5dataDir=/home/zkdataclientPort=3001server.1=zk1:3002:3003server.2=zk2:3002:3003server.3=zk3:3002:3003 5. 启动zk节点，进入zk文件的bin目录下执行以下命令1./zkServer.sh start /home/zkdata/zoo.cfg 6. 执行jps命令发现已成功启动QuorumPeerMain进程7. 查询各个zk节点的集群状态，发现其中一个节点为leader其余节点为follower1./zkServer.sh status /home/zkdata/zoo.cfg 8. zk集群搭建完毕 四、HDFS集群搭建1. 在所有hadoop节点添加Cent OS依赖1yum install psmisc -y 2. 安装hadoop(配置Hadoop环境变量 非必须)123456# 添加如下配置export HADOOP_HOME=/home/hadoop-2.9.2export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin# 更新配置source /etc/profile (1) 配置hadoop-env.sh修改JAVA相关配置 (2) 配置core-site.xml123456789101112131415&lt;configuration&gt; &lt;property&gt; &lt;name&gt;fs.defaultFS&lt;/name&gt; &lt;value&gt;hdfs://ns&lt;/value&gt; &lt;/property&gt; &lt;property&gt; &lt;name&gt;hadoop.tmp.dir&lt;/name&gt; &lt;value&gt;/home/hadoop-2.9.2/data&lt;/value&gt; &lt;/property&gt; &lt;!-- 配置zk集群节点数 --&gt; &lt;property&gt; &lt;name&gt;ha.zookeeper.quorum&lt;/name&gt; &lt;value&gt;zk1:3001,zk2:3001,zk3:3001&lt;/value&gt; &lt;/property&gt;&lt;/configuration&gt; (3) 配置hdfs-site.xml1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162&lt;configuration&gt; &lt;!-- 指定hdfs的nameservices为ns，需要与core-site.xml中保持一致 --&gt; &lt;property&gt; &lt;name&gt;dfs.nameservices&lt;/name&gt; &lt;value&gt;ns&lt;/value&gt; &lt;/property&gt; &lt;!-- ns下面有两个nameNode分别是nn1，nn2 --&gt; &lt;property&gt; &lt;name&gt;dfs.ha.namenodes.ns&lt;/name&gt; &lt;value&gt;nn1,nn2&lt;/value&gt; &lt;/property&gt; &lt;!-- nn1的rpc通信地址 --&gt; &lt;property&gt; &lt;name&gt;dfs.namenode.rpc-address.ns.nn1&lt;/name&gt; &lt;value&gt;hadoop1:9000&lt;/value&gt; &lt;/property&gt; &lt;!-- nn1的http通信地址 --&gt; &lt;property&gt; &lt;name&gt;dfs.namenode.http-address.ns.nn1&lt;/name&gt; &lt;value&gt;hadoop1:50070&lt;/value&gt; &lt;/property&gt; &lt;!-- nn2的rpc通信地址 --&gt; &lt;property&gt; &lt;name&gt;dfs.namenode.rpc-address.ns.nn2&lt;/name&gt; &lt;value&gt;hadoop2:9000&lt;/value&gt; &lt;/property&gt; &lt;!-- nn2的http通信地址 --&gt; &lt;property&gt; &lt;name&gt;dfs.namenode.http-address.ns.nn2&lt;/name&gt; &lt;value&gt;hadoop2:50070&lt;/value&gt; &lt;/property&gt; &lt;!-- 指定nameNode的元数据在JournalNode上的存放位置 --&gt; &lt;property&gt; &lt;name&gt;dfs.namenode.shared.edits.dir&lt;/name&gt; &lt;value&gt;qjournal://hadoop1:8485;hadoop2:8485;hadoop3:8485/ns&lt;/value&gt; &lt;/property&gt; &lt;!-- 指定journalNode在本地磁盘中存放数据的位置 --&gt; &lt;property&gt; &lt;name&gt;dfs.journalnode.edits.dir&lt;/name&gt; &lt;value&gt;/home/zhangjia/journal&lt;/value&gt; &lt;/property&gt; &lt;!-- 开启nameNode故障时自动切换 --&gt; &lt;property&gt; &lt;name&gt;dfs.ha.automatic-failover.enabled&lt;/name&gt; &lt;value&gt;true&lt;/value&gt; &lt;/property&gt; &lt;!-- 配置失败自动切换实现方式 --&gt; &lt;property&gt; &lt;name&gt;dfs.client.failover.proxy.provider.ns&lt;/name&gt; &lt;value&gt;org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider&lt;/value&gt; &lt;/property&gt; &lt;!-- 配置隔离机制。如果ssh默认是22端口，value直接写sshfence即可 --&gt; &lt;property&gt; &lt;name&gt;dfs.ha.fencing.methods&lt;/name&gt; &lt;value&gt;sshfence&lt;/value&gt; &lt;/property&gt; &lt;!-- 使用隔离机制需要ssh免登陆 --&gt; &lt;property&gt; &lt;name&gt;dfs.ha.fencing.ssh.private-key-files&lt;/name&gt; &lt;value&gt;/home/.ssh/id_rsa&lt;/value&gt; &lt;/property&gt;&lt;/configuration&gt; (4) 配置slaves123hadoop1hadoop2hadoop3 (5) 启动集群 (6) 在任意NameNode节点格式化Zk1hdfs zkfc -formatZK (7) 出现下面这句话则说明格式化成功1ha.ActiveStandbyElector: Successfully created /hadoop-ha/ns in ZK. (8) 启动JournalNode节点 因为Journal在HA中需要同步edit log，所以他需要在edit log没有生成之前启动123hadoop1: hadoop-daemon.sh start journalnodehadoop2: hadoop-daemon.sh start journalnodehadoop3: hadoop-daemon.sh start journalnode (9) 使用jps发现JournalNode进程已启动并且在根文件夹出现journal文件夹 (10) 格式化NameNode,在选中的active的节点上执行1hdfs namenode -format ns (11) 启动hdfs集群1start-dfs.sh (12) 在standby 的 NameNode节点上执行如下命令进行同步active节点的edit log1hdfs namenode -bootstrapStandby (13) 启动standby节点的NameNode1hadoop-daemon.sh start namenode 此时进入两个NameNode节点的图形化界面 http://hadoop1:50070 可以发现一个为active一个为standby (14) 此时HA集群搭建完毕]]></content>
+      <categories>
+        <category>大数据</category>
+      </categories>
+      <tags>
+        <tag>HDFS</tag>
+        <tag>大数据</tag>
+        <tag>Hadoop</tag>
+        <tag>Zookeeper</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[汉诺塔问题总结]]></title>
     <url>%2F2020%2F01%2F04%2F%E6%B1%89%E8%AF%BA%E5%A1%94%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93%2F</url>
     <content type="text"><![CDATA[一、基本递归实现下面是普遍的汉诺塔问题的递归解法代码 1234567891011121314public class Hanoi&#123; public static void hanoi(int n, String x, String y, String z)&#123; if (n == 1)&#123; System.out.println(x + " -&gt; " + z); &#125;else &#123; hanoi(n - 1, x, z, y); System.out.println(x + " -&gt; " + z); hanoi(n - 1, y, x, z); &#125; &#125; public static void main(String[] args) &#123; hanoi(3, "x", "y", "z"); &#125;&#125; 输出如下： 1234567x -&gt; zx -&gt; yz -&gt; yx -&gt; zy -&gt; xy -&gt; zx -&gt; z 二、基本非递归实现非递归实现的方式本质就是尝试使用栈来模拟递归 1.创建一个保存状态的类12345678910111213public class State &#123; public int n; // 当前层数 public String x; // 起始柱 public String y; // 辅助柱 public String z; // 目标柱 public State(int n, String x, String y, String z) &#123; this.n = n; this.x = x; this.y = y; this.z = z; &#125;&#125; 2.实现主程序12345678910111213141516171819202122232425public class Hanoi &#123; public void hanoi(int n, String x, String y, String z) &#123; Stack&lt;State&gt; s = new Stack&lt;&gt;(); s.push(new State(n, x, y, z)); State state; while (!s.empty() &amp;&amp; (state = s.pop()) != null) &#123; if (state.n == 1) &#123; System.out.println(state.x + " -&gt; " + state.y); &#125; else &#123; // 栈结构先进后出，所以需要逆序进栈，这部分是理解重点，用栈模拟递归 s.push(new State(state.n - 1, state.y, state.x, state.z)); s.push(new State(1, state.x, state.y, state.z)); s.push(new State(state.n - 1, state.x, state.z, state.y)); &#125; &#125; &#125; public static void main(String[] args) &#123; Hanoi hanoi = new Hanoi(); System.out.println(); System.out.println("非递归方式："); Hanoi.hanoi(3, "x", "y", "z"); &#125;&#125; 3.输出结果12345678非递归方式：x -&gt; zx -&gt; yz -&gt; yx -&gt; zy -&gt; xy -&gt; zx -&gt; z 三、汉诺塔问题扩展我们尝试更改一下题目要求，不只是需要输出交换步骤，我们还需要记录交换过程中的三个柱子的圆盘存在情况 1.创建柱子类该类用于表示汉诺塔的每一个柱子，并且这个类将记录每个柱子上的圆盘情况1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950public class HanoiPillar &#123; public int n; // 记录传递hanoi的圆盘数量 public String name; // 柱子名称 public ArrayList&lt;Integer&gt; arr = new ArrayList&lt;&gt;(); //用于记录当前柱子上所存在的圆盘 // 初始化A柱 public HanoiPillar(int n, String name) &#123; this.n = n; this.name = name; for (int i = n; i &gt; 0; i--) &#123; this.arr.add(i); &#125; &#125; // 初始化B柱和C柱 public HanoiPillar(String name) &#123; this.name = name; &#125; // 判断该柱子上方是否为顶部盘子 public boolean top() &#123; boolean result = false; if (!arr.isEmpty() &amp;&amp; arr.size() != 0 &amp;&amp; arr.get(arr.size() - 1) == 1) &#123; result = true; &#125; return result; &#125; public void moveTo(HanoiPillar hanoiPillar) &#123; hanoiPillar.arr.add(this.getDiskSize()); this.arr.remove(this.arr.size() - 1); System.out.println(this.name + " -&gt; " + hanoiPillar.name); &#125; // 得到当前柱子的圆盘的列表，转化为String public String getStore() &#123; StringBuilder result = new StringBuilder(); if (this.arr.size() &gt; 0) &#123; for (int i = this.arr.size() - 1; i &gt;= 0; i--) &#123; result.append(this.arr.get(i)).append(","); &#125; &#125; return result.length() == 0 ? "null" : result.toString().trim(); &#125; // 得到该柱子中最小的圆盘的数值。以1、2、3、4、......、n来表示各个圆盘的大小。并且方便比较 public Integer getDiskSize() &#123; return this.arr.get(this.arr.size() - 1); &#125;&#125; 2.实现主程序1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465666768697071727374757677787980818283848586878889909192public class Hanoi &#123; private int n; private int step; private HanoiPillar a; private HanoiPillar b; private HanoiPillar c; public void hanoi(int n, String a, String b, String c) &#123; this.step = (int) (Math.pow(2, n) - 1); this.a = new HanoiPillar(n, a); this.b = new HanoiPillar(b); this.c = new HanoiPillar(c); this.n = n; if (n % 2 != 0) &#123; HanoiPillar tmp = this.b; this.b = this.c; this.c = tmp; &#125; while (this.step &gt; 0) &#123; // 进行top的移动 if (this.a.top()) &#123; list(); this.a.moveTo(this.b); this.step--; &#125; else if (this.b.top()) &#123; list(); this.b.moveTo(this.c); this.step--; &#125; else if (this.c.top()) &#123; list(); this.c.moveTo(this.a); this.step--; &#125; // 因为step为奇数，而最后完成后step=0； // 同时可以理解为最后一次移动一定是top移动，所以需要进行一次循环判断 if (this.step == 0) &#123; break; &#125; // 执行第二步移动 if (this.a.top()) &#123; move2(this.b, this.c); &#125; else if (this.b.top()) &#123; move2(this.a, this.c); &#125; else if (this.c.top()) &#123; move2(this.a, this.b); &#125; &#125; list(); &#125; private void list() &#123; if (n % 2 == 0) &#123; System.out.print(this.a.name + "柱：" + this.a.getStore() + " " + this.b.name + "柱：" + this.b.getStore() + " " + this.c.name + "柱：" + this.c.getStore() + " "); &#125; else &#123; System.out.print(this.a.name + "柱：" + this.a.getStore() + " " + this.c.name + "柱：" + this.c.getStore() + " " + this.b.name + "柱：" + this.b.getStore() + " "); &#125; &#125; // 执行第二部移动 private void move2(HanoiPillar a, HanoiPillar b) &#123; if (a.arr.size() == 0) &#123; // a柱为空，则将b上层的盘子移到a list(); b.moveTo(a); this.step--; &#125; else if (b.arr.size() == 0) &#123; // b柱为空，则将a上层的盘子移到b list(); a.moveTo(b); this.step--; &#125; else if (a.getDiskSize() &gt; b.getDiskSize()) &#123; // 由于b盘子小于a盘子，所以将b的top盘子移动到a的top盘子 list(); b.moveTo(a); this.step--; &#125; else &#123; // 由于a盘子小于b盘子，所以将a的top盘子移动到b的top盘子 list(); a.moveTo(b); this.step--; &#125; &#125; public static void main(String[] args) &#123; Hanoi hanoi = new Hanoi(); Hanoi.hanoi(3, "A", "B", "C"); &#125;&#125; 3.输出结果12345678A柱：1,2,3, B柱：null C柱：null A -&gt; CA柱：2,3, B柱：null C柱：1, A -&gt; BA柱：3, B柱：2, C柱：1, C -&gt; BA柱：3, B柱：1,2, C柱：null A -&gt; CA柱：null B柱：1,2, C柱：3, B -&gt; AA柱：1, B柱：2, C柱：3, B -&gt; CA柱：1, B柱：null C柱：2,3, A -&gt; CA柱：null B柱：null C柱：1,2,3, 四、汉诺塔问题改编（递归实现）今天在做《程序员代码面试指南：IT名企算法与数据结构题目最优解（第二版）》时，遇到了一个稍微复杂一些的汉诺塔问题，但是理解之后发现本体只是在上面简易递归的基础上进行优化。 1.题目要求123456789101112131415161718192021【题目】 * 汉诺塔问题比较经典，这里修改一下游戏规则： * 现在限制不能从最左侧的塔直接移动到最右侧，也不能从最右侧直接移动到最左侧，而是必须经过中间。 * 求当塔有N层的时候，打印最优移动过程和最优移动总步数。 * 1.如果希望从“左”移到“中”，打印“Move 1 from left to mid”。 * 2.如果希望从“中”移到“左”，打印“Move 1 from mid to left”。 * 3.如果希望从“中”移到“右”，打印“Move 1 from mid to right”。 * 4.如果希望从“右”移到“中”，打印“Move 1 from right to mid”。 * 5.如果希望从“左”移到“右”，打印“Move 1 from left to mid”和“Move 1 from mid to right”。 * 6.如果希望从“右”移到“左”，打印“Move 1 from right to mid”和“Move 1 from mid to left”。 * * 例如，当塔数为两层时，最上层的塔记为1，最下层的塔记为2，则打印： * Move 1 from left to mid * Move 1 from mid to right * Move 2 from left to mid * Move 1 from right to mid * Move 1 from mid to left * Move 2 from mid to right * Move 1 from left to mid * Move 1 from mid to right * It wi11 move 8 steps. 2.情况分析首先我们尝试使用递归方式实现，然后进行常见情况分析 假设剩余N层塔都在左，希望全都移到中，则有下面三个步骤 将1~N-1层从左移到右，该过程为递归 将N层从左移到中 将1~N-1层从右移到中，该过程为递归 假设剩余N层塔都是从中移到右，或者从中移到左，或者从有右到中，其实原理与情况1相同，所以不做赘述 假设剩余N层塔都在左，希望都移到右，则有下面五个步骤 将1~N-1层从左移到右，该过程为递归 将N层从左移到中 将1~N-1层从右移到左，此过程为递归 将N层从中移到右 将1~N-1层从左移到右，此过程为递归 3.实现主程序123456789101112131415161718192021222324252627282930313233343536373839404142434445public class Hanoi &#123; public int hanoiProblem (int num, String left, String mid, String right) &#123; if (num &lt; 1) return 0; return process(num, left, mid, right, left, right); &#125; public int process(int num, String left, String mid, String right, String from, String to) &#123; if (num == 1) &#123; if (from.equals(mid) || to.equals(mid)) &#123; System.out.println("Move 1 from " + from + " to " + to); return 1; &#125; else &#123; System.out.println("Move 1 from " + from + " to " + mid); System.out.println("Move 1 from " + mid + " to " + to); return 2; &#125; &#125; if (from.equals(mid) || to.equals(mid)) &#123; String another = (from.equals(left) || to.equals(left)) ? right : left; int part1 = process(num - 1, left, mid, right, from, another); int part2 = 1; System.out.println("Move " + num + " from " + from + " to " + to); int part3 = process(num - 1, left, mid, right, another, to); return part1 + part2 + part3; &#125; else &#123; int part1 = process(num - 1, left, mid, right, from, to); int part2 = 1; System.out.println("Move " + num + " from " + from + " to " + mid); int part3 = process(num - 1, left, mid, right, to, from); int part4 = 1; System.out.println("Move " + num + " from " + mid + " to " + to); int part5 = process(num - 1, left, mid, right, from, to); return part1 + part2 + part3 + part4 + part5; &#125; &#125; public static void main(String[] args) &#123; Hanoi hanoi = new Hanoi(); hanoi.hanoiProblem(3, "x", "y", "z"); &#125;&#125; 4.输出结果1234567891011121314151617181920212223242526Move 1 from x to yMove 1 from y to zMove 2 from x to yMove 1 from z to yMove 1 from y to xMove 2 from y to zMove 1 from x to yMove 1 from y to zMove 3 from x to yMove 1 from z to yMove 1 from y to xMove 2 from z to yMove 1 from x to yMove 1 from y to zMove 2 from y to xMove 1 from z to yMove 1 from y to xMove 3 from y to zMove 1 from x to yMove 1 from y to zMove 2 from x to yMove 1 from z to yMove 1 from y to xMove 2 from y to zMove 1 from x to yMove 1 from y to z 五、汉诺塔问题改编（非递归实现）1.题目分析 我们把左、中、右三个地点抽象成栈，依次记为LS、MS和RS。最初所有的塔都在LS上。那么如上4个动作就可以看作是：某一个栈（from）把栈顶元素弹出，然后压入到另一个栈里（to），作为这一个栈（to）的栈顶。 例如，如果是7层塔，在最初时所有的塔都在LS上，LS从栈顶到栈底就依次是1～7，如果现在发生了“左”到“中”的动作，这个动作对应的操作是LS栈将栈顶元素1弹出，然后1压入到MS栈中，成为MS的栈顶。其他操作同理。 一个动作能发生的先决条件是不违反小压大的原则。from栈弹出的元素num如果想压入到to栈中，那么num的值必须小于当前to栈的栈顶。还有一个原则不是很明显，但也是非常重要的，叫相邻不可逆原则，解释如下： 我们把4个动作依次定义为：L-＞M、M-＞L、M-＞R和R-＞M。 很明显，L-＞M和M-＞L过程互为逆过程，M-＞R和R-＞M互为逆过程。 在修改后的汉诺塔游戏中，如果想走出最少步数，那么任何两个相邻的动作都不是互为逆过程的。举个例子：如果上一步的动作是 L-＞M，那么这一步绝不可能是 M-＞L，直观地解释为：你在上一步把一个栈顶数从“左”移动到“中”，这一步为什么又要移回去呢？这必然不是取得最小步数的走法。同理，M-＞R动作和R-＞M动作也不可能相邻发生。 有了小压大和相邻不可逆原则后，可以推导出两个十分有用的结论–非递归的方法核心结论： 游戏的第一个动作一定是L-＞M，这是显而易见的。 在走出最少步数过程中的任何时刻，4个动作中只有一个动作不违反小压大和相邻不可逆原则，另外三个动作一定都会违反。 对于结论2，现在进行简单的证明。因为游戏的第一个动作已经确定是L-＞M，则以后的每一步都会有前一步的动作。 假设前一步的动作是L-＞M： 根据小压大原则，L-＞M的动作不会重复发生。 根据相邻不可逆原则，M-＞L的动作也不该发生。 根据小压大原则，M-＞R和R-＞M只会有一个达标。 假设前一步的动作是M-＞L： 根据小压大原则，M-＞L的动作不会重复发生。 根据相邻不可逆原则，L-＞M的动作也不该发生。 根据小压大原则，M-＞R和R-＞M只会有一个达标。 假设前一步的动作是M-＞R： 根据小压大原则，M-＞R的动作不会重复发生。 根据相邻不可逆原则，R-＞M的动作也不该发生。 根据小压大原则，L-＞M和M-＞L只会有一个达标。 假设前一步的动作是R-＞M： 根据小压大原则，R-＞M的动作不会重复发生。 根据相邻不可逆原则，M-＞R的动作也不该发生。 根据小压大原则，L-＞M和M-＞L只会有一个达标。 综上所述，每一步只会有一个动作达标。那么只要每走一步都根据这两个原则考查所有的动作就可以，哪个动作达标就走哪个动作，反正每次都只有一个动作满足要求，按顺序走下来即可 2.实现主程序12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758public class Hanoi &#123; public int hanoiProblem(int num, String left, String mid, String right) &#123; Stack&lt;Integer&gt; lS = new Stack&lt;&gt;(); Stack&lt;Integer&gt; mS = new Stack&lt;&gt;(); Stack&lt;Integer&gt; rS = new Stack&lt;&gt;(); // 初始化这四个栈，可以避免栈溢出问题，同时可以使while循环中的四个函数无论谁在前，都必定会限制性 l -&gt; m lS.push(Integer.MAX_VALUE);//最大值：2147483647(2的7次方-1) mS.push(Integer.MAX_VALUE); rS.push(Integer.MAX_VALUE); for (int i = num; i &gt; 0; i--) &#123;//将数字(最小数字在栈顶)压入左栈[1,2,3] lS.push(i); &#125; //调用枚举，记录上一步操作 创建一个数组而不是直接创建一个Action对象是为了使用引用传递而不是值传递 Action[] record = &#123;Action.No&#125;; int step = 0; //size();stack类从vector继承的方法；返回此向量中的组件数 while (rS.size() != num + 1) &#123;//当右栈未将数字全部存入时 //按顺序移动,下面这四个函数顺序并不影响因为每次必定只会有一个函数是满足条件的 step += fStackToStack(record, Action.MToL, Action.LToM, lS, mS, left, mid); step += fStackToStack(record, Action.LToM, Action.MToL, mS, lS, mid, left); step += fStackToStack(record, Action.RToM, Action.MToR, mS, rS, mid, right); step += fStackToStack(record, Action.MToR, Action.RToM, rS, mS, left, mid); &#125; return step; &#125; public static int fStackToStack(Action[] record, Action preNoAet, Action nowAct, Stack&lt;Integer&gt; fStack, Stack&lt;Integer&gt; tStack, String from, String to) &#123; // fStack.peek() &lt; tStack.peek() 必然可以保证 record[0] != nowAct 两条件互斥 if (record[0] != preNoAet &amp;&amp; fStack.peek() &lt; tStack.peek()) &#123;//发生移动且必须小的数字往大的数字上移动 tStack.push(fStack.pop());//fStack 移动到 tStack 且删掉from的栈顶元素 System.out.println("Move " + tStack.peek() + " from " + from + " to " + to); record[0] = nowAct; return 1; &#125; return 0; &#125; public static void main(String[] args) &#123; Hanoi Hanoi = new Hanoi(); int step = hanoi.hanoiProblem(3, "左", "中", "右"); System.out.println("总共需要" + step + "步"); &#125; enum Action &#123; No, // 无操作 LToM, // 从左移到中 MToL, // 从中移到左 MToR, // 从中移到右 RToM // 从右移到中 &#125;&#125; 3.输出结果123456789101112131415161718192021222324252627Move 1 from 左 to 中Move 1 from 中 to 右Move 2 from 左 to 中Move 1 from 左 to 中Move 1 from 中 to 左Move 2 from 中 to 右Move 1 from 左 to 中Move 1 from 中 to 右Move 3 from 左 to 中Move 1 from 左 to 中Move 1 from 中 to 左Move 2 from 左 to 中Move 1 from 左 to 中Move 1 from 中 to 右Move 2 from 中 to 左Move 1 from 左 to 中Move 1 from 中 to 左Move 3 from 中 to 右Move 1 from 左 to 中Move 1 from 中 to 右Move 2 from 左 to 中Move 1 from 左 to 中Move 1 from 中 to 左Move 2 from 中 to 右Move 1 from 左 to 中Move 1 from 中 to 右总共需要26步 参考视频https://www.bilibili.com/video/av31023017?from=search&amp;seid=15595573244367663980 参考文章https://blog.csdn.net/weixin_42636076/article/details/81031580https://www.jb51.net/article/128701.htm]]></content>
@@ -97,8 +111,8 @@
         <category>消息队列</category>
       </categories>
       <tags>
-        <tag>Kafka</tag>
         <tag>消息队列</tag>
+        <tag>Kafka</tag>
       </tags>
   </entry>
   <entry>
@@ -213,8 +227,8 @@
         <category>消息队列</category>
       </categories>
       <tags>
-        <tag>消息队列</tag>
         <tag>RabbitMQ</tag>
+        <tag>消息队列</tag>
       </tags>
   </entry>
   <entry>
@@ -225,8 +239,8 @@
         <category>消息队列</category>
       </categories>
       <tags>
-        <tag>消息队列</tag>
         <tag>RabbitMQ</tag>
+        <tag>消息队列</tag>
       </tags>
   </entry>
   <entry>
@@ -237,8 +251,8 @@
         <category>消息队列</category>
       </categories>
       <tags>
-        <tag>消息队列</tag>
         <tag>RabbitMQ</tag>
+        <tag>消息队列</tag>
       </tags>
   </entry>
   <entry>
@@ -260,8 +274,8 @@
         <category>消息队列</category>
       </categories>
       <tags>
-        <tag>消息队列</tag>
         <tag>RabbitMQ</tag>
+        <tag>消息队列</tag>
       </tags>
   </entry>
   <entry>
@@ -272,8 +286,8 @@
         <category>消息队列</category>
       </categories>
       <tags>
-        <tag>消息队列</tag>
         <tag>RabbitMQ</tag>
+        <tag>消息队列</tag>
       </tags>
   </entry>
   <entry>
@@ -334,8 +348,8 @@
         <category>消息队列</category>
       </categories>
       <tags>
-        <tag>消息队列</tag>
         <tag>RabbitMQ</tag>
+        <tag>消息队列</tag>
         <tag>事务</tag>
       </tags>
   </entry>
@@ -764,8 +778,8 @@
         <category>数据结构与算法</category>
       </categories>
       <tags>
-        <tag>数据结构与算法</tag>
         <tag>Java</tag>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -776,8 +790,8 @@
         <category>数据结构与算法</category>
       </categories>
       <tags>
-        <tag>数据结构与算法</tag>
         <tag>Java</tag>
+        <tag>数据结构与算法</tag>
         <tag>LeetCode</tag>
       </tags>
   </entry>
@@ -802,8 +816,8 @@
         <category>数据结构与算法</category>
       </categories>
       <tags>
-        <tag>数据结构与算法</tag>
         <tag>Java</tag>
+        <tag>数据结构与算法</tag>
         <tag>LeetCode</tag>
       </tags>
   </entry>
