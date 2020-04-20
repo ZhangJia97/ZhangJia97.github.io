@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[YARN集群搭建]]></title>
+    <url>%2F2020%2F04%2F20%2FYARN%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA%2F</url>
+    <content type="text"><![CDATA[本文主要是记录集群搭建流程，具体细节较为简略 一、YARN简介Apache Hadoop YARN （Yet Another Resource Negotiator，另一种资源协调者）是一种新的 Hadoop 资源管理器，它是一个通用资源管理系统，可为上层应用提供统一的资源管理和调度，它的引入为集群在利用率、资源统一管理和数据共享等方面带来了巨大好处。 二、集群规划 主机名 作用 hadoop11 NameNode &amp; DataNode &amp; NodeManager hadoop12 DataNode &amp; ResourceManager &amp; NodeManager hadoop13 NameNode &amp; DataNode &amp; NodeManager 三、搭建集群 修改主机名以及host映射并重启机器 配置ssh免密登录 配置JAVA环境变量 安装Hadoop(1). 修改hadoop-env.sh(2). 修改core-site.xml12345678910&lt;configuration&gt; &lt;property&gt; &lt;name&gt;fs.defaultFS&lt;/name&gt; &lt;value&gt;hdfs://hadoop11:9000&lt;/value&gt; &lt;/property&gt; &lt;property&gt; &lt;name&gt;hadoop.tmp.dir&lt;/name&gt; &lt;value&gt;/home/zhangjia/hadoop-2.9.2/data&lt;/value&gt; &lt;/property&gt;&lt;/configuration&gt; (3). 修改hdfs-site.xml不需要修改，默认配置即可(4). 修改mapred-site.xml123456&lt;configuration&gt; &lt;property&gt; &lt;name&gt;mapreduce.framework.name&lt;/name&gt; &lt;value&gt;yarn&lt;/value&gt; &lt;/property&gt;&lt;/configuration&gt; (5). 修改yarn-site.xml12345678910&lt;configuration&gt; &lt;property&gt; &lt;name&gt;yarn.nodemanager.aux-services&lt;/name&gt; &lt;value&gt;mapreduce_shuffle&lt;/value&gt; &lt;/property&gt; &lt;property&gt; &lt;name&gt;yarn.resourcemanager.hostname&lt;/name&gt; &lt;value&gt;hadoop12&lt;/value&gt; &lt;/property&gt;&lt;/configuration&gt; (6). 配置slaves文件123hadoop11hadoop12hadoop13 (7). 格式化NameNode1hdfs namenode -format (8). 启动HDFS集群1start-dfs.sh (9). 启动YARN集群(只可以在ResourceManager节点启动)1start-yarn.sh]]></content>
+      <categories>
+        <category>大数据</category>
+      </categories>
+      <tags>
+        <tag>HDFS</tag>
+        <tag>大数据</tag>
+        <tag>Hadoop</tag>
+        <tag>YARN</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[HDFS高可用集群搭建]]></title>
     <url>%2F2020%2F04%2F20%2FHDFS%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA%2F</url>
-    <content type="text"><![CDATA[环境 CentOS 7 JAVA 1.8 Zookeeper 2.9.2 Hadoop 3.4.14 一、简单HDFS集群中存在的问题及解决办法 如何解决NameNode的单节点问题 多个NameNode备份原NameNode数据 如何解决多个NameNode是集群脑裂问题 使用QJM，QJM（Quorum Journal Manager）是Hadoop专门为Namenode共享存储开发的组件。其集群运行一组Journal Node，每个Journal 节点暴露一个简单的RPC接口，允许Namenode读取和写入数据，数据存放在Journal节点的本地磁盘。当Namenode写入edit log时，它向集群的所有Journal Node发送写入请求，当多数节点回复确认成功写入之后，edit log就认为是成功写入。例如有3个Journal Node，Namenode如果收到来自2个节点的确认消息，则认为写入成功。 而在故障自动转移的处理上，引入了监控Namenode状态的ZookeeperFailController（ZKFC）。ZKFC一般运行在Namenode的宿主机器上，与Zookeeper集群协作完成故障的自动转移。整个集群架构图如下： 在HA集群中如何ZK与NameNode active 出现网络延迟问题这种情况，ZK会自动将NameNode standby切换为活跃节点，这个时候就出现了多个active节点，也就意味着现有集群面临脑裂问题 使用JournalNode 负责NameNode的edit log同步 JournalNode隔离机制，保证在一个时刻只有一个NameNode active，使用ssh登录到NameNode节点使用kill命令杀死NameNode。 二、集群规划1. 相关要求： 节点个数最好是奇数个 3个节点 每个zookeeper服务会启动至少三个端口 1.client处理 2.内部数据原子广播 3.内部选举投票端口 2. 服务器相关信息 hostname 所运行服务 IP地址 zk1 zkNode1 按照实际IP地址 zk2 zkNode2 按照实际IP地址 zk3 zkNode3 按照实际IP地址 hadoop1 NameNode(active) &amp; DataNode &amp; JournalNode &amp; ZKFC 按照实际IP地址 hadoop2 NameNode(standby) &amp; DataNode &amp; JournalNode &amp; ZKFC 按照实际IP地址 hadoop3 DataNode &amp; JournalNode &amp; ZKFC 按照实际IP地址 3. 共同配置(1) 修改所有机器hostname1vi /etc/hostname (2) 配置hosts文件，将ip地址与主机名进行映射1vi /etc/hosts (3) 重启机器 (4) 配置ssh免密登录，实现start-dfs.sh执行的机器可以免密登录其他的NameNode和DataNode节点12341. hadoop1: ssh-keygen -t -rsa2. hadoop1: ssh-copy-id hadoop13. hadoop1: ssh-copy-id hadoop24. hadoop1: ssh-copy-id hadoop3 (5) 配置JAVA环境 (6) 修改环境变量12345678910#进入配置文件vi /etc/profile# 添加如下配置export JAVA_HOME=/usr/java/jdk1.8.0_251-amd64export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/libexport PATH=$JAVA_HOME/bin:$PATH# 更新配置source /etc/profile 三、zk集群搭建1. 解压zookeeper文件1tar -zxvf zookeeper文件 2. 在每一个zk节点上创建zk的数据目录1mkdir /home/zkdata 3. 在每一个节点存放zk数据的目录中必须创建一个myid文件123zk1: echo "1" &gt;&gt; /home/zkdata/myidzk2: echo "2" &gt;&gt; /home/zkdata/myidzk3: echo "3" &gt;&gt; /home/zkdata/myid 4. 创建zookeeper的基础配置文件zoo.cfg1vi /home/zkdata/zoo.cfg 配置内容如下1234567891011# 3001为client端口# 3002为原子广播端口# 3003为选举投票端口tickTime=2000initLimit=10syncLimit=5dataDir=/home/zkdataclientPort=3001server.1=zk1:3002:3003server.2=zk2:3002:3003server.3=zk3:3002:3003 5. 启动zk节点，进入zk文件的bin目录下执行以下命令1./zkServer.sh start /home/zkdata/zoo.cfg 6. 执行jps命令发现已成功启动QuorumPeerMain进程7. 查询各个zk节点的集群状态，发现其中一个节点为leader其余节点为follower1./zkServer.sh status /home/zkdata/zoo.cfg 8. zk集群搭建完毕 四、HDFS集群搭建1. 在所有hadoop节点添加Cent OS依赖1yum install psmisc -y 2. 安装hadoop(配置Hadoop环境变量 非必须)123456# 添加如下配置export HADOOP_HOME=/home/hadoop-2.9.2export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin# 更新配置source /etc/profile (1) 配置hadoop-env.sh修改JAVA相关配置 (2) 配置core-site.xml123456789101112131415&lt;configuration&gt; &lt;property&gt; &lt;name&gt;fs.defaultFS&lt;/name&gt; &lt;value&gt;hdfs://ns&lt;/value&gt; &lt;/property&gt; &lt;property&gt; &lt;name&gt;hadoop.tmp.dir&lt;/name&gt; &lt;value&gt;/home/hadoop-2.9.2/data&lt;/value&gt; &lt;/property&gt; &lt;!-- 配置zk集群节点数 --&gt; &lt;property&gt; &lt;name&gt;ha.zookeeper.quorum&lt;/name&gt; &lt;value&gt;zk1:3001,zk2:3001,zk3:3001&lt;/value&gt; &lt;/property&gt;&lt;/configuration&gt; (3) 配置hdfs-site.xml1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162&lt;configuration&gt; &lt;!-- 指定hdfs的nameservices为ns，需要与core-site.xml中保持一致 --&gt; &lt;property&gt; &lt;name&gt;dfs.nameservices&lt;/name&gt; &lt;value&gt;ns&lt;/value&gt; &lt;/property&gt; &lt;!-- ns下面有两个nameNode分别是nn1，nn2 --&gt; &lt;property&gt; &lt;name&gt;dfs.ha.namenodes.ns&lt;/name&gt; &lt;value&gt;nn1,nn2&lt;/value&gt; &lt;/property&gt; &lt;!-- nn1的rpc通信地址 --&gt; &lt;property&gt; &lt;name&gt;dfs.namenode.rpc-address.ns.nn1&lt;/name&gt; &lt;value&gt;hadoop1:9000&lt;/value&gt; &lt;/property&gt; &lt;!-- nn1的http通信地址 --&gt; &lt;property&gt; &lt;name&gt;dfs.namenode.http-address.ns.nn1&lt;/name&gt; &lt;value&gt;hadoop1:50070&lt;/value&gt; &lt;/property&gt; &lt;!-- nn2的rpc通信地址 --&gt; &lt;property&gt; &lt;name&gt;dfs.namenode.rpc-address.ns.nn2&lt;/name&gt; &lt;value&gt;hadoop2:9000&lt;/value&gt; &lt;/property&gt; &lt;!-- nn2的http通信地址 --&gt; &lt;property&gt; &lt;name&gt;dfs.namenode.http-address.ns.nn2&lt;/name&gt; &lt;value&gt;hadoop2:50070&lt;/value&gt; &lt;/property&gt; &lt;!-- 指定nameNode的元数据在JournalNode上的存放位置 --&gt; &lt;property&gt; &lt;name&gt;dfs.namenode.shared.edits.dir&lt;/name&gt; &lt;value&gt;qjournal://hadoop1:8485;hadoop2:8485;hadoop3:8485/ns&lt;/value&gt; &lt;/property&gt; &lt;!-- 指定journalNode在本地磁盘中存放数据的位置 --&gt; &lt;property&gt; &lt;name&gt;dfs.journalnode.edits.dir&lt;/name&gt; &lt;value&gt;/home/zhangjia/journal&lt;/value&gt; &lt;/property&gt; &lt;!-- 开启nameNode故障时自动切换 --&gt; &lt;property&gt; &lt;name&gt;dfs.ha.automatic-failover.enabled&lt;/name&gt; &lt;value&gt;true&lt;/value&gt; &lt;/property&gt; &lt;!-- 配置失败自动切换实现方式 --&gt; &lt;property&gt; &lt;name&gt;dfs.client.failover.proxy.provider.ns&lt;/name&gt; &lt;value&gt;org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider&lt;/value&gt; &lt;/property&gt; &lt;!-- 配置隔离机制。如果ssh默认是22端口，value直接写sshfence即可 --&gt; &lt;property&gt; &lt;name&gt;dfs.ha.fencing.methods&lt;/name&gt; &lt;value&gt;sshfence&lt;/value&gt; &lt;/property&gt; &lt;!-- 使用隔离机制需要ssh免登陆 --&gt; &lt;property&gt; &lt;name&gt;dfs.ha.fencing.ssh.private-key-files&lt;/name&gt; &lt;value&gt;/home/.ssh/id_rsa&lt;/value&gt; &lt;/property&gt;&lt;/configuration&gt; (4) 配置slaves123hadoop1hadoop2hadoop3 (5) 启动集群 (6) 在任意NameNode节点格式化Zk1hdfs zkfc -formatZK (7) 出现下面这句话则说明格式化成功1ha.ActiveStandbyElector: Successfully created /hadoop-ha/ns in ZK. (8) 启动JournalNode节点 因为Journal在HA中需要同步edit log，所以他需要在edit log没有生成之前启动123hadoop1: hadoop-daemon.sh start journalnodehadoop2: hadoop-daemon.sh start journalnodehadoop3: hadoop-daemon.sh start journalnode (9) 使用jps发现JournalNode进程已启动并且在根文件夹出现journal文件夹 (10) 格式化NameNode,在选中的active的节点上执行1hdfs namenode -format ns (11) 启动hdfs集群1start-dfs.sh (12) 在standby 的 NameNode节点上执行如下命令进行同步active节点的edit log1hdfs namenode -bootstrapStandby (13) 启动standby节点的NameNode1hadoop-daemon.sh start namenode 此时进入两个NameNode节点的图形化界面 http://hadoop1:50070 可以发现一个为active一个为standby (14) 此时HA集群搭建完毕]]></content>
+    <content type="text"><![CDATA[环境 CentOS 7 JAVA 1.8 Zookeeper 2.9.2 Hadoop 3.4.14 一、简单HDFS集群中存在的问题及解决办法 如何解决NameNode的单节点问题 多个NameNode备份原NameNode数据 如何解决多个NameNode是集群脑裂问题 使用QJM，QJM（Quorum Journal Manager）是Hadoop专门为Namenode共享存储开发的组件。其集群运行一组Journal Node，每个Journal 节点暴露一个简单的RPC接口，允许Namenode读取和写入数据，数据存放在Journal节点的本地磁盘。当Namenode写入edit log时，它向集群的所有Journal Node发送写入请求，当多数节点回复确认成功写入之后，edit log就认为是成功写入。例如有3个Journal Node，Namenode如果收到来自2个节点的确认消息，则认为写入成功。 而在故障自动转移的处理上，引入了监控Namenode状态的ZookeeperFailController（ZKFC）。ZKFC一般运行在Namenode的宿主机器上，与Zookeeper集群协作完成故障的自动转移。整个集群架构图如下： 在HA集群中如何ZK与NameNode active出现网络延迟问题这种情况，ZK会自动将NameNode standby切换为活跃节点，这个时候就出现了多个active节点，也就意味着现有集群面临脑裂问题 使用JournalNode 负责NameNode的edit log同步 JournalNode隔离机制，保证在一个时刻只有一个NameNode active，使用ssh登录到NameNode节点使用kill命令杀死NameNode。 二、集群规划1. 相关要求： 节点个数最好是奇数个 3个节点 每个zookeeper服务会启动至少三个端口 1.client处理 2.内部数据原子广播 3.内部选举投票端口 2. 服务器相关信息 hostname 所运行服务 IP地址 zk1 zkNode1 按照实际IP地址 zk2 zkNode2 按照实际IP地址 zk3 zkNode3 按照实际IP地址 hadoop1 NameNode(active) &amp; DataNode &amp; JournalNode &amp; ZKFC 按照实际IP地址 hadoop2 NameNode(standby) &amp; DataNode &amp; JournalNode &amp; ZKFC 按照实际IP地址 hadoop3 DataNode &amp; JournalNode &amp; ZKFC 按照实际IP地址 3. 共同配置(1) 修改所有机器hostname1vi /etc/hostname (2) 配置hosts文件，将ip地址与主机名进行映射1vi /etc/hosts (3) 重启机器 (4) 配置ssh免密登录，实现start-dfs.sh执行的机器可以免密登录其他的NameNode和DataNode节点12341. hadoop1: ssh-keygen -t -rsa2. hadoop1: ssh-copy-id hadoop13. hadoop1: ssh-copy-id hadoop24. hadoop1: ssh-copy-id hadoop3 (5) 配置JAVA环境 (6) 修改环境变量12345678910#进入配置文件vi /etc/profile# 添加如下配置export JAVA_HOME=/usr/java/jdk1.8.0_251-amd64export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/libexport PATH=$JAVA_HOME/bin:$PATH# 更新配置source /etc/profile 三、zk集群搭建1. 解压zookeeper文件1tar -zxvf zookeeper文件 2. 在每一个zk节点上创建zk的数据目录1mkdir /home/zkdata 3. 在每一个节点存放zk数据的目录中必须创建一个myid文件123zk1: echo "1" &gt;&gt; /home/zkdata/myidzk2: echo "2" &gt;&gt; /home/zkdata/myidzk3: echo "3" &gt;&gt; /home/zkdata/myid 4. 创建zookeeper的基础配置文件zoo.cfg1vi /home/zkdata/zoo.cfg 配置内容如下1234567891011# 3001为client端口# 3002为原子广播端口# 3003为选举投票端口tickTime=2000initLimit=10syncLimit=5dataDir=/home/zkdataclientPort=3001server.1=zk1:3002:3003server.2=zk2:3002:3003server.3=zk3:3002:3003 5. 启动zk节点，进入zk文件的bin目录下执行以下命令1./zkServer.sh start /home/zkdata/zoo.cfg 6. 执行jps命令发现已成功启动QuorumPeerMain进程7. 查询各个zk节点的集群状态，发现其中一个节点为leader其余节点为follower1./zkServer.sh status /home/zkdata/zoo.cfg 8. zk集群搭建完毕 四、HDFS集群搭建1. 在所有hadoop节点添加Cent OS依赖1yum install psmisc -y 2. 安装hadoop(配置Hadoop环境变量 非必须)123456# 添加如下配置export HADOOP_HOME=/home/hadoop-2.9.2export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin# 更新配置source /etc/profile (1) 配置hadoop-env.sh修改JAVA相关配置 (2) 配置core-site.xml123456789101112131415&lt;configuration&gt; &lt;property&gt; &lt;name&gt;fs.defaultFS&lt;/name&gt; &lt;value&gt;hdfs://ns&lt;/value&gt; &lt;/property&gt; &lt;property&gt; &lt;name&gt;hadoop.tmp.dir&lt;/name&gt; &lt;value&gt;/home/hadoop-2.9.2/data&lt;/value&gt; &lt;/property&gt; &lt;!-- 配置zk集群节点数 --&gt; &lt;property&gt; &lt;name&gt;ha.zookeeper.quorum&lt;/name&gt; &lt;value&gt;zk1:3001,zk2:3001,zk3:3001&lt;/value&gt; &lt;/property&gt;&lt;/configuration&gt; (3) 配置hdfs-site.xml1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162&lt;configuration&gt; &lt;!-- 指定hdfs的nameservices为ns，需要与core-site.xml中保持一致 --&gt; &lt;property&gt; &lt;name&gt;dfs.nameservices&lt;/name&gt; &lt;value&gt;ns&lt;/value&gt; &lt;/property&gt; &lt;!-- ns下面有两个nameNode分别是nn1，nn2 --&gt; &lt;property&gt; &lt;name&gt;dfs.ha.namenodes.ns&lt;/name&gt; &lt;value&gt;nn1,nn2&lt;/value&gt; &lt;/property&gt; &lt;!-- nn1的rpc通信地址 --&gt; &lt;property&gt; &lt;name&gt;dfs.namenode.rpc-address.ns.nn1&lt;/name&gt; &lt;value&gt;hadoop1:9000&lt;/value&gt; &lt;/property&gt; &lt;!-- nn1的http通信地址 --&gt; &lt;property&gt; &lt;name&gt;dfs.namenode.http-address.ns.nn1&lt;/name&gt; &lt;value&gt;hadoop1:50070&lt;/value&gt; &lt;/property&gt; &lt;!-- nn2的rpc通信地址 --&gt; &lt;property&gt; &lt;name&gt;dfs.namenode.rpc-address.ns.nn2&lt;/name&gt; &lt;value&gt;hadoop2:9000&lt;/value&gt; &lt;/property&gt; &lt;!-- nn2的http通信地址 --&gt; &lt;property&gt; &lt;name&gt;dfs.namenode.http-address.ns.nn2&lt;/name&gt; &lt;value&gt;hadoop2:50070&lt;/value&gt; &lt;/property&gt; &lt;!-- 指定nameNode的元数据在JournalNode上的存放位置 --&gt; &lt;property&gt; &lt;name&gt;dfs.namenode.shared.edits.dir&lt;/name&gt; &lt;value&gt;qjournal://hadoop1:8485;hadoop2:8485;hadoop3:8485/ns&lt;/value&gt; &lt;/property&gt; &lt;!-- 指定journalNode在本地磁盘中存放数据的位置 --&gt; &lt;property&gt; &lt;name&gt;dfs.journalnode.edits.dir&lt;/name&gt; &lt;value&gt;/home/zhangjia/journal&lt;/value&gt; &lt;/property&gt; &lt;!-- 开启nameNode故障时自动切换 --&gt; &lt;property&gt; &lt;name&gt;dfs.ha.automatic-failover.enabled&lt;/name&gt; &lt;value&gt;true&lt;/value&gt; &lt;/property&gt; &lt;!-- 配置失败自动切换实现方式 --&gt; &lt;property&gt; &lt;name&gt;dfs.client.failover.proxy.provider.ns&lt;/name&gt; &lt;value&gt;org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider&lt;/value&gt; &lt;/property&gt; &lt;!-- 配置隔离机制。如果ssh默认是22端口，value直接写sshfence即可 --&gt; &lt;property&gt; &lt;name&gt;dfs.ha.fencing.methods&lt;/name&gt; &lt;value&gt;sshfence&lt;/value&gt; &lt;/property&gt; &lt;!-- 使用隔离机制需要ssh免登陆 --&gt; &lt;property&gt; &lt;name&gt;dfs.ha.fencing.ssh.private-key-files&lt;/name&gt; &lt;value&gt;/home/.ssh/id_rsa&lt;/value&gt; &lt;/property&gt;&lt;/configuration&gt; (4) 配置slaves123hadoop1hadoop2hadoop3 (5) 启动集群 (6) 在任意NameNode节点格式化Zk1hdfs zkfc -formatZK (7) 出现下面这句话则说明格式化成功1ha.ActiveStandbyElector: Successfully created /hadoop-ha/ns in ZK. (8) 启动JournalNode节点 因为Journal在HA中需要同步edit log，所以他需要在edit log没有生成之前启动123hadoop1: hadoop-daemon.sh start journalnodehadoop2: hadoop-daemon.sh start journalnodehadoop3: hadoop-daemon.sh start journalnode (9) 使用jps发现JournalNode进程已启动并且在根文件夹出现journal文件夹 (10) 格式化NameNode,在选中的active的节点上执行1hdfs namenode -format ns (11) 启动hdfs集群1start-dfs.sh (12) 在standby 的 NameNode节点上执行如下命令进行同步active节点的edit log1hdfs namenode -bootstrapStandby (13) 启动standby节点的NameNode1hadoop-daemon.sh start namenode 此时进入两个NameNode节点的图形化界面 http://hadoop1:50070 可以发现一个为active一个为standby (14) 此时HA集群搭建完毕]]></content>
       <categories>
         <category>大数据</category>
       </categories>
@@ -111,8 +125,8 @@
         <category>消息队列</category>
       </categories>
       <tags>
-        <tag>消息队列</tag>
         <tag>Kafka</tag>
+        <tag>消息队列</tag>
       </tags>
   </entry>
   <entry>
@@ -227,8 +241,8 @@
         <category>消息队列</category>
       </categories>
       <tags>
-        <tag>RabbitMQ</tag>
         <tag>消息队列</tag>
+        <tag>RabbitMQ</tag>
       </tags>
   </entry>
   <entry>
@@ -239,8 +253,8 @@
         <category>消息队列</category>
       </categories>
       <tags>
-        <tag>RabbitMQ</tag>
         <tag>消息队列</tag>
+        <tag>RabbitMQ</tag>
       </tags>
   </entry>
   <entry>
@@ -251,8 +265,8 @@
         <category>消息队列</category>
       </categories>
       <tags>
-        <tag>RabbitMQ</tag>
         <tag>消息队列</tag>
+        <tag>RabbitMQ</tag>
       </tags>
   </entry>
   <entry>
@@ -274,8 +288,8 @@
         <category>消息队列</category>
       </categories>
       <tags>
-        <tag>RabbitMQ</tag>
         <tag>消息队列</tag>
+        <tag>RabbitMQ</tag>
       </tags>
   </entry>
   <entry>
@@ -286,8 +300,8 @@
         <category>消息队列</category>
       </categories>
       <tags>
-        <tag>RabbitMQ</tag>
         <tag>消息队列</tag>
+        <tag>RabbitMQ</tag>
       </tags>
   </entry>
   <entry>
@@ -348,8 +362,8 @@
         <category>消息队列</category>
       </categories>
       <tags>
-        <tag>RabbitMQ</tag>
         <tag>消息队列</tag>
+        <tag>RabbitMQ</tag>
         <tag>事务</tag>
       </tags>
   </entry>
@@ -778,8 +792,8 @@
         <category>数据结构与算法</category>
       </categories>
       <tags>
-        <tag>Java</tag>
         <tag>数据结构与算法</tag>
+        <tag>Java</tag>
       </tags>
   </entry>
   <entry>
@@ -790,8 +804,8 @@
         <category>数据结构与算法</category>
       </categories>
       <tags>
-        <tag>Java</tag>
         <tag>数据结构与算法</tag>
+        <tag>Java</tag>
         <tag>LeetCode</tag>
       </tags>
   </entry>
@@ -816,8 +830,8 @@
         <category>数据结构与算法</category>
       </categories>
       <tags>
-        <tag>Java</tag>
         <tag>数据结构与算法</tag>
+        <tag>Java</tag>
         <tag>LeetCode</tag>
       </tags>
   </entry>
@@ -1185,9 +1199,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[selenium中的常见报错]]></title>
-    <url>%2F2017%2F11%2F09%2Fselenium%E4%B8%AD%E7%9A%84%E5%B8%B8%E8%A7%81%E6%8A%A5%E9%94%99%2F</url>
-    <content type="text"><![CDATA[1.1ImportError: cannot import name ‘webdriver&apos; 1selenium.common.exceptions.WebDriverException: Message: &apos;chromedriver&apos; executable needs to be in PATH 1selenium.common.exceptions.WebDriverException: Message: &apos;chromedriver.exe&apos; executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home原因是由于没有将chromedriver.exe放在/usr/bin/目录里在导入是要注意： 第四行123456789101112131415161718192021222324driver = webdriver.Chrome(r&quot;/usr/bin/chromedriver”) ``` ##### 中应该是chromedrive.exe的路径---### 2.```python======================================================================ERROR: test_search_in_python_org (__main__.mytest)----------------------------------------------------------------------Traceback (most recent call last): File &quot;mystyle.py&quot;, line 12, in test_search_in_python_org driver.get(&quot;www.baidu.com&quot;) File &quot;/Users/zhangjia/anaconda/lib/python3.6/site-packages/selenium/webdriver/remote/webdriver.py&quot;, line 309, in get self.execute(Command.GET, &#123;&apos;url&apos;: url&#125;) File &quot;/Users/zhangjia/anaconda/lib/python3.6/site-packages/selenium/webdriver/remote/webdriver.py&quot;, line 297, in execute self.error_handler.check_response(response) File &quot;/Users/zhangjia/anaconda/lib/python3.6/site-packages/selenium/webdriver/remote/errorhandler.py&quot;, line 194, in check_response raise exception_class(message, screen, stacktrace)selenium.common.exceptions.WebDriverException: Message: unknown error: unhandled inspector error: &#123;&quot;code&quot;:-32000,&quot;message&quot;:&quot;Cannot navigate to invalid URL&quot;&#125; (Session info: chrome=61.0.3163.100) (Driver info: chromedriver=2.32.498537 (cb2f855cbc7b82e20387eaf9a43f6b99b6105061),platform=Mac OS X 10.12.6 x86_64)----------------------------------------------------------------------Ran 1 test in 1.896sFAILED (errors=1) 错误原因： 第十二行应该是http://www.baidu.com不是www.baidu.com]]></content>
+    <title><![CDATA[selenium下载文件]]></title>
+    <url>%2F2017%2F11%2F09%2Fselenium%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6%2F</url>
+    <content type="text"><![CDATA[一、Firefox文件下载 Web容许我们设置默认的文件下载路劲，文件会自动下载并且存放在指定的目录下。12345678910111213from selenium import webdriverimport osfp = webdriver.FirefoxProfile()fp.set_preference("browser.download.folderList",0)fp.set_preference("browser.download.manager.showhenStarting",True)fp.set_preference("browser.download.dir",os.getcwd())fp.set_preference("browser.helperApps.neverAsk.saveToDisk","applaction/octet-stream")#下载文件类型driver = webdriver.Firefox(firefox_profile = fp)driver.get("http://pypi.Python.org/pypi/selenium")driver.find_element_by_xpath("//*[@id='download-button']/a").click() driver.find_element_by_xpath("//*[@id='content']/div[3]/table/tbody/tr[3]/td[1]/span/a[1]").click() 为了让Firefox浏览器能实现文件下载，需要通过FirefoxProfile（）对其做一些设置。browser.download.foladerList :设置成0代表下载到浏览器默认下载路径，设置成2则可以保存到指定的目录。browser.download.manager.showWhenStarting :是否显示开始：True为显示开始，Flase为不显示开始。browser.download.dir :用于指定所下载文件的目录。os.getcwd（）函数不需要传递参数。用于返回当前的目录。browser.helperApps.neverAsk.saveToDisk :对所给文件类型不再弹出框进行询问。12345678910111213141516from selenium import webdriverfrom time import sleepprofile = webdriver.FirefoxProfile()profile.set_preference('browser.download.dir', 'd:\\') #现在文件存放的目录profile.set_preference('browser.download.folderList', 2)profile.set_preference('browser.download.manager.showWhenStarting', False)profile.set_preference('browser.helperApps.neverAsk.saveToDisk', 'application/zip')driver = webdriver.Firefox(firefox_profile=profile)driver.get('http://sahitest.com/demo/saveAs.htm')#driver.find_element_by_xpath('//a[text()="testsaveas.zip"]').click()driver.find_element_by_xpath('/html/body/a[1]').click()sleep(20)driver.quit() 二、Chrome文件下载 download.default_directory:设置下载路径profile.default_content_settings.popups:设置为0禁止弹出窗口1234567891011from selenium import webdriver from time import sleepoptions = webdriver.ChromeOptions() prefs = &#123;'profile.default_content_settings.popups': 0, 'download.default_directory': 'd:\\'&#125;options.add_experimental_option('prefs', prefs) driver = webdriver.Chrome(executable_path='D:\\chromedriver.exe', chrome_options=options) driver.get('http://sahitest.com/demo/saveAs.htm') driver.find_element_by_xpath('//a[text()="testsaveas.zip"]').click() sleep(3) driver.quit()]]></content>
       <categories>
         <category>selenium</category>
       </categories>
@@ -1197,9 +1211,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[selenium下载文件]]></title>
-    <url>%2F2017%2F11%2F09%2Fselenium%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6%2F</url>
-    <content type="text"><![CDATA[一、Firefox文件下载 Web容许我们设置默认的文件下载路劲，文件会自动下载并且存放在指定的目录下。12345678910111213from selenium import webdriverimport osfp = webdriver.FirefoxProfile()fp.set_preference("browser.download.folderList",0)fp.set_preference("browser.download.manager.showhenStarting",True)fp.set_preference("browser.download.dir",os.getcwd())fp.set_preference("browser.helperApps.neverAsk.saveToDisk","applaction/octet-stream")#下载文件类型driver = webdriver.Firefox(firefox_profile = fp)driver.get("http://pypi.Python.org/pypi/selenium")driver.find_element_by_xpath("//*[@id='download-button']/a").click() driver.find_element_by_xpath("//*[@id='content']/div[3]/table/tbody/tr[3]/td[1]/span/a[1]").click() 为了让Firefox浏览器能实现文件下载，需要通过FirefoxProfile（）对其做一些设置。browser.download.foladerList :设置成0代表下载到浏览器默认下载路径，设置成2则可以保存到指定的目录。browser.download.manager.showWhenStarting :是否显示开始：True为显示开始，Flase为不显示开始。browser.download.dir :用于指定所下载文件的目录。os.getcwd（）函数不需要传递参数。用于返回当前的目录。browser.helperApps.neverAsk.saveToDisk :对所给文件类型不再弹出框进行询问。12345678910111213141516from selenium import webdriverfrom time import sleepprofile = webdriver.FirefoxProfile()profile.set_preference('browser.download.dir', 'd:\\') #现在文件存放的目录profile.set_preference('browser.download.folderList', 2)profile.set_preference('browser.download.manager.showWhenStarting', False)profile.set_preference('browser.helperApps.neverAsk.saveToDisk', 'application/zip')driver = webdriver.Firefox(firefox_profile=profile)driver.get('http://sahitest.com/demo/saveAs.htm')#driver.find_element_by_xpath('//a[text()="testsaveas.zip"]').click()driver.find_element_by_xpath('/html/body/a[1]').click()sleep(20)driver.quit() 二、Chrome文件下载 download.default_directory:设置下载路径profile.default_content_settings.popups:设置为0禁止弹出窗口1234567891011from selenium import webdriver from time import sleepoptions = webdriver.ChromeOptions() prefs = &#123;'profile.default_content_settings.popups': 0, 'download.default_directory': 'd:\\'&#125;options.add_experimental_option('prefs', prefs) driver = webdriver.Chrome(executable_path='D:\\chromedriver.exe', chrome_options=options) driver.get('http://sahitest.com/demo/saveAs.htm') driver.find_element_by_xpath('//a[text()="testsaveas.zip"]').click() sleep(3) driver.quit()]]></content>
+    <title><![CDATA[selenium中的常见报错]]></title>
+    <url>%2F2017%2F11%2F09%2Fselenium%E4%B8%AD%E7%9A%84%E5%B8%B8%E8%A7%81%E6%8A%A5%E9%94%99%2F</url>
+    <content type="text"><![CDATA[1.1ImportError: cannot import name ‘webdriver&apos; 1selenium.common.exceptions.WebDriverException: Message: &apos;chromedriver&apos; executable needs to be in PATH 1selenium.common.exceptions.WebDriverException: Message: &apos;chromedriver.exe&apos; executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home原因是由于没有将chromedriver.exe放在/usr/bin/目录里在导入是要注意： 第四行123456789101112131415161718192021222324driver = webdriver.Chrome(r&quot;/usr/bin/chromedriver”) ``` ##### 中应该是chromedrive.exe的路径---### 2.```python======================================================================ERROR: test_search_in_python_org (__main__.mytest)----------------------------------------------------------------------Traceback (most recent call last): File &quot;mystyle.py&quot;, line 12, in test_search_in_python_org driver.get(&quot;www.baidu.com&quot;) File &quot;/Users/zhangjia/anaconda/lib/python3.6/site-packages/selenium/webdriver/remote/webdriver.py&quot;, line 309, in get self.execute(Command.GET, &#123;&apos;url&apos;: url&#125;) File &quot;/Users/zhangjia/anaconda/lib/python3.6/site-packages/selenium/webdriver/remote/webdriver.py&quot;, line 297, in execute self.error_handler.check_response(response) File &quot;/Users/zhangjia/anaconda/lib/python3.6/site-packages/selenium/webdriver/remote/errorhandler.py&quot;, line 194, in check_response raise exception_class(message, screen, stacktrace)selenium.common.exceptions.WebDriverException: Message: unknown error: unhandled inspector error: &#123;&quot;code&quot;:-32000,&quot;message&quot;:&quot;Cannot navigate to invalid URL&quot;&#125; (Session info: chrome=61.0.3163.100) (Driver info: chromedriver=2.32.498537 (cb2f855cbc7b82e20387eaf9a43f6b99b6105061),platform=Mac OS X 10.12.6 x86_64)----------------------------------------------------------------------Ran 1 test in 1.896sFAILED (errors=1) 错误原因： 第十二行应该是http://www.baidu.com不是www.baidu.com]]></content>
       <categories>
         <category>selenium</category>
       </categories>
