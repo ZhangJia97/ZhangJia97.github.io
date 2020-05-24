@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Hive初识]]></title>
+    <url>%2F2020%2F05%2F24%2FHive%E5%88%9D%E8%AF%86%2F</url>
+    <content type="text"><![CDATA[一、安装Hive并启动 1.首先进入官网下载源码包解压源码包后，配置hive-env.sh(a)配置 HADOOP_HOME 路径1export HADOOP_HOME=$&#123;Hadoop的路径&#125; (b)配置 HIVE_CONF_DIR 路径1export HIVE_CONF_DIR=$&#123;Hive配置文件路径&#125; 2.启动hadoop 3.启动Hive客户端调用bin/hive进入Hive的客户端 启动Hive后会发现Hive源码包中多了derby.log和metastore_db这个就是Hive默认的元数据 4.创建数据表在Hive客户端中创建一个数据表，并数据表中插入数据12hive&gt; create table student(id int, name string);hive&gt; insert into student values(1000,"ss"); 此时我们可以发现在hdfs中出现了user/hive/warehouse文件夹下存在一个与表名同名的文件夹，这个文件夹中存储的就是数据表的数据 二、尝试在文件系统中加载数据 1.创建测试数据创建一个student.txt文件（id与姓名之间用tab隔开）1231001 zhangsan1002 lisi1003 wangwu 2.使用load导入数据在hive中执行以下指令1hive&gt; load data local inpath '文件路径' into table student; 此时我们可以发现user/hive/warehouse/student文件夹下多了一个student.txt文件，所以可以理解这其实就是一个上传操作，但是使用select语句查询时发现查询结果为123NULL NULLNULL NULLNULL NULL 这是因为我们在创建表时并未声明文件分隔符，所以我们重新创建数据表，并声明分隔符为’\t’1hive&gt; create table student(id int, name string) ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'; 之后重新导入后数据发现可以正常查询了。 3.通过上传文件导入数据现在我们再创建一个student1.txt1231004 zhaoliu1005 chenba1006 sunjiu 然后直接上传到hdfs的user/hive/warehouse/student路径下之后在查询，可以发现我们上传的student1.txt文件中的数据也可以查询到了。 在实际开发中，可以选择使用load指令或者直接上传两种方式，如果我们想使用load指令加载hdfs下的数据，同样可以使用load指令，此时可以理解成将该文件移动到数据表所对应的文件之下hive&gt; load data inpath ‘文件路径’ into table student; 三、配置Hive元数据至MySQL 我们会发现一个问题同一时间只能启动一个Hive客户端。这就是数据derby数据库的原因，所以我们接下来要将我们的元数据转移到MySQL中，MySQL安装在此不做赘述。 1. 添加MySQL连接驱动安装好MySQL后，首先我们需要下载mysql连接驱动也就是mysql-connector-java-5.1.47.jar（这个jar包可以在maven的本地仓库中找到，如果之前在maven中使用过这个依赖）文件放入到hive的lib目录中。 2.配置hive-site.xml按照官方配置，将下列数据拷贝到文件中123456789101112131415161718192021222324&lt;?xml version="1.0"?&gt;&lt;?xml-stylesheet type="text/xsl" href="configuration.xsl"?&gt;&lt;configuration&gt; &lt;property&gt; &lt;name&gt;javax.jdo.option.ConnectionURL&lt;/name&gt; &lt;value&gt;jdbc:mysql://hadoop102:3306/metastore?createDatabaseI fNotExist=true&lt;/value&gt; &lt;description&gt;JDBC connect string for a JDBC metastore&lt;/description&gt; &lt;/property&gt; &lt;property&gt; &lt;name&gt;javax.jdo.option.ConnectionDriverName&lt;/name&gt; &lt;value&gt;com.mysql.jdbc.Driver&lt;/value&gt; &lt;description&gt;Driver class name for a JDBC metastore&lt;/description&gt; &lt;/property&gt; &lt;property&gt; &lt;name&gt;javax.jdo.option.ConnectionUserName&lt;/name&gt; &lt;value&gt;root&lt;/value&gt; &lt;description&gt;username to use against metastore database&lt;/description&gt; &lt;/property&gt; &lt;property&gt; &lt;name&gt;javax.jdo.option.ConnectionPassword&lt;/name&gt; &lt;value&gt;000000&lt;/value&gt; &lt;description&gt;password to use against metastore database&lt;/description&gt; &lt;/property&gt;&lt;/configuration&gt; 配置完毕后，如果启动 hive 异常，可以重启hadoop，此时我们可以看到mysql中创建了相关的数据库。 3.创建数据表然后我们创建一个数据表1hive&gt; create table student1(id int, name string); 这时我们在数据库中的TBLS数据表中会发现我们创建者条数据的记录，在DBS表中可以看到我们的数据库路径。]]></content>
+      <categories>
+        <category>大数据</category>
+      </categories>
+      <tags>
+        <tag>大数据</tag>
+        <tag>Hadoop</tag>
+        <tag>Hive</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[YARN集群搭建]]></title>
     <url>%2F2020%2F04%2F20%2FYARN%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA%2F</url>
     <content type="text"><![CDATA[本文主要是记录集群搭建流程，具体细节较为简略 一、YARN简介Apache Hadoop YARN （Yet Another Resource Negotiator，另一种资源协调者）是一种新的 Hadoop 资源管理器，它是一个通用资源管理系统，可为上层应用提供统一的资源管理和调度，它的引入为集群在利用率、资源统一管理和数据共享等方面带来了巨大好处。 二、集群规划 主机名 作用 hadoop11 NameNode &amp; DataNode &amp; NodeManager hadoop12 DataNode &amp; ResourceManager &amp; NodeManager hadoop13 NameNode &amp; DataNode &amp; NodeManager 三、搭建集群 修改主机名以及host映射并重启机器 配置ssh免密登录 配置JAVA环境变量 安装Hadoop(1). 修改hadoop-env.sh(2). 修改core-site.xml12345678910&lt;configuration&gt; &lt;property&gt; &lt;name&gt;fs.defaultFS&lt;/name&gt; &lt;value&gt;hdfs://hadoop11:9000&lt;/value&gt; &lt;/property&gt; &lt;property&gt; &lt;name&gt;hadoop.tmp.dir&lt;/name&gt; &lt;value&gt;/home/zhangjia/hadoop-2.9.2/data&lt;/value&gt; &lt;/property&gt;&lt;/configuration&gt; (3). 修改hdfs-site.xml不需要修改，默认配置即可(4). 修改mapred-site.xml123456&lt;configuration&gt; &lt;property&gt; &lt;name&gt;mapreduce.framework.name&lt;/name&gt; &lt;value&gt;yarn&lt;/value&gt; &lt;/property&gt;&lt;/configuration&gt; (5). 修改yarn-site.xml12345678910&lt;configuration&gt; &lt;property&gt; &lt;name&gt;yarn.nodemanager.aux-services&lt;/name&gt; &lt;value&gt;mapreduce_shuffle&lt;/value&gt; &lt;/property&gt; &lt;property&gt; &lt;name&gt;yarn.resourcemanager.hostname&lt;/name&gt; &lt;value&gt;hadoop12&lt;/value&gt; &lt;/property&gt;&lt;/configuration&gt; (6). 配置slaves文件123hadoop11hadoop12hadoop13 (7). 格式化NameNode1hdfs namenode -format (8). 启动HDFS集群1start-dfs.sh (9). 启动YARN集群(只可以在ResourceManager节点启动)1start-yarn.sh (10). 可以在 http://hadoop12:8088查看当前YARN启动情况]]></content>
@@ -792,8 +805,8 @@
         <category>数据结构与算法</category>
       </categories>
       <tags>
-        <tag>数据结构与算法</tag>
         <tag>Java</tag>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -804,8 +817,8 @@
         <category>数据结构与算法</category>
       </categories>
       <tags>
-        <tag>数据结构与算法</tag>
         <tag>Java</tag>
+        <tag>数据结构与算法</tag>
         <tag>LeetCode</tag>
       </tags>
   </entry>
@@ -830,8 +843,8 @@
         <category>数据结构与算法</category>
       </categories>
       <tags>
-        <tag>数据结构与算法</tag>
         <tag>Java</tag>
+        <tag>数据结构与算法</tag>
         <tag>LeetCode</tag>
       </tags>
   </entry>
