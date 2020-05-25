@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Flume初识]]></title>
+    <url>%2F2020%2F05%2F24%2FFlume%E5%88%9D%E8%AF%86%2F</url>
+    <content type="text"></content>
+  </entry>
+  <entry>
     <title><![CDATA[Hive初识]]></title>
     <url>%2F2020%2F05%2F24%2FHive%E5%88%9D%E8%AF%86%2F</url>
-    <content type="text"><![CDATA[一、安装Hive并启动 1.首先进入官网下载源码包解压源码包后，配置hive-env.sh(a)配置 HADOOP_HOME 路径1export HADOOP_HOME=$&#123;Hadoop的路径&#125; (b)配置 HIVE_CONF_DIR 路径1export HIVE_CONF_DIR=$&#123;Hive配置文件路径&#125; 2.启动hadoop 3.启动Hive客户端调用bin/hive进入Hive的客户端 启动Hive后会发现Hive源码包中多了derby.log和metastore_db这个就是Hive默认的元数据 4.创建数据表在Hive客户端中创建一个数据表，并数据表中插入数据12hive&gt; create table student(id int, name string);hive&gt; insert into student values(1000,"ss"); 此时我们可以发现在hdfs中出现了user/hive/warehouse文件夹下存在一个与表名同名的文件夹，这个文件夹中存储的就是数据表的数据 二、尝试在文件系统中加载数据 1.创建测试数据创建一个student.txt文件（id与姓名之间用tab隔开）1231001 zhangsan1002 lisi1003 wangwu 2.使用load导入数据在hive中执行以下指令1hive&gt; load data local inpath '文件路径' into table student; 此时我们可以发现user/hive/warehouse/student文件夹下多了一个student.txt文件，所以可以理解这其实就是一个上传操作，但是使用select语句查询时发现查询结果为123NULL NULLNULL NULLNULL NULL 这是因为我们在创建表时并未声明文件分隔符，所以我们重新创建数据表，并声明分隔符为’\t’1hive&gt; create table student(id int, name string) ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'; 之后重新导入后数据发现可以正常查询了。 3.通过上传文件导入数据现在我们再创建一个student1.txt1231004 zhaoliu1005 chenba1006 sunjiu 然后直接上传到hdfs的user/hive/warehouse/student路径下之后在查询，可以发现我们上传的student1.txt文件中的数据也可以查询到了。 在实际开发中，可以选择使用load指令或者直接上传两种方式，如果我们想使用load指令加载hdfs下的数据，同样可以使用load指令，此时可以理解成将该文件移动到数据表所对应的文件之下hive&gt; load data inpath ‘文件路径’ into table student; 三、配置Hive元数据至MySQL 我们会发现一个问题同一时间只能启动一个Hive客户端。这就是数据derby数据库的原因，所以我们接下来要将我们的元数据转移到MySQL中，MySQL安装在此不做赘述。 1. 添加MySQL连接驱动安装好MySQL后，首先我们需要下载mysql连接驱动也就是mysql-connector-java-5.1.47.jar（这个jar包可以在maven的本地仓库中找到，如果之前在maven中使用过这个依赖）文件放入到hive的lib目录中。 2.配置hive-site.xml按照官方配置，将下列数据拷贝到文件中123456789101112131415161718192021222324&lt;?xml version="1.0"?&gt;&lt;?xml-stylesheet type="text/xsl" href="configuration.xsl"?&gt;&lt;configuration&gt; &lt;property&gt; &lt;name&gt;javax.jdo.option.ConnectionURL&lt;/name&gt; &lt;value&gt;jdbc:mysql://hadoop102:3306/metastore?createDatabaseI fNotExist=true&lt;/value&gt; &lt;description&gt;JDBC connect string for a JDBC metastore&lt;/description&gt; &lt;/property&gt; &lt;property&gt; &lt;name&gt;javax.jdo.option.ConnectionDriverName&lt;/name&gt; &lt;value&gt;com.mysql.jdbc.Driver&lt;/value&gt; &lt;description&gt;Driver class name for a JDBC metastore&lt;/description&gt; &lt;/property&gt; &lt;property&gt; &lt;name&gt;javax.jdo.option.ConnectionUserName&lt;/name&gt; &lt;value&gt;root&lt;/value&gt; &lt;description&gt;username to use against metastore database&lt;/description&gt; &lt;/property&gt; &lt;property&gt; &lt;name&gt;javax.jdo.option.ConnectionPassword&lt;/name&gt; &lt;value&gt;000000&lt;/value&gt; &lt;description&gt;password to use against metastore database&lt;/description&gt; &lt;/property&gt;&lt;/configuration&gt; 配置完毕后，如果启动 hive 异常，可以重启hadoop，此时我们可以看到mysql中创建了相关的数据库。 3.创建数据表然后我们创建一个数据表1hive&gt; create table student1(id int, name string); 这时我们在数据库中的TBLS数据表中会发现我们创建者条数据的记录，在DBS表中可以看到我们的数据库路径。]]></content>
+    <content type="text"><![CDATA[一、安装Hive并启动 1.下载源码包解压源码包后，配置hive-env.sh(a)配置 HADOOP_HOME 路径1export HADOOP_HOME=$&#123;Hadoop的路径&#125; (b)配置 HIVE_CONF_DIR 路径1export HIVE_CONF_DIR=$&#123;Hive配置文件路径&#125; 2.启动hadoop 3.启动Hive客户端调用bin/hive进入Hive的客户端 启动Hive后会发现Hive源码包中多了derby.log和metastore_db这个就是Hive默认的元数据 4.创建数据表在Hive客户端中创建一个数据表，并数据表中插入数据12hive&gt; create table student(id int, name string);hive&gt; insert into student values(1000,"ss"); 此时我们可以发现在hdfs中出现了user/hive/warehouse文件夹下存在一个与表名同名的文件夹，这个文件夹中存储的就是数据表的数据 二、尝试在文件系统中加载数据 1.创建测试数据创建一个student.txt文件（id与姓名之间用tab隔开）1231001 zhangsan1002 lisi1003 wangwu 2.使用load导入数据在hive中执行以下指令1hive&gt; load data local inpath '文件路径' into table student; 此时我们可以发现user/hive/warehouse/student文件夹下多了一个student.txt文件，所以可以理解这其实就是一个上传操作，但是使用select语句查询时发现查询结果为123NULL NULLNULL NULLNULL NULL 这是因为我们在创建表时并未声明文件分隔符，所以我们重新创建数据表，并声明分隔符为’\t’1hive&gt; create table student(id int, name string) ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'; 之后重新导入后数据发现可以正常查询了。 3.通过上传文件导入数据现在我们再创建一个student1.txt1231004 zhaoliu1005 chenba1006 sunjiu 然后直接上传到hdfs的user/hive/warehouse/student路径下之后在查询，可以发现我们上传的student1.txt文件中的数据也可以查询到了。 在实际开发中，可以选择使用load指令或者直接上传两种方式，如果我们想使用load指令加载hdfs下的数据，同样可以使用load指令，此时可以理解成将该文件移动到数据表所对应的文件之下hive&gt; load data inpath ‘文件路径’ into table student; 三、配置Hive元数据至MySQL 我们会发现一个问题同一时间只能启动一个Hive客户端。这就是数据derby数据库的原因，所以我们接下来要将我们的元数据转移到MySQL中，MySQL安装在此不做赘述。 1. 添加MySQL连接驱动安装好MySQL后，首先我们需要下载mysql连接驱动也就是mysql-connector-java-5.1.47.jar（这个jar包可以在maven的本地仓库中找到，如果之前在maven中使用过这个依赖）文件放入到hive的lib目录中。 2.配置hive-site.xml按照官方配置，将下列数据拷贝到文件中123456789101112131415161718192021222324&lt;?xml version="1.0"?&gt;&lt;?xml-stylesheet type="text/xsl" href="configuration.xsl"?&gt;&lt;configuration&gt; &lt;property&gt; &lt;name&gt;javax.jdo.option.ConnectionURL&lt;/name&gt; &lt;value&gt;jdbc:mysql://hadoop102:3306/metastore?createDatabaseI fNotExist=true&lt;/value&gt; &lt;description&gt;JDBC connect string for a JDBC metastore&lt;/description&gt; &lt;/property&gt; &lt;property&gt; &lt;name&gt;javax.jdo.option.ConnectionDriverName&lt;/name&gt; &lt;value&gt;com.mysql.jdbc.Driver&lt;/value&gt; &lt;description&gt;Driver class name for a JDBC metastore&lt;/description&gt; &lt;/property&gt; &lt;property&gt; &lt;name&gt;javax.jdo.option.ConnectionUserName&lt;/name&gt; &lt;value&gt;root&lt;/value&gt; &lt;description&gt;username to use against metastore database&lt;/description&gt; &lt;/property&gt; &lt;property&gt; &lt;name&gt;javax.jdo.option.ConnectionPassword&lt;/name&gt; &lt;value&gt;000000&lt;/value&gt; &lt;description&gt;password to use against metastore database&lt;/description&gt; &lt;/property&gt;&lt;/configuration&gt; 配置完毕后，如果启动 hive 异常，可以重启hadoop，此时我们可以看到mysql中创建了相关的数据库。 3.创建数据表然后我们创建一个数据表1hive&gt; create table student1(id int, name string); 这时我们在数据库中的TBLS数据表中会发现我们创建者条数据的记录，在DBS表中可以看到我们的数据库路径。]]></content>
       <categories>
         <category>大数据</category>
       </categories>
       <tags>
-        <tag>大数据</tag>
         <tag>Hadoop</tag>
         <tag>Hive</tag>
+        <tag>大数据</tag>
       </tags>
   </entry>
   <entry>
@@ -21,9 +26,9 @@
         <category>大数据</category>
       </categories>
       <tags>
-        <tag>HDFS</tag>
-        <tag>大数据</tag>
         <tag>Hadoop</tag>
+        <tag>大数据</tag>
+        <tag>HDFS</tag>
         <tag>YARN</tag>
       </tags>
   </entry>
@@ -35,9 +40,9 @@
         <category>大数据</category>
       </categories>
       <tags>
-        <tag>HDFS</tag>
-        <tag>大数据</tag>
         <tag>Hadoop</tag>
+        <tag>大数据</tag>
+        <tag>HDFS</tag>
         <tag>Zookeeper</tag>
       </tags>
   </entry>
@@ -62,9 +67,9 @@
         <category>大数据</category>
       </categories>
       <tags>
+        <tag>大数据</tag>
         <tag>HBase</tag>
         <tag>HDFS</tag>
-        <tag>大数据</tag>
       </tags>
   </entry>
   <entry>
@@ -86,9 +91,9 @@
         <category>大数据</category>
       </categories>
       <tags>
+        <tag>大数据</tag>
         <tag>HBase</tag>
         <tag>HDFS</tag>
-        <tag>大数据</tag>
         <tag>Java</tag>
       </tags>
   </entry>
@@ -100,9 +105,9 @@
         <category>大数据</category>
       </categories>
       <tags>
+        <tag>大数据</tag>
         <tag>HBase</tag>
         <tag>HDFS</tag>
-        <tag>大数据</tag>
       </tags>
   </entry>
   <entry>
@@ -113,9 +118,9 @@
         <category>大数据</category>
       </categories>
       <tags>
-        <tag>HDFS</tag>
-        <tag>大数据</tag>
         <tag>Hadoop</tag>
+        <tag>大数据</tag>
+        <tag>HDFS</tag>
       </tags>
   </entry>
   <entry>
@@ -805,8 +810,8 @@
         <category>数据结构与算法</category>
       </categories>
       <tags>
-        <tag>Java</tag>
         <tag>数据结构与算法</tag>
+        <tag>Java</tag>
       </tags>
   </entry>
   <entry>
@@ -817,8 +822,8 @@
         <category>数据结构与算法</category>
       </categories>
       <tags>
-        <tag>Java</tag>
         <tag>数据结构与算法</tag>
+        <tag>Java</tag>
         <tag>LeetCode</tag>
       </tags>
   </entry>
@@ -843,8 +848,8 @@
         <category>数据结构与算法</category>
       </categories>
       <tags>
-        <tag>Java</tag>
         <tag>数据结构与算法</tag>
+        <tag>Java</tag>
         <tag>LeetCode</tag>
       </tags>
   </entry>
@@ -1008,7 +1013,7 @@
   <entry>
     <title><![CDATA[如何使用github+hexo搭建一个博客]]></title>
     <url>%2F2018%2F04%2F12%2F%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8github%2Bhexo%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%8D%9A%E5%AE%A2%2F</url>
-    <content type="text"><![CDATA[本文章是查阅了一下四个博客文章后所做的总结：https://blog.csdn.net/gdutxiaoxu/article/details/53576018https://www.cnblogs.com/fengxiongZz/p/7707219.htmlhttps://segmentfault.com/a/1190000009009697#articleHeader15https://blog.csdn.net/qq_33699981/article/details/72716951 整体项目需要使用git，node.js等，以及写博客时需要使用markdown语法，最好在部署前对这些有些了解，当然就算不了解也并不影响整个部署 一、配置环境以及准备1.安装并配置node.js以及git2.在github中新建一个项目（记得点击添加README，项目命最好是“github用户名.github.io”）3.在建好的项目右侧有个settings按钮，点击它，向下拉到GitHub Pages，你会看到那边有个网址，访问它，发现该项目已经被部署到网络上，能够通过外网来访问它。4.在合适的地方新建一个文件夹，进入文件夹使用下面的命令安装Hexo1npm install hexo -g 5.使用下面的命令查看是否安装成功1hexo -v 6.输入下面的命令初始化文件夹1hexo init 7.输入下面的命令安装所需要的组件1npm install 8.输入下面的命令首次体验hexo1hexo g 9.输入下面的命令开启服务器（若端口被占用则使用 hexo server -p 端口号 ）来改变端口号1hexo s 出现该页面则说明成功了10.将Hexo与github page联系起来（1）配置Git个人信息(如果你之前已经配置好git个人信息，请跳过这一个步骤)a.设置Git的user name和email：(如果是第一次的话）12git config --global user.name &quot;your_name&quot;git config --global user.email &quot;your_email&quot; b.生成密钥1ssh-keygen -t rsa -C &quot;your_email&quot; 11.配置Deployment在_config.yml文件中，找到Deployment，然后按照如下修改：1234deploy: type: git repo: git@github.com:yourname/yourname.github.io.git branch: master 二、写博客，发布文章1.使用下面的命令新建一个博文（新建后在hexo\source\ _posts中将会看到你新建的.md后缀的文件）1hexo new post &quot;article title&quot; 2.使用markdown编辑器打开并进行编辑文章3.使用下面的命令进行生成和部署，成功后便可在https://yourName.github.io访问您的博文12hexo g // 生成hexo d // 部署 注：若提示 deloyer not found:git 则说明缺少一个扩展，运行 npm install --save hexo-deployer-git 命令即可解决三、修改主题hexo提供了许许多多的主题，我们可以轻松的修改一个自己喜欢的主题，具体方法如下： 1.在 Hexo 中有两份主要的配置文件，其名称都是 _config.yml。 其中，一份位于站点根目录下，主要包含 Hexo 本身的配置；另一份位于主题目录下，这份配置由主题作者提供，主要用于配置主题相关的选项。 为了描述方便，在以下说明中，将前者称为 站点配置文件， 后者称为 主题配置文件。在文件夹的themes中使用 git clone 命令下载自己喜欢的主题，如我们需要使用NexT主题，则可以使用12cd your-hexo-site #进入你的hexo项目的根文件夹git clone https://github.com/iissnan/hexo-theme-next themes/next 2.启用主题 与所有 Hexo 主题启用的模式一样。 当 克隆/下载 完成后，打开 站点配置文件， 找到 theme 字段，并将其值更改为 next。 启用 NexT 主题1theme: next 此时即可使用浏览器访问 http://localhost:4000 ，检查站点是否正确运行。 当你看到站点的外观与下图所示类似时即说明你已成功安装 NexT 主题。现在，你已经成功安装并启用了 NexT 主题。下一步我们将要更改一些主题的设定，包括个性化以及集成第三方服务。选择 Scheme Scheme 是 NexT 提供的一种特性，借助于 Scheme，NexT 为你提供多种不同的外观。同时，几乎所有的配置都可以 在 Scheme 之间共用。目前 NexT 支持三种 Scheme，他们是： 1234Muse - 默认 Scheme，这是 NexT 最初的版本，黑白主调，大量留白Mist - Muse 的紧凑版本，整洁有序的单栏外观Pisces - 双栏 Scheme，小家碧玉似的清新Scheme 的切换通过更改 主题配置文件，搜索 scheme 关键字。 你会看到有三行 scheme 的配置，将你需用启用的 scheme 前面 注释 # 即可。 选择 Pisce Scheme 123#scheme: Muse#scheme: Mistscheme: Pisces 3.next主题的hexo博客个性化设置博客的可个性化设置较多，比如背景设置，博客头，作者，简介，以及插入一下第三方的插件等。在此我就不做赘述，最后我在当时部署时总结了这两个不错的博客教程https://segmentfault.com/a/1190000009009697#articleHeader15https://blog.csdn.net/qq_33699981/article/details/72716951 4.设置语言 编辑站点配置文件， 将 language 设置成你所需要的语言。建议明确设置你所需要的语言，例如选用简体中文，配置如下：1language: zh-Hans 语言 代码 设定实例 English en language: en 简体中文 zh-Hans language:zh-Hans Français fr-FR language:fr-FR Português pt language:pt 繁體中文 zh-hk或者zh-tw language:zh-hk Русский язык ru language:ru Deutsch de language:de 日本語 ja language:ja Indonesian id language:id]]></content>
+    <content type="text"><![CDATA[本文章是查阅了一下四个博客文章后所做的总结：https://blog.csdn.net/gdutxiaoxu/article/details/53576018https://www.cnblogs.com/fengxiongZz/p/7707219.htmlhttps://segmentfault.com/a/1190000009009697#articleHeader15https://blog.csdn.net/qq_33699981/article/details/72716951 整体项目需要使用git，node.js等，以及写博客时需要使用markdown语法，最好在部署前对这些有些了解，当然就算不了解也并不影响整个部署 一、配置环境以及准备1.安装并配置node.js以及git2.在github中新建一个项目（记得点击添加README，项目名最好是“github用户名.github.io”）3.在建好的项目右侧有个settings按钮，点击它，向下拉到GitHub Pages，你会看到那边有个网址，访问它，发现该项目已经被部署到网络上，能够通过外网来访问它。4.在合适的地方新建一个文件夹，进入文件夹使用下面的命令安装Hexo1npm install hexo -g 5.使用下面的命令查看是否安装成功1hexo -v 6.输入下面的命令初始化文件夹1hexo init 7.输入下面的命令安装所需要的组件1npm install 8.输入下面的命令首次体验hexo1hexo g 9.输入下面的命令开启服务器（若端口被占用则使用 hexo server -p 端口号 ）来改变端口号1hexo s 出现该页面则说明成功了10.将Hexo与github page联系起来（1）配置Git个人信息(如果你之前已经配置好git个人信息，请跳过这一个步骤)a.设置Git的user name和email：(如果是第一次的话）12git config --global user.name &quot;your_name&quot;git config --global user.email &quot;your_email&quot; b.生成密钥1ssh-keygen -t rsa -C &quot;your_email&quot; 11.配置Deployment在_config.yml文件中，找到Deployment，然后按照如下修改：1234deploy: type: git repo: git@github.com:yourname/yourname.github.io.git branch: master 二、写博客，发布文章1.使用下面的命令新建一个博文（新建后在hexo\source\ _posts中将会看到你新建的.md后缀的文件）1hexo new post &quot;article title&quot; 2.使用markdown编辑器打开并进行编辑文章3.使用下面的命令进行生成和部署，成功后便可在https://yourName.github.io访问您的博文12hexo g // 生成hexo d // 部署 注：若提示 deloyer not found:git 则说明缺少一个扩展，运行 npm install --save hexo-deployer-git 命令即可解决三、修改主题hexo提供了许许多多的主题，我们可以轻松的修改一个自己喜欢的主题，具体方法如下： 1.在 Hexo 中有两份主要的配置文件，其名称都是 _config.yml。 其中，一份位于站点根目录下，主要包含 Hexo 本身的配置；另一份位于主题目录下，这份配置由主题作者提供，主要用于配置主题相关的选项。 为了描述方便，在以下说明中，将前者称为 站点配置文件， 后者称为 主题配置文件。在文件夹的themes中使用 git clone 命令下载自己喜欢的主题，如我们需要使用NexT主题，则可以使用12cd your-hexo-site #进入你的hexo项目的根文件夹git clone https://github.com/iissnan/hexo-theme-next themes/next 2.启用主题 与所有 Hexo 主题启用的模式一样。 当 克隆/下载 完成后，打开 站点配置文件， 找到 theme 字段，并将其值更改为 next。 启用 NexT 主题1theme: next 此时即可使用浏览器访问 http://localhost:4000 ，检查站点是否正确运行。 当你看到站点的外观与下图所示类似时即说明你已成功安装 NexT 主题。现在，你已经成功安装并启用了 NexT 主题。下一步我们将要更改一些主题的设定，包括个性化以及集成第三方服务。选择 Scheme Scheme 是 NexT 提供的一种特性，借助于 Scheme，NexT 为你提供多种不同的外观。同时，几乎所有的配置都可以 在 Scheme 之间共用。目前 NexT 支持三种 Scheme，他们是： 1234Muse - 默认 Scheme，这是 NexT 最初的版本，黑白主调，大量留白Mist - Muse 的紧凑版本，整洁有序的单栏外观Pisces - 双栏 Scheme，小家碧玉似的清新Scheme 的切换通过更改 主题配置文件，搜索 scheme 关键字。 你会看到有三行 scheme 的配置，将你需用启用的 scheme 前面 注释 # 即可。 选择 Pisce Scheme 123#scheme: Muse#scheme: Mistscheme: Pisces 3.next主题的hexo博客个性化设置博客的可个性化设置较多，比如背景设置，博客头，作者，简介，以及插入一下第三方的插件等。在此我就不做赘述，最后我在当时部署时总结了这两个不错的博客教程https://segmentfault.com/a/1190000009009697#articleHeader15https://blog.csdn.net/qq_33699981/article/details/72716951 4.设置语言 编辑站点配置文件， 将 language 设置成你所需要的语言。建议明确设置你所需要的语言，例如选用简体中文，配置如下：1language: zh-Hans 语言 代码 设定实例 English en language: en 简体中文 zh-Hans language:zh-Hans Français fr-FR language:fr-FR Português pt language:pt 繁體中文 zh-hk或者zh-tw language:zh-hk Русский язык ru language:ru Deutsch de language:de 日本語 ja language:ja Indonesian id language:id]]></content>
       <categories>
         <category>hexo</category>
       </categories>
@@ -1212,9 +1217,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[selenium下载文件]]></title>
-    <url>%2F2017%2F11%2F09%2Fselenium%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6%2F</url>
-    <content type="text"><![CDATA[一、Firefox文件下载 Web容许我们设置默认的文件下载路劲，文件会自动下载并且存放在指定的目录下。12345678910111213from selenium import webdriverimport osfp = webdriver.FirefoxProfile()fp.set_preference("browser.download.folderList",0)fp.set_preference("browser.download.manager.showhenStarting",True)fp.set_preference("browser.download.dir",os.getcwd())fp.set_preference("browser.helperApps.neverAsk.saveToDisk","applaction/octet-stream")#下载文件类型driver = webdriver.Firefox(firefox_profile = fp)driver.get("http://pypi.Python.org/pypi/selenium")driver.find_element_by_xpath("//*[@id='download-button']/a").click() driver.find_element_by_xpath("//*[@id='content']/div[3]/table/tbody/tr[3]/td[1]/span/a[1]").click() 为了让Firefox浏览器能实现文件下载，需要通过FirefoxProfile（）对其做一些设置。browser.download.foladerList :设置成0代表下载到浏览器默认下载路径，设置成2则可以保存到指定的目录。browser.download.manager.showWhenStarting :是否显示开始：True为显示开始，Flase为不显示开始。browser.download.dir :用于指定所下载文件的目录。os.getcwd（）函数不需要传递参数。用于返回当前的目录。browser.helperApps.neverAsk.saveToDisk :对所给文件类型不再弹出框进行询问。12345678910111213141516from selenium import webdriverfrom time import sleepprofile = webdriver.FirefoxProfile()profile.set_preference('browser.download.dir', 'd:\\') #现在文件存放的目录profile.set_preference('browser.download.folderList', 2)profile.set_preference('browser.download.manager.showWhenStarting', False)profile.set_preference('browser.helperApps.neverAsk.saveToDisk', 'application/zip')driver = webdriver.Firefox(firefox_profile=profile)driver.get('http://sahitest.com/demo/saveAs.htm')#driver.find_element_by_xpath('//a[text()="testsaveas.zip"]').click()driver.find_element_by_xpath('/html/body/a[1]').click()sleep(20)driver.quit() 二、Chrome文件下载 download.default_directory:设置下载路径profile.default_content_settings.popups:设置为0禁止弹出窗口1234567891011from selenium import webdriver from time import sleepoptions = webdriver.ChromeOptions() prefs = &#123;'profile.default_content_settings.popups': 0, 'download.default_directory': 'd:\\'&#125;options.add_experimental_option('prefs', prefs) driver = webdriver.Chrome(executable_path='D:\\chromedriver.exe', chrome_options=options) driver.get('http://sahitest.com/demo/saveAs.htm') driver.find_element_by_xpath('//a[text()="testsaveas.zip"]').click() sleep(3) driver.quit()]]></content>
+    <title><![CDATA[selenium中的常见报错]]></title>
+    <url>%2F2017%2F11%2F09%2Fselenium%E4%B8%AD%E7%9A%84%E5%B8%B8%E8%A7%81%E6%8A%A5%E9%94%99%2F</url>
+    <content type="text"><![CDATA[1.1ImportError: cannot import name ‘webdriver&apos; 1selenium.common.exceptions.WebDriverException: Message: &apos;chromedriver&apos; executable needs to be in PATH 1selenium.common.exceptions.WebDriverException: Message: &apos;chromedriver.exe&apos; executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home原因是由于没有将chromedriver.exe放在/usr/bin/目录里在导入是要注意： 第四行123456789101112131415161718192021222324driver = webdriver.Chrome(r&quot;/usr/bin/chromedriver”) ``` ##### 中应该是chromedrive.exe的路径---### 2.```python======================================================================ERROR: test_search_in_python_org (__main__.mytest)----------------------------------------------------------------------Traceback (most recent call last): File &quot;mystyle.py&quot;, line 12, in test_search_in_python_org driver.get(&quot;www.baidu.com&quot;) File &quot;/Users/zhangjia/anaconda/lib/python3.6/site-packages/selenium/webdriver/remote/webdriver.py&quot;, line 309, in get self.execute(Command.GET, &#123;&apos;url&apos;: url&#125;) File &quot;/Users/zhangjia/anaconda/lib/python3.6/site-packages/selenium/webdriver/remote/webdriver.py&quot;, line 297, in execute self.error_handler.check_response(response) File &quot;/Users/zhangjia/anaconda/lib/python3.6/site-packages/selenium/webdriver/remote/errorhandler.py&quot;, line 194, in check_response raise exception_class(message, screen, stacktrace)selenium.common.exceptions.WebDriverException: Message: unknown error: unhandled inspector error: &#123;&quot;code&quot;:-32000,&quot;message&quot;:&quot;Cannot navigate to invalid URL&quot;&#125; (Session info: chrome=61.0.3163.100) (Driver info: chromedriver=2.32.498537 (cb2f855cbc7b82e20387eaf9a43f6b99b6105061),platform=Mac OS X 10.12.6 x86_64)----------------------------------------------------------------------Ran 1 test in 1.896sFAILED (errors=1) 错误原因： 第十二行应该是http://www.baidu.com不是www.baidu.com]]></content>
       <categories>
         <category>selenium</category>
       </categories>
@@ -1224,9 +1229,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[selenium中的常见报错]]></title>
-    <url>%2F2017%2F11%2F09%2Fselenium%E4%B8%AD%E7%9A%84%E5%B8%B8%E8%A7%81%E6%8A%A5%E9%94%99%2F</url>
-    <content type="text"><![CDATA[1.1ImportError: cannot import name ‘webdriver&apos; 1selenium.common.exceptions.WebDriverException: Message: &apos;chromedriver&apos; executable needs to be in PATH 1selenium.common.exceptions.WebDriverException: Message: &apos;chromedriver.exe&apos; executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home原因是由于没有将chromedriver.exe放在/usr/bin/目录里在导入是要注意： 第四行123456789101112131415161718192021222324driver = webdriver.Chrome(r&quot;/usr/bin/chromedriver”) ``` ##### 中应该是chromedrive.exe的路径---### 2.```python======================================================================ERROR: test_search_in_python_org (__main__.mytest)----------------------------------------------------------------------Traceback (most recent call last): File &quot;mystyle.py&quot;, line 12, in test_search_in_python_org driver.get(&quot;www.baidu.com&quot;) File &quot;/Users/zhangjia/anaconda/lib/python3.6/site-packages/selenium/webdriver/remote/webdriver.py&quot;, line 309, in get self.execute(Command.GET, &#123;&apos;url&apos;: url&#125;) File &quot;/Users/zhangjia/anaconda/lib/python3.6/site-packages/selenium/webdriver/remote/webdriver.py&quot;, line 297, in execute self.error_handler.check_response(response) File &quot;/Users/zhangjia/anaconda/lib/python3.6/site-packages/selenium/webdriver/remote/errorhandler.py&quot;, line 194, in check_response raise exception_class(message, screen, stacktrace)selenium.common.exceptions.WebDriverException: Message: unknown error: unhandled inspector error: &#123;&quot;code&quot;:-32000,&quot;message&quot;:&quot;Cannot navigate to invalid URL&quot;&#125; (Session info: chrome=61.0.3163.100) (Driver info: chromedriver=2.32.498537 (cb2f855cbc7b82e20387eaf9a43f6b99b6105061),platform=Mac OS X 10.12.6 x86_64)----------------------------------------------------------------------Ran 1 test in 1.896sFAILED (errors=1) 错误原因： 第十二行应该是http://www.baidu.com不是www.baidu.com]]></content>
+    <title><![CDATA[selenium下载文件]]></title>
+    <url>%2F2017%2F11%2F09%2Fselenium%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6%2F</url>
+    <content type="text"><![CDATA[一、Firefox文件下载 Web容许我们设置默认的文件下载路劲，文件会自动下载并且存放在指定的目录下。12345678910111213from selenium import webdriverimport osfp = webdriver.FirefoxProfile()fp.set_preference("browser.download.folderList",0)fp.set_preference("browser.download.manager.showhenStarting",True)fp.set_preference("browser.download.dir",os.getcwd())fp.set_preference("browser.helperApps.neverAsk.saveToDisk","applaction/octet-stream")#下载文件类型driver = webdriver.Firefox(firefox_profile = fp)driver.get("http://pypi.Python.org/pypi/selenium")driver.find_element_by_xpath("//*[@id='download-button']/a").click() driver.find_element_by_xpath("//*[@id='content']/div[3]/table/tbody/tr[3]/td[1]/span/a[1]").click() 为了让Firefox浏览器能实现文件下载，需要通过FirefoxProfile（）对其做一些设置。browser.download.foladerList :设置成0代表下载到浏览器默认下载路径，设置成2则可以保存到指定的目录。browser.download.manager.showWhenStarting :是否显示开始：True为显示开始，Flase为不显示开始。browser.download.dir :用于指定所下载文件的目录。os.getcwd（）函数不需要传递参数。用于返回当前的目录。browser.helperApps.neverAsk.saveToDisk :对所给文件类型不再弹出框进行询问。12345678910111213141516from selenium import webdriverfrom time import sleepprofile = webdriver.FirefoxProfile()profile.set_preference('browser.download.dir', 'd:\\') #现在文件存放的目录profile.set_preference('browser.download.folderList', 2)profile.set_preference('browser.download.manager.showWhenStarting', False)profile.set_preference('browser.helperApps.neverAsk.saveToDisk', 'application/zip')driver = webdriver.Firefox(firefox_profile=profile)driver.get('http://sahitest.com/demo/saveAs.htm')#driver.find_element_by_xpath('//a[text()="testsaveas.zip"]').click()driver.find_element_by_xpath('/html/body/a[1]').click()sleep(20)driver.quit() 二、Chrome文件下载 download.default_directory:设置下载路径profile.default_content_settings.popups:设置为0禁止弹出窗口1234567891011from selenium import webdriver from time import sleepoptions = webdriver.ChromeOptions() prefs = &#123;'profile.default_content_settings.popups': 0, 'download.default_directory': 'd:\\'&#125;options.add_experimental_option('prefs', prefs) driver = webdriver.Chrome(executable_path='D:\\chromedriver.exe', chrome_options=options) driver.get('http://sahitest.com/demo/saveAs.htm') driver.find_element_by_xpath('//a[text()="testsaveas.zip"]').click() sleep(3) driver.quit()]]></content>
       <categories>
         <category>selenium</category>
       </categories>
