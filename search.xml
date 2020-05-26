@@ -3,13 +3,13 @@
   <entry>
     <title><![CDATA[Flume初识]]></title>
     <url>%2F2020%2F05%2F24%2FFlume%E5%88%9D%E8%AF%86%2F</url>
-    <content type="text"><![CDATA[本文是尚硅谷Flume课程随手笔记 一、安装Flume并实现一个简易端口监控 实现监控端口案例，通过Flume来监听端口数据，并将数据打印到控制台 1. 首先进入官网下载Flume源码包 2. 修改flume-env.sh文件1export JAVA_HOME=/opt/module/jdk1.8.0_144 3. 添加配置文件创建Flume Agent配置文件flume-netcat-logger.conf123456789101112131415161718192021222324252627282930313233# Name the components on this agent a1:表示agent的名称# r1:表示a1的Source的名称a1.sources = r1# k1:表示a1的Sink的名称a1.sinks = k1# c1:表示a1的Channel的名称a1.channels = c1# Describe/configure the source# 表示a1的输入源类型为netcat端口类型a1.sources.r1.type = netcat# 表示a1的监听的主机a1.sources.r1.bind = localhost# 表示a1的监听的端口号a1.sources.r1.port = 44444# Describe the sink# 表示a1的输出目的地是控制台logger类型a1.sinks.k1.type = logger# Use a channel which buffers events in memory# 表示a1的channel类型是memory内存型a1.channels.c1.type = memory# 表示a1的channel总容量1000个eventa1.channels.c1.capacity = 1000# 表示a1的channel传输时收集到了100条event以后再去提交事务a1.channels.c1.transactionCapacity = 100# Bind the source and sink to the channel# 表示将r1和c1连接起来a1.sources.r1.channels = c1# 表示将k1和c1连接起来a1.sinks.k1.channel = c1 4. 启动Flume启动终端，在终端中属于下面的指令1bin/flume-ng agent --conf conf/ --name a1 --conf-file job/flume-netcat-logger.conf -Dflume.root.logger=INFO,console 使用下面的指令1nc localhost 44444 通过netcat发送数据，发现此时flume日志中显示接收到数据 二、 实时监控单个追加文件 实时监控 Hive 日志，并上传到 HDFS 中 1. 添加配置文件创建本次程序的配置文件，创建 flume-file-logger.conf 文件，根据官网添加一下配置12345678910111213141516171819202122232425262728293031# Name the components on this agent a1:表示agent的名称# r1:表示a1的Source的名称a1.sources = r1# k1:表示a1的Sink的名称a1.sinks = k1# c1:表示a1的Channel的名称a1.channels = c1# Describe/configure the source# 表示a1的输入源类型为exec source类型a1.sources.r1.type = exec# 监控文件a1.sources.r1.command = tail -F /Users/user/Library/Hive/logs/hive.log# Describe the sink# 表示a1的输出目的地是控制台logger类型a1.sinks.k1.type = logger# Use a channel which buffers events in memory# 表示a1的channel类型是memory内存型a1.channels.c1.type = memory# 表示a1的channel总容量1000个eventa1.channels.c1.capacity = 1000# 表示a1的channel传输时收集到了100条event以后再去提交事务a1.channels.c1.transactionCapacity = 100# Bind the source and sink to the channel# 表示将r1和c1连接起来a1.sources.r1.channels = c1# 表示将k1和c1连接起来a1.sinks.k1.channel = c1 2. 启动Flume在终端中输入下面的指令1bin/flume-ng agent --conf conf --conf-file job/file-flume-logger.conf --name a1 -Dflume.root.logger=INFO,console 之后启动该任务，并且可以监听hive的日志文件 三、 实时监控单个追加文件到HDFS Flume监控Hive实时更新日志然后上传到HDFS 1. 添加相关依赖包首先将需要使用的相关Jar包放入Flume的lib目录下123456commons-configuration-1.6.jar、hadoop-auth-2.7.2.jar、hadoop-common-2.7.2.jar、hadoop-hdfs-2.7.2.jar、commons-io-2.4.jar、htrace-core-3.1.0-incubating.jar 2.添加配置文件创建本次程序的配置文件，创建 flume-file-hdfs.conf 文件，根据官网添加一下配置，因为这里与上一节区别主要在sink部分，所以只需要在上一节配置的基础上对sink相关的部分进行修改即可1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253# Name the components on this agent a1:表示agent的名称# r1:表示a1的Source的名称a1.sources = r1# k1:表示a1的Sink的名称a1.sinks = k1# c1:表示a1的Channel的名称a1.channels = c1# Describe/configure the source# 表示a1的输入源类型为exec source类型a1.sources.r1.type = exec# 监控文件a1.sources.r1.command = tail -F /Users/user/Library/Hive/logs/hive.log# Describe the sink# 表示a1的输出目的地是控制台logger类型a1.sinks.k1.type = hdfsa1.sinks.k1.hdfs.path = hdfs://localhost:9000/flume/%Y%m%d/%H# 上传文件的前缀a1.sinks.k1.hdfs.filePrefix = logs- # 是否按照时间滚动文件夹a1.sinks.k1.hdfs.round = true # 多少时间单位创建一个新的文件夹a1.sinks.k1.hdfs.roundValue = 1# 重新定义时间单位a1.sinks.k1.hdfs.roundUnit = hour# 是否使用本地时间戳a1.sinks.k1.hdfs.useLocalTimeStamp = true# 积攒多少个 Event 才 flush 到 HDFS 一次a1.sinks.k1.hdfs.batchSize = 1000# 设置文件类型，可支持压缩a1.sinks.k1.hdfs.fileType = DataStream# 多久生成一个新的文件a1.sinks.k1.hdfs.rollInterval = 30# 设置每个文件的滚动大小a1.sinks.k1.hdfs.rollSize = 134217700# 文件的滚动与 Event 数量无关a1.sinks.k1.hdfs.rollCount = 0# Use a channel which buffers events in memory# 表示a1的channel类型是memory内存型a1.channels.c1.type = memory# 表示a1的channel总容量1000个eventa1.channels.c1.capacity = 1000# 表示a1的channel传输时收集到了100条event以后再去提交事务a1.channels.c1.transactionCapacity = 100# Bind the source and sink to the channel# 表示将r1和c1连接起来a1.sources.r1.channels = c1# 表示将k1和c1连接起来a1.sinks.k1.channel = c1 3. 启动Flume在终端中输入下面的指令1bin/flume-ng agent --conf conf --conf-file job/file-file-hdfs.conf --name a1 -Dflume.root.logger=INFO,console 之后启动该任务，并且可以监听文件的追加 四、 实时监控目录下的多个新文件至HDFS 当监控的目录下有新文件时，进行上传 1. 添加配置文件写下如下配置123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657# Name the components on this agent a1:表示agent的名称# r1:表示a1的Source的名称a1.sources = r1# k1:表示a1的Sink的名称a1.sinks = k1# c1:表示a1的Channel的名称a1.channels = c1# Describe/configure the source# 表示a1的输入源类型为spooldir类型a1.sources.r1.type = spooldir# 监控文件的路径a1.sources.r1.spoolDir = /Users/user/Library/Flume/upload# 上传完成文件后缀a1.sources.r1.fileSuffix = .COMPLETED# 忽略所有以.tmp 结尾的文件，不上传a1.sources.r1.ignorePattern = ([^ ]*\.tmp)# Describe the sink# 表示a1的输出目的地是控制台hdfs类型a1.sinks.k1.type = hdfsa1.sinks.k1.hdfs.path = hdfs://localhost:9000/flume/%Y%m%d/%H# 上传文件的前缀a1.sinks.k1.hdfs.filePrefix = upload- # 是否按照时间滚动文件夹a1.sinks.k1.hdfs.round = true # 多少时间单位创建一个新的文件夹a1.sinks.k1.hdfs.roundValue = 1# 重新定义时间单位a1.sinks.k1.hdfs.roundUnit = hour# 是否使用本地时间戳a1.sinks.k1.hdfs.useLocalTimeStamp = true# 积攒多少个 Event 才 flush 到 HDFS 一次a1.sinks.k1.hdfs.batchSize = 1000# 设置文件类型，可支持压缩a1.sinks.k1.hdfs.fileType = DataStream# 多久生成一个新的文件a1.sinks.k1.hdfs.rollInterval = 30# 设置每个文件的滚动大小a1.sinks.k1.hdfs.rollSize = 134217700# 文件的滚动与 Event 数量无关a1.sinks.k1.hdfs.rollCount = 0# Use a channel which buffers events in memory# 表示a1的channel类型是memory内存型a1.channels.c1.type = memory# 表示a1的channel总容量1000个eventa1.channels.c1.capacity = 1000# 表示a1的channel传输时收集到了100条event以后再去提交事务a1.channels.c1.transactionCapacity = 100# Bind the source and sink to the channel# 表示将r1和c1连接起来a1.sources.r1.channels = c1# 表示将k1和c1连接起来a1.sinks.k1.channel = c1 2. 启动Flume在终端中输入下面的指令1bin/flume-ng agent --conf conf --conf-file job/file-dir-hdfs.conf --name a1 -Dflume.root.logger=INFO,console 之后我们向upload文件夹添加文件，发现成功上传至HDFS。 注： 但是它并不能监控动态变化的数据，在使用 Spooling Directory Source 时，不要在监控目录中创建并持续修改文件，上传完成的文件会以.COMPLETED 结尾，被监控文件夹每 500 毫秒扫描一次文件变动。 五、 实时监控目录下的多个追加文件 Exec source 适用于监控一个实时追加的文件，但不能保证数据不丢失;Spooldir Source 能够保证数据不丢失，且能够实现断点续传，但延迟较高，不能实时监控;而 Taildir Source 既能够实现断点续传，又可以保证数据不丢失，还能够进行实时监控。 1. 添加配置文件1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859# Name the components on this agent a1:表示agent的名称# r1:表示a1的Source的名称a1.sources = r1# k1:表示a1的Sink的名称a1.sinks = k1# c1:表示a1的Channel的名称a1.channels = c1# Describe/configure the source#表示a1的输入源类型为TAILDIR类型a1.sources.r1.type = TAILDIR# 指定position_file位置a1.sources.r1.positionFile = /Users/user/Library/Flume/upload/tail_dir.json# 文件组a1.sources.r1.filegroups = f1 f2# f1文件组a1.sources.r1.filegroups.f1 = /Users/user/Library/Flume/upload/dict1/a.log# f2文件组a1.sources.r1.filegroups.f2 = /Users/user/Library/Flume/upload/dict2/.*.txt# Describe the sink# 表示a1的输出目的地是控制台logger类型a1.sinks.k1.type = hdfsa1.sinks.k1.hdfs.path = hdfs://localhost:9000/flume/%Y%m%d/%H# 上传文件的前缀a1.sinks.k1.hdfs.filePrefix = upload- # 是否按照时间滚动文件夹a1.sinks.k1.hdfs.round = true # 多少时间单位创建一个新的文件夹a1.sinks.k1.hdfs.roundValue = 1# 重新定义时间单位a1.sinks.k1.hdfs.roundUnit = hour# 是否使用本地时间戳a1.sinks.k1.hdfs.useLocalTimeStamp = true# 积攒多少个 Event 才 flush 到 HDFS 一次a1.sinks.k1.hdfs.batchSize = 1000# 设置文件类型，可支持压缩a1.sinks.k1.hdfs.fileType = DataStream# 多久生成一个新的文件a1.sinks.k1.hdfs.rollInterval = 30# 设置每个文件的滚动大小a1.sinks.k1.hdfs.rollSize = 134217700# 文件的滚动与 Event 数量无关a1.sinks.k1.hdfs.rollCount = 0# Use a channel which buffers events in memory# 表示a1的channel类型是memory内存型a1.channels.c1.type = memory# 表示a1的channel总容量1000个eventa1.channels.c1.capacity = 1000# 表示a1的channel传输时收集到了100条event以后再去提交事务a1.channels.c1.transactionCapacity = 100# Bind the source and sink to the channel# 表示将r1和c1连接起来a1.sources.r1.channels = c1# 表示将k1和c1连接起来a1.sinks.k1.channel = c1 2. 启动Flume在终端中输入下面的指令1bin/flume-ng agent --conf conf --conf-file job/file-taildir-hdfs.conf --name a1 -Dflume.root.logger=INFO,console 之后我们对监控的文件组中的文件进行追加，发现成功监听。 注： 在查看tail_dir.json中可以发现监听记录，同时每条记录都存在inode字段和pos字段，inode字段为文件唯一标识符，不随文件名称的变化而变化，pos则是上传文件的偏移量，正是通过这个来实现断点续传。]]></content>
+    <content type="text"><![CDATA[本文是尚硅谷Flume课程随手笔记，记录课程的一些实战的操作步骤 一、安装Flume并实现一个简易端口监控 实现监控端口案例，通过Flume来监听端口数据，并将数据打印到控制台 1. 首先进入官网下载Flume源码包 2. 修改flume-env.sh文件1export JAVA_HOME=/opt/module/jdk1.8.0_144 3. 添加配置文件创建Flume Agent配置文件flume-netcat-logger.conf123456789101112131415161718192021222324252627282930313233# Name the components on this agent a1:表示agent的名称# r1:表示a1的Source的名称a1.sources = r1# k1:表示a1的Sink的名称a1.sinks = k1# c1:表示a1的Channel的名称a1.channels = c1# Describe/configure the source# 表示a1的输入源类型为netcat端口类型a1.sources.r1.type = netcat# 表示a1的监听的主机a1.sources.r1.bind = localhost# 表示a1的监听的端口号a1.sources.r1.port = 44444# Describe the sink# 表示a1的输出目的地是控制台logger类型a1.sinks.k1.type = logger# Use a channel which buffers events in memory# 表示a1的channel类型是memory内存型a1.channels.c1.type = memory# 表示a1的channel总容量1000个eventa1.channels.c1.capacity = 1000# 表示a1的channel传输时收集到了100条event以后再去提交事务a1.channels.c1.transactionCapacity = 100# Bind the source and sink to the channel# 表示将r1和c1连接起来a1.sources.r1.channels = c1# 表示将k1和c1连接起来a1.sinks.k1.channel = c1 4. 启动Flume启动终端，在终端中属于下面的指令1bin/flume-ng agent --conf conf/ --name a1 --conf-file job/flume-netcat-logger.conf -Dflume.root.logger=INFO,console 使用下面的指令1nc localhost 44444 通过netcat发送数据，发现此时flume日志中显示接收到数据 二、 实时监控单个追加文件 实时监控 Hive 日志，并上传到 HDFS 中 1. 添加配置文件创建本次程序的配置文件，创建 flume-file-logger.conf 文件，根据官网添加一下配置12345678910111213141516171819202122232425262728293031# Name the components on this agent a1:表示agent的名称# r1:表示a1的Source的名称a1.sources = r1# k1:表示a1的Sink的名称a1.sinks = k1# c1:表示a1的Channel的名称a1.channels = c1# Describe/configure the source# 表示a1的输入源类型为exec source类型a1.sources.r1.type = exec# 监控文件a1.sources.r1.command = tail -F /Users/user/Library/Hive/logs/hive.log# Describe the sink# 表示a1的输出目的地是控制台logger类型a1.sinks.k1.type = logger# Use a channel which buffers events in memory# 表示a1的channel类型是memory内存型a1.channels.c1.type = memory# 表示a1的channel总容量1000个eventa1.channels.c1.capacity = 1000# 表示a1的channel传输时收集到了100条event以后再去提交事务a1.channels.c1.transactionCapacity = 100# Bind the source and sink to the channel# 表示将r1和c1连接起来a1.sources.r1.channels = c1# 表示将k1和c1连接起来a1.sinks.k1.channel = c1 2. 启动Flume在终端中输入下面的指令1bin/flume-ng agent --conf conf --conf-file job/file-flume-logger.conf --name a1 -Dflume.root.logger=INFO,console 之后启动该任务，并且可以监听hive的日志文件 三、 实时监控单个追加文件到HDFS Flume监控Hive实时更新日志然后上传到HDFS 1. 添加相关依赖包首先将需要使用的相关Jar包放入Flume的lib目录下123456commons-configuration-1.6.jar、hadoop-auth-2.7.2.jar、hadoop-common-2.7.2.jar、hadoop-hdfs-2.7.2.jar、commons-io-2.4.jar、htrace-core-3.1.0-incubating.jar 2.添加配置文件创建本次程序的配置文件，创建 flume-file-hdfs.conf 文件，根据官网添加一下配置，因为这里与上一节区别主要在sink部分，所以只需要在上一节配置的基础上对sink相关的部分进行修改即可1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253# Name the components on this agent a1:表示agent的名称# r1:表示a1的Source的名称a1.sources = r1# k1:表示a1的Sink的名称a1.sinks = k1# c1:表示a1的Channel的名称a1.channels = c1# Describe/configure the source# 表示a1的输入源类型为exec source类型a1.sources.r1.type = exec# 监控文件a1.sources.r1.command = tail -F /Users/user/Library/Hive/logs/hive.log# Describe the sink# 表示a1的输出目的地是控制台logger类型a1.sinks.k1.type = hdfsa1.sinks.k1.hdfs.path = hdfs://localhost:9000/flume/%Y%m%d/%H# 上传文件的前缀a1.sinks.k1.hdfs.filePrefix = logs- # 是否按照时间滚动文件夹a1.sinks.k1.hdfs.round = true # 多少时间单位创建一个新的文件夹a1.sinks.k1.hdfs.roundValue = 1# 重新定义时间单位a1.sinks.k1.hdfs.roundUnit = hour# 是否使用本地时间戳a1.sinks.k1.hdfs.useLocalTimeStamp = true# 积攒多少个 Event 才 flush 到 HDFS 一次a1.sinks.k1.hdfs.batchSize = 1000# 设置文件类型，可支持压缩a1.sinks.k1.hdfs.fileType = DataStream# 多久生成一个新的文件a1.sinks.k1.hdfs.rollInterval = 30# 设置每个文件的滚动大小a1.sinks.k1.hdfs.rollSize = 134217700# 文件的滚动与 Event 数量无关a1.sinks.k1.hdfs.rollCount = 0# Use a channel which buffers events in memory# 表示a1的channel类型是memory内存型a1.channels.c1.type = memory# 表示a1的channel总容量1000个eventa1.channels.c1.capacity = 1000# 表示a1的channel传输时收集到了100条event以后再去提交事务a1.channels.c1.transactionCapacity = 100# Bind the source and sink to the channel# 表示将r1和c1连接起来a1.sources.r1.channels = c1# 表示将k1和c1连接起来a1.sinks.k1.channel = c1 3. 启动Flume在终端中输入下面的指令1bin/flume-ng agent --conf conf --conf-file job/file-file-hdfs.conf --name a1 -Dflume.root.logger=INFO,console 之后启动该任务，并且可以监听文件的追加 四、 实时监控目录下的多个新文件至HDFS 当监控的目录下有新文件时，进行上传 1. 添加配置文件写下如下配置123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657# Name the components on this agent a1:表示agent的名称# r1:表示a1的Source的名称a1.sources = r1# k1:表示a1的Sink的名称a1.sinks = k1# c1:表示a1的Channel的名称a1.channels = c1# Describe/configure the source# 表示a1的输入源类型为spooldir类型a1.sources.r1.type = spooldir# 监控文件的路径a1.sources.r1.spoolDir = /Users/user/Library/Flume/upload# 上传完成文件后缀a1.sources.r1.fileSuffix = .COMPLETED# 忽略所有以.tmp 结尾的文件，不上传a1.sources.r1.ignorePattern = ([^ ]*\.tmp)# Describe the sink# 表示a1的输出目的地是控制台hdfs类型a1.sinks.k1.type = hdfsa1.sinks.k1.hdfs.path = hdfs://localhost:9000/flume/%Y%m%d/%H# 上传文件的前缀a1.sinks.k1.hdfs.filePrefix = upload- # 是否按照时间滚动文件夹a1.sinks.k1.hdfs.round = true # 多少时间单位创建一个新的文件夹a1.sinks.k1.hdfs.roundValue = 1# 重新定义时间单位a1.sinks.k1.hdfs.roundUnit = hour# 是否使用本地时间戳a1.sinks.k1.hdfs.useLocalTimeStamp = true# 积攒多少个 Event 才 flush 到 HDFS 一次a1.sinks.k1.hdfs.batchSize = 1000# 设置文件类型，可支持压缩a1.sinks.k1.hdfs.fileType = DataStream# 多久生成一个新的文件a1.sinks.k1.hdfs.rollInterval = 30# 设置每个文件的滚动大小a1.sinks.k1.hdfs.rollSize = 134217700# 文件的滚动与 Event 数量无关a1.sinks.k1.hdfs.rollCount = 0# Use a channel which buffers events in memory# 表示a1的channel类型是memory内存型a1.channels.c1.type = memory# 表示a1的channel总容量1000个eventa1.channels.c1.capacity = 1000# 表示a1的channel传输时收集到了100条event以后再去提交事务a1.channels.c1.transactionCapacity = 100# Bind the source and sink to the channel# 表示将r1和c1连接起来a1.sources.r1.channels = c1# 表示将k1和c1连接起来a1.sinks.k1.channel = c1 2. 启动Flume在终端中输入下面的指令1bin/flume-ng agent --conf conf --conf-file job/file-dir-hdfs.conf --name a1 -Dflume.root.logger=INFO,console 之后我们向upload文件夹添加文件，发现成功上传至HDFS。 注： 但是它并不能监控动态变化的数据，在使用 Spooling Directory Source 时，不要在监控目录中创建并持续修改文件，上传完成的文件会以.COMPLETED 结尾，被监控文件夹每 500 毫秒扫描一次文件变动。 五、 实时监控目录下的多个追加文件 Exec source 适用于监控一个实时追加的文件，但不能保证数据不丢失;Spooldir Source 能够保证数据不丢失，且能够实现断点续传，但延迟较高，不能实时监控;而 Taildir Source 既能够实现断点续传，又可以保证数据不丢失，还能够进行实时监控。 1. 添加配置文件1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859# Name the components on this agent a1:表示agent的名称# r1:表示a1的Source的名称a1.sources = r1# k1:表示a1的Sink的名称a1.sinks = k1# c1:表示a1的Channel的名称a1.channels = c1# Describe/configure the source#表示a1的输入源类型为TAILDIR类型a1.sources.r1.type = TAILDIR# 指定position_file位置a1.sources.r1.positionFile = /Users/user/Library/Flume/upload/tail_dir.json# 文件组a1.sources.r1.filegroups = f1 f2# f1文件组a1.sources.r1.filegroups.f1 = /Users/user/Library/Flume/upload/dict1/a.log# f2文件组a1.sources.r1.filegroups.f2 = /Users/user/Library/Flume/upload/dict2/.*.txt# Describe the sink# 表示a1的输出目的地是控制台logger类型a1.sinks.k1.type = hdfsa1.sinks.k1.hdfs.path = hdfs://localhost:9000/flume/%Y%m%d/%H# 上传文件的前缀a1.sinks.k1.hdfs.filePrefix = upload- # 是否按照时间滚动文件夹a1.sinks.k1.hdfs.round = true # 多少时间单位创建一个新的文件夹a1.sinks.k1.hdfs.roundValue = 1# 重新定义时间单位a1.sinks.k1.hdfs.roundUnit = hour# 是否使用本地时间戳a1.sinks.k1.hdfs.useLocalTimeStamp = true# 积攒多少个 Event 才 flush 到 HDFS 一次a1.sinks.k1.hdfs.batchSize = 1000# 设置文件类型，可支持压缩a1.sinks.k1.hdfs.fileType = DataStream# 多久生成一个新的文件a1.sinks.k1.hdfs.rollInterval = 30# 设置每个文件的滚动大小a1.sinks.k1.hdfs.rollSize = 134217700# 文件的滚动与 Event 数量无关a1.sinks.k1.hdfs.rollCount = 0# Use a channel which buffers events in memory# 表示a1的channel类型是memory内存型a1.channels.c1.type = memory# 表示a1的channel总容量1000个eventa1.channels.c1.capacity = 1000# 表示a1的channel传输时收集到了100条event以后再去提交事务a1.channels.c1.transactionCapacity = 100# Bind the source and sink to the channel# 表示将r1和c1连接起来a1.sources.r1.channels = c1# 表示将k1和c1连接起来a1.sinks.k1.channel = c1 2. 启动Flume在终端中输入下面的指令1bin/flume-ng agent --conf conf --conf-file job/file-taildir-hdfs.conf --name a1 -Dflume.root.logger=INFO,console 之后我们对监控的文件组中的文件进行追加，发现成功监听。 注： 在查看tail_dir.json中可以发现监听记录，同时每条记录都存在inode字段和pos字段，inode字段为文件唯一标识符，不随文件名称的变化而变化，pos则是上传文件的偏移量，正是通过这个来实现断点续传。]]></content>
       <categories>
         <category>大数据</category>
       </categories>
       <tags>
-        <tag>Hadoop</tag>
         <tag>大数据</tag>
+        <tag>Hadoop</tag>
         <tag>Flume</tag>
       </tags>
   </entry>
@@ -21,9 +21,9 @@
         <category>大数据</category>
       </categories>
       <tags>
+        <tag>大数据</tag>
         <tag>Hadoop</tag>
         <tag>Hive</tag>
-        <tag>大数据</tag>
       </tags>
   </entry>
   <entry>
@@ -34,9 +34,9 @@
         <category>大数据</category>
       </categories>
       <tags>
-        <tag>Hadoop</tag>
-        <tag>大数据</tag>
         <tag>HDFS</tag>
+        <tag>大数据</tag>
+        <tag>Hadoop</tag>
         <tag>YARN</tag>
       </tags>
   </entry>
@@ -48,9 +48,9 @@
         <category>大数据</category>
       </categories>
       <tags>
-        <tag>Hadoop</tag>
-        <tag>大数据</tag>
         <tag>HDFS</tag>
+        <tag>大数据</tag>
+        <tag>Hadoop</tag>
         <tag>Zookeeper</tag>
       </tags>
   </entry>
@@ -75,9 +75,9 @@
         <category>大数据</category>
       </categories>
       <tags>
-        <tag>大数据</tag>
         <tag>HBase</tag>
         <tag>HDFS</tag>
+        <tag>大数据</tag>
       </tags>
   </entry>
   <entry>
@@ -99,9 +99,9 @@
         <category>大数据</category>
       </categories>
       <tags>
-        <tag>大数据</tag>
         <tag>HBase</tag>
         <tag>HDFS</tag>
+        <tag>大数据</tag>
         <tag>Java</tag>
       </tags>
   </entry>
@@ -113,9 +113,9 @@
         <category>大数据</category>
       </categories>
       <tags>
-        <tag>大数据</tag>
         <tag>HBase</tag>
         <tag>HDFS</tag>
+        <tag>大数据</tag>
       </tags>
   </entry>
   <entry>
@@ -126,9 +126,9 @@
         <category>大数据</category>
       </categories>
       <tags>
-        <tag>Hadoop</tag>
-        <tag>大数据</tag>
         <tag>HDFS</tag>
+        <tag>大数据</tag>
+        <tag>Hadoop</tag>
       </tags>
   </entry>
   <entry>
@@ -831,8 +831,8 @@
       </categories>
       <tags>
         <tag>数据结构与算法</tag>
-        <tag>Java</tag>
         <tag>LeetCode</tag>
+        <tag>Java</tag>
       </tags>
   </entry>
   <entry>
@@ -857,8 +857,8 @@
       </categories>
       <tags>
         <tag>数据结构与算法</tag>
-        <tag>Java</tag>
         <tag>LeetCode</tag>
+        <tag>Java</tag>
       </tags>
   </entry>
   <entry>
@@ -1225,9 +1225,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[selenium中的常见报错]]></title>
-    <url>%2F2017%2F11%2F09%2Fselenium%E4%B8%AD%E7%9A%84%E5%B8%B8%E8%A7%81%E6%8A%A5%E9%94%99%2F</url>
-    <content type="text"><![CDATA[1.1ImportError: cannot import name ‘webdriver&apos; 1selenium.common.exceptions.WebDriverException: Message: &apos;chromedriver&apos; executable needs to be in PATH 1selenium.common.exceptions.WebDriverException: Message: &apos;chromedriver.exe&apos; executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home原因是由于没有将chromedriver.exe放在/usr/bin/目录里在导入是要注意： 第四行123456789101112131415161718192021222324driver = webdriver.Chrome(r&quot;/usr/bin/chromedriver”) ``` ##### 中应该是chromedrive.exe的路径---### 2.```python======================================================================ERROR: test_search_in_python_org (__main__.mytest)----------------------------------------------------------------------Traceback (most recent call last): File &quot;mystyle.py&quot;, line 12, in test_search_in_python_org driver.get(&quot;www.baidu.com&quot;) File &quot;/Users/zhangjia/anaconda/lib/python3.6/site-packages/selenium/webdriver/remote/webdriver.py&quot;, line 309, in get self.execute(Command.GET, &#123;&apos;url&apos;: url&#125;) File &quot;/Users/zhangjia/anaconda/lib/python3.6/site-packages/selenium/webdriver/remote/webdriver.py&quot;, line 297, in execute self.error_handler.check_response(response) File &quot;/Users/zhangjia/anaconda/lib/python3.6/site-packages/selenium/webdriver/remote/errorhandler.py&quot;, line 194, in check_response raise exception_class(message, screen, stacktrace)selenium.common.exceptions.WebDriverException: Message: unknown error: unhandled inspector error: &#123;&quot;code&quot;:-32000,&quot;message&quot;:&quot;Cannot navigate to invalid URL&quot;&#125; (Session info: chrome=61.0.3163.100) (Driver info: chromedriver=2.32.498537 (cb2f855cbc7b82e20387eaf9a43f6b99b6105061),platform=Mac OS X 10.12.6 x86_64)----------------------------------------------------------------------Ran 1 test in 1.896sFAILED (errors=1) 错误原因： 第十二行应该是http://www.baidu.com不是www.baidu.com]]></content>
+    <title><![CDATA[selenium下载文件]]></title>
+    <url>%2F2017%2F11%2F09%2Fselenium%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6%2F</url>
+    <content type="text"><![CDATA[一、Firefox文件下载 Web容许我们设置默认的文件下载路劲，文件会自动下载并且存放在指定的目录下。12345678910111213from selenium import webdriverimport osfp = webdriver.FirefoxProfile()fp.set_preference("browser.download.folderList",0)fp.set_preference("browser.download.manager.showhenStarting",True)fp.set_preference("browser.download.dir",os.getcwd())fp.set_preference("browser.helperApps.neverAsk.saveToDisk","applaction/octet-stream")#下载文件类型driver = webdriver.Firefox(firefox_profile = fp)driver.get("http://pypi.Python.org/pypi/selenium")driver.find_element_by_xpath("//*[@id='download-button']/a").click() driver.find_element_by_xpath("//*[@id='content']/div[3]/table/tbody/tr[3]/td[1]/span/a[1]").click() 为了让Firefox浏览器能实现文件下载，需要通过FirefoxProfile（）对其做一些设置。browser.download.foladerList :设置成0代表下载到浏览器默认下载路径，设置成2则可以保存到指定的目录。browser.download.manager.showWhenStarting :是否显示开始：True为显示开始，Flase为不显示开始。browser.download.dir :用于指定所下载文件的目录。os.getcwd（）函数不需要传递参数。用于返回当前的目录。browser.helperApps.neverAsk.saveToDisk :对所给文件类型不再弹出框进行询问。12345678910111213141516from selenium import webdriverfrom time import sleepprofile = webdriver.FirefoxProfile()profile.set_preference('browser.download.dir', 'd:\\') #现在文件存放的目录profile.set_preference('browser.download.folderList', 2)profile.set_preference('browser.download.manager.showWhenStarting', False)profile.set_preference('browser.helperApps.neverAsk.saveToDisk', 'application/zip')driver = webdriver.Firefox(firefox_profile=profile)driver.get('http://sahitest.com/demo/saveAs.htm')#driver.find_element_by_xpath('//a[text()="testsaveas.zip"]').click()driver.find_element_by_xpath('/html/body/a[1]').click()sleep(20)driver.quit() 二、Chrome文件下载 download.default_directory:设置下载路径profile.default_content_settings.popups:设置为0禁止弹出窗口1234567891011from selenium import webdriver from time import sleepoptions = webdriver.ChromeOptions() prefs = &#123;'profile.default_content_settings.popups': 0, 'download.default_directory': 'd:\\'&#125;options.add_experimental_option('prefs', prefs) driver = webdriver.Chrome(executable_path='D:\\chromedriver.exe', chrome_options=options) driver.get('http://sahitest.com/demo/saveAs.htm') driver.find_element_by_xpath('//a[text()="testsaveas.zip"]').click() sleep(3) driver.quit()]]></content>
       <categories>
         <category>selenium</category>
       </categories>
@@ -1237,9 +1237,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[selenium下载文件]]></title>
-    <url>%2F2017%2F11%2F09%2Fselenium%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6%2F</url>
-    <content type="text"><![CDATA[一、Firefox文件下载 Web容许我们设置默认的文件下载路劲，文件会自动下载并且存放在指定的目录下。12345678910111213from selenium import webdriverimport osfp = webdriver.FirefoxProfile()fp.set_preference("browser.download.folderList",0)fp.set_preference("browser.download.manager.showhenStarting",True)fp.set_preference("browser.download.dir",os.getcwd())fp.set_preference("browser.helperApps.neverAsk.saveToDisk","applaction/octet-stream")#下载文件类型driver = webdriver.Firefox(firefox_profile = fp)driver.get("http://pypi.Python.org/pypi/selenium")driver.find_element_by_xpath("//*[@id='download-button']/a").click() driver.find_element_by_xpath("//*[@id='content']/div[3]/table/tbody/tr[3]/td[1]/span/a[1]").click() 为了让Firefox浏览器能实现文件下载，需要通过FirefoxProfile（）对其做一些设置。browser.download.foladerList :设置成0代表下载到浏览器默认下载路径，设置成2则可以保存到指定的目录。browser.download.manager.showWhenStarting :是否显示开始：True为显示开始，Flase为不显示开始。browser.download.dir :用于指定所下载文件的目录。os.getcwd（）函数不需要传递参数。用于返回当前的目录。browser.helperApps.neverAsk.saveToDisk :对所给文件类型不再弹出框进行询问。12345678910111213141516from selenium import webdriverfrom time import sleepprofile = webdriver.FirefoxProfile()profile.set_preference('browser.download.dir', 'd:\\') #现在文件存放的目录profile.set_preference('browser.download.folderList', 2)profile.set_preference('browser.download.manager.showWhenStarting', False)profile.set_preference('browser.helperApps.neverAsk.saveToDisk', 'application/zip')driver = webdriver.Firefox(firefox_profile=profile)driver.get('http://sahitest.com/demo/saveAs.htm')#driver.find_element_by_xpath('//a[text()="testsaveas.zip"]').click()driver.find_element_by_xpath('/html/body/a[1]').click()sleep(20)driver.quit() 二、Chrome文件下载 download.default_directory:设置下载路径profile.default_content_settings.popups:设置为0禁止弹出窗口1234567891011from selenium import webdriver from time import sleepoptions = webdriver.ChromeOptions() prefs = &#123;'profile.default_content_settings.popups': 0, 'download.default_directory': 'd:\\'&#125;options.add_experimental_option('prefs', prefs) driver = webdriver.Chrome(executable_path='D:\\chromedriver.exe', chrome_options=options) driver.get('http://sahitest.com/demo/saveAs.htm') driver.find_element_by_xpath('//a[text()="testsaveas.zip"]').click() sleep(3) driver.quit()]]></content>
+    <title><![CDATA[selenium中的常见报错]]></title>
+    <url>%2F2017%2F11%2F09%2Fselenium%E4%B8%AD%E7%9A%84%E5%B8%B8%E8%A7%81%E6%8A%A5%E9%94%99%2F</url>
+    <content type="text"><![CDATA[1.1ImportError: cannot import name ‘webdriver&apos; 1selenium.common.exceptions.WebDriverException: Message: &apos;chromedriver&apos; executable needs to be in PATH 1selenium.common.exceptions.WebDriverException: Message: &apos;chromedriver.exe&apos; executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home原因是由于没有将chromedriver.exe放在/usr/bin/目录里在导入是要注意： 第四行123456789101112131415161718192021222324driver = webdriver.Chrome(r&quot;/usr/bin/chromedriver”) ``` ##### 中应该是chromedrive.exe的路径---### 2.```python======================================================================ERROR: test_search_in_python_org (__main__.mytest)----------------------------------------------------------------------Traceback (most recent call last): File &quot;mystyle.py&quot;, line 12, in test_search_in_python_org driver.get(&quot;www.baidu.com&quot;) File &quot;/Users/zhangjia/anaconda/lib/python3.6/site-packages/selenium/webdriver/remote/webdriver.py&quot;, line 309, in get self.execute(Command.GET, &#123;&apos;url&apos;: url&#125;) File &quot;/Users/zhangjia/anaconda/lib/python3.6/site-packages/selenium/webdriver/remote/webdriver.py&quot;, line 297, in execute self.error_handler.check_response(response) File &quot;/Users/zhangjia/anaconda/lib/python3.6/site-packages/selenium/webdriver/remote/errorhandler.py&quot;, line 194, in check_response raise exception_class(message, screen, stacktrace)selenium.common.exceptions.WebDriverException: Message: unknown error: unhandled inspector error: &#123;&quot;code&quot;:-32000,&quot;message&quot;:&quot;Cannot navigate to invalid URL&quot;&#125; (Session info: chrome=61.0.3163.100) (Driver info: chromedriver=2.32.498537 (cb2f855cbc7b82e20387eaf9a43f6b99b6105061),platform=Mac OS X 10.12.6 x86_64)----------------------------------------------------------------------Ran 1 test in 1.896sFAILED (errors=1) 错误原因： 第十二行应该是http://www.baidu.com不是www.baidu.com]]></content>
       <categories>
         <category>selenium</category>
       </categories>
