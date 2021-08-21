@@ -254,8 +254,8 @@
       </categories>
       <tags>
         <tag>Java</tag>
-        <tag>cglib</tag>
         <tag>动态代理</tag>
+        <tag>cglib</tag>
       </tags>
   </entry>
   <entry>
@@ -592,9 +592,9 @@
       </categories>
       <tags>
         <tag>Java</tag>
-        <tag>动态代理</tag>
         <tag>RPC</tag>
         <tag>多线程</tag>
+        <tag>动态代理</tag>
         <tag>RMI</tag>
       </tags>
   </entry>
@@ -607,8 +607,8 @@
       </categories>
       <tags>
         <tag>Java</tag>
-        <tag>锁</tag>
         <tag>Java多线程</tag>
+        <tag>锁</tag>
         <tag>synchronized</tag>
       </tags>
   </entry>
@@ -621,8 +621,8 @@
       </categories>
       <tags>
         <tag>Java</tag>
-        <tag>锁</tag>
         <tag>Java多线程</tag>
+        <tag>锁</tag>
       </tags>
   </entry>
   <entry>
@@ -634,8 +634,8 @@
       </categories>
       <tags>
         <tag>Java</tag>
-        <tag>锁</tag>
         <tag>Java多线程</tag>
+        <tag>锁</tag>
         <tag>转载</tag>
       </tags>
   </entry>
@@ -770,8 +770,8 @@
         <category>redis</category>
       </categories>
       <tags>
-        <tag>redis</tag>
         <tag>锁</tag>
+        <tag>redis</tag>
       </tags>
   </entry>
   <entry>
@@ -782,9 +782,9 @@
         <category>数据库</category>
       </categories>
       <tags>
+        <tag>锁</tag>
         <tag>事务</tag>
         <tag>数据库</tag>
-        <tag>锁</tag>
       </tags>
   </entry>
   <entry>
@@ -795,9 +795,9 @@
         <category>数据库</category>
       </categories>
       <tags>
+        <tag>锁</tag>
         <tag>事务</tag>
         <tag>数据库</tag>
-        <tag>锁</tag>
       </tags>
   </entry>
   <entry>
@@ -870,8 +870,8 @@
         <category>数据结构与算法</category>
       </categories>
       <tags>
-        <tag>数据结构与算法</tag>
         <tag>Java</tag>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -882,8 +882,8 @@
         <category>数据结构与算法</category>
       </categories>
       <tags>
-        <tag>数据结构与算法</tag>
         <tag>Java</tag>
+        <tag>数据结构与算法</tag>
         <tag>LeetCode</tag>
       </tags>
   </entry>
@@ -908,8 +908,8 @@
         <category>数据结构与算法</category>
       </categories>
       <tags>
-        <tag>数据结构与算法</tag>
         <tag>Java</tag>
+        <tag>数据结构与算法</tag>
         <tag>LeetCode</tag>
       </tags>
   </entry>
