@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://suiwo.xyz/2018/02/12/Flask%E7%9A%84%E5%A4%96%E9%83%A8%E8%84%9A%E6%9C%AC%E7%9A%84%E4%BD%BF%E7%94%A8/</loc>
+    
+    <lastmod>2023-01-07T16:25:39.956Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://suiwo.xyz/2018/02/12/Flask%E8%BF%9E%E6%8E%A5SQLite3%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
     
     <lastmod>2023-01-07T16:17:13.585Z</lastmod>
@@ -439,13 +446,6 @@
     <loc>http://suiwo.xyz/2018/02/12/Flask%E8%BF%9E%E6%8E%A5MySQL%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
     
     <lastmod>2023-01-07T16:00:06.902Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://suiwo.xyz/2018/02/12/Flask%E7%9A%84%E5%A4%96%E9%83%A8%E8%84%9A%E6%9C%AC%E7%9A%84%E4%BD%BF%E7%94%A8/</loc>
-    
-    <lastmod>2023-01-07T15:59:16.112Z</lastmod>
     
   </url>
   

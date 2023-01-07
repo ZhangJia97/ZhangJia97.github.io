@@ -58,9 +58,9 @@
       <category term="Flink" scheme="http://suiwo.xyz/categories/Flink/"/>
     
     
-      <category term="Flink" scheme="http://suiwo.xyz/tags/Flink/"/>
-    
       <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+      <category term="Flink" scheme="http://suiwo.xyz/tags/Flink/"/>
     
   </entry>
   
@@ -106,9 +106,9 @@
       <category term="Hadoop" scheme="http://suiwo.xyz/categories/Hadoop/"/>
     
     
-      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
-    
       <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
+    
+      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="HDFS" scheme="http://suiwo.xyz/tags/HDFS/"/>
     
@@ -232,9 +232,9 @@
       <category term="Hive" scheme="http://suiwo.xyz/categories/Hive/"/>
     
     
-      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
-    
       <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
+    
+      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="Hive" scheme="http://suiwo.xyz/tags/Hive/"/>
     
@@ -258,9 +258,9 @@
       <category term="Hive" scheme="http://suiwo.xyz/categories/Hive/"/>
     
     
-      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
-    
       <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
+    
+      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="Hive" scheme="http://suiwo.xyz/tags/Hive/"/>
     
@@ -284,9 +284,9 @@
       <category term="Hive" scheme="http://suiwo.xyz/categories/Hive/"/>
     
     
-      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
-    
       <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
+    
+      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="Hive" scheme="http://suiwo.xyz/tags/Hive/"/>
     
@@ -310,9 +310,9 @@
       <category term="Hive" scheme="http://suiwo.xyz/categories/Hive/"/>
     
     
-      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
-    
       <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
+    
+      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="Hive" scheme="http://suiwo.xyz/tags/Hive/"/>
     
@@ -336,9 +336,9 @@
       <category term="Hive" scheme="http://suiwo.xyz/categories/Hive/"/>
     
     
-      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
-    
       <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
+    
+      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="Hive" scheme="http://suiwo.xyz/tags/Hive/"/>
     
@@ -362,9 +362,9 @@
       <category term="Hive" scheme="http://suiwo.xyz/categories/Hive/"/>
     
     
-      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
-    
       <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
+    
+      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="Hive" scheme="http://suiwo.xyz/tags/Hive/"/>
     
@@ -388,9 +388,9 @@
       <category term="Hive" scheme="http://suiwo.xyz/categories/Hive/"/>
     
     
-      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
-    
       <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
+    
+      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="Hive" scheme="http://suiwo.xyz/tags/Hive/"/>
     
@@ -414,11 +414,11 @@
       <category term="MapReduce" scheme="http://suiwo.xyz/categories/MapReduce/"/>
     
     
-      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
-    
       <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
     
       <category term="Flume" scheme="http://suiwo.xyz/tags/Flume/"/>
+    
+      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="MapReduce" scheme="http://suiwo.xyz/tags/MapReduce/"/>
     
@@ -442,11 +442,11 @@
       <category term="Flume" scheme="http://suiwo.xyz/categories/Flume/"/>
     
     
-      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
-    
       <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
     
       <category term="Flume" scheme="http://suiwo.xyz/tags/Flume/"/>
+    
+      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
   </entry>
   
@@ -468,11 +468,11 @@
       <category term="Flume" scheme="http://suiwo.xyz/categories/Flume/"/>
     
     
-      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
-    
       <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
     
       <category term="Flume" scheme="http://suiwo.xyz/tags/Flume/"/>
+    
+      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
   </entry>
   
@@ -494,11 +494,11 @@
       <category term="Flume" scheme="http://suiwo.xyz/categories/Flume/"/>
     
     
-      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
-    
       <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
     
       <category term="Flume" scheme="http://suiwo.xyz/tags/Flume/"/>
+    
+      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
   </entry>
   
@@ -520,11 +520,11 @@
       <category term="Flume" scheme="http://suiwo.xyz/categories/Flume/"/>
     
     
-      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
-    
       <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
     
       <category term="Flume" scheme="http://suiwo.xyz/tags/Flume/"/>
+    
+      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
   </entry>
   
