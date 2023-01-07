@@ -47,9 +47,9 @@
       
         <tags>
             
-            <tag> 大数据 </tag>
-            
             <tag> Flink </tag>
+            
+            <tag> 大数据 </tag>
             
         </tags>
       
@@ -101,9 +101,9 @@
       
         <tags>
             
-            <tag> Hadoop </tag>
-            
             <tag> 大数据 </tag>
+            
+            <tag> Hadoop </tag>
             
             <tag> HDFS </tag>
             
@@ -242,9 +242,9 @@
       
         <tags>
             
-            <tag> Hadoop </tag>
-            
             <tag> 大数据 </tag>
+            
+            <tag> Hadoop </tag>
             
             <tag> Hive </tag>
             
@@ -271,9 +271,9 @@
       
         <tags>
             
-            <tag> Hadoop </tag>
-            
             <tag> 大数据 </tag>
+            
+            <tag> Hadoop </tag>
             
             <tag> Hive </tag>
             
@@ -300,9 +300,9 @@
       
         <tags>
             
-            <tag> Hadoop </tag>
-            
             <tag> 大数据 </tag>
+            
+            <tag> Hadoop </tag>
             
             <tag> Hive </tag>
             
@@ -329,9 +329,9 @@
       
         <tags>
             
-            <tag> Hadoop </tag>
-            
             <tag> 大数据 </tag>
+            
+            <tag> Hadoop </tag>
             
             <tag> Hive </tag>
             
@@ -358,9 +358,9 @@
       
         <tags>
             
-            <tag> Hadoop </tag>
-            
             <tag> 大数据 </tag>
+            
+            <tag> Hadoop </tag>
             
             <tag> Hive </tag>
             
@@ -387,9 +387,9 @@
       
         <tags>
             
-            <tag> Hadoop </tag>
-            
             <tag> 大数据 </tag>
+            
+            <tag> Hadoop </tag>
             
             <tag> Hive </tag>
             
@@ -416,9 +416,9 @@
       
         <tags>
             
-            <tag> Hadoop </tag>
-            
             <tag> 大数据 </tag>
+            
+            <tag> Hadoop </tag>
             
             <tag> Hive </tag>
             
@@ -445,11 +445,11 @@
       
         <tags>
             
+            <tag> 大数据 </tag>
+            
             <tag> Hadoop </tag>
             
             <tag> Flume </tag>
-            
-            <tag> 大数据 </tag>
             
             <tag> MapReduce </tag>
             
@@ -476,11 +476,11 @@
       
         <tags>
             
+            <tag> 大数据 </tag>
+            
             <tag> Hadoop </tag>
             
             <tag> Flume </tag>
-            
-            <tag> 大数据 </tag>
             
         </tags>
       
@@ -505,11 +505,11 @@
       
         <tags>
             
+            <tag> 大数据 </tag>
+            
             <tag> Hadoop </tag>
             
             <tag> Flume </tag>
-            
-            <tag> 大数据 </tag>
             
         </tags>
       
@@ -534,11 +534,11 @@
       
         <tags>
             
+            <tag> 大数据 </tag>
+            
             <tag> Hadoop </tag>
             
             <tag> Flume </tag>
-            
-            <tag> 大数据 </tag>
             
         </tags>
       
@@ -563,11 +563,11 @@
       
         <tags>
             
+            <tag> 大数据 </tag>
+            
             <tag> Hadoop </tag>
             
             <tag> Flume </tag>
-            
-            <tag> 大数据 </tag>
             
         </tags>
       
@@ -592,9 +592,9 @@
       
         <tags>
             
-            <tag> Hadoop </tag>
-            
             <tag> 大数据 </tag>
+            
+            <tag> Hadoop </tag>
             
             <tag> Hive </tag>
             
@@ -621,9 +621,9 @@
       
         <tags>
             
-            <tag> Hadoop </tag>
-            
             <tag> 大数据 </tag>
+            
+            <tag> Hadoop </tag>
             
             <tag> HDFS </tag>
             
@@ -652,9 +652,9 @@
       
         <tags>
             
-            <tag> Hadoop </tag>
-            
             <tag> 大数据 </tag>
+            
+            <tag> Hadoop </tag>
             
             <tag> HDFS </tag>
             
@@ -714,9 +714,9 @@
             
             <tag> 大数据 </tag>
             
-            <tag> HDFS </tag>
-            
             <tag> HBase </tag>
+            
+            <tag> HDFS </tag>
             
         </tags>
       
@@ -766,13 +766,13 @@
       
         <tags>
             
-            <tag> 大数据 </tag>
+            <tag> Java </tag>
             
-            <tag> HDFS </tag>
+            <tag> 大数据 </tag>
             
             <tag> HBase </tag>
             
-            <tag> Java </tag>
+            <tag> HDFS </tag>
             
         </tags>
       
@@ -785,7 +785,7 @@
       <link href="/2019/12/08/HBase%E4%BC%AA%E5%88%86%E5%B8%83%E5%BC%8F%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/"/>
       <url>/2019/12/08/HBase%E4%BC%AA%E5%88%86%E5%B8%83%E5%BC%8F%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/</url>
       
-        <content type="html"><![CDATA[<h2 id="一、下载HBase安装包"><a href="#一、下载HBase安装包" class="headerlink" title="一、下载HBase安装包"></a>一、下载HBase安装包</h2><p>为了防止HBase和Hadoop版本间冲突，可以在CDH上下载和Hadoop兼容的HBase版本，本次搭建选择的是<code>hbase-1.2.0</code><br>下载路径：<a href="http://archive.cloudera.com/cdh5/" target="_blank" rel="noopener">http://archive.cloudera.com/cdh5/</a></p><hr><h2 id="二、配置伪分布式环境"><a href="#二、配置伪分布式环境" class="headerlink" title="二、配置伪分布式环境"></a>二、配置伪分布式环境</h2><blockquote><p>HBase相关配置文件在<code>/conf</code>文件之下,我们需要修改的配置文件有<code>hbase-env.sh</code>和<code>hbase-site.xml</code></p><ol><li>我们先将hadoop中的<code>hdfs-site.xml</code>和<code>core-site.xml</code>文件复制HBase的<code>/conf</code>目录之下<br>之后我们需要配置HBase相关</li><li>去配置<code>hbase-env.sh</code>，修改java环境变量，因为我们使用的是JDK8所以我们将文件中的下面这两行注释掉 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export HBASE_MASTER_OPTS="$HBASE_MASTER_OPTS -XX:PermSize=128m -XX:MaxPermSize=128m"</span><br><span class="line">export HBASE_REGIONSERVER_OPTS="$HBASE_REGIONSERVER_OPTS -XX:PermSize=128m -XX:MaxPermSize=128m"</span><br></pre></td></tr></table></figure></li></ol></blockquote><pre><code>之后在最后面有下面这个注释，他表示使用HBase自带的Zookeeper进行运行<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">export</span> HBASE_MANAGES_ZK=<span class="literal">true</span></span></span><br></pre></td></tr></table></figure></code></pre><ol start="3"><li>配置<code>hbase-site.xml</code> <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 这个表示HBase在HDFS中的路径，因为我们的HDFS启动端口为9000，所以我们这里配置如下，这样启动后我们就可以在hdfs的根路径下看到/hbase文件夹 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.rootdir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>hdfs://localhost:9000/hbase<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 这个指HBase自带的zookeeper的datdaDir的路径 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>nbase.zookeeper.property.dataDir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>file:/XXX/HBase/zookeeper<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 这个是指是不是以集群的方式运行 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.cluster.distributed<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure></li></ol><hr><h2 id="三、-启动"><a href="#三、-启动" class="headerlink" title="三、 启动"></a>三、 启动</h2><ol><li>我们进入<code>/bin</code>目录下执行<code>./start-hbase.sh</code>指令</li><li><p>我们执行<code>jps</code>可以查看到下面三个和HBase相关的进程</p> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">91593 HQuorumPeer</span><br><span class="line">91642 HMaster</span><br><span class="line">91738 HRegionServer</span><br></pre></td></tr></table></figure></li><li><p>我们进入<code>/bin</code>执行<code>./hbase shell</code>进入HBase命令行</p></li><li><p>在HBase命令行中执行status指令查看当前状态</p> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1 active master, 0 backup masters, 1 servers, 0 dead, 2.0000 average load</span><br></pre></td></tr></table></figure></li><li><p>进入HDFS中查看有没有创建成功，进入到Hadoop的<code>/bin</code>目录下执行<code>./hdfs -dfs -ls /</code>,这个时候我们可以看到根目录下存在<code>/hbase</code>文件夹</p></li><li>至此HBase的伪分布式集群安装完毕</li></ol><h2 id="配置web管理界面"><a href="#配置web管理界面" class="headerlink" title="配置web管理界面"></a>配置web管理界面</h2><p>1.0.0之后的版本的hbase的master web 默认是不运行的，所以需要自己配置默认端口。<br>在hbase-site.xml中加入一下内容即可<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 新增的配置 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.master.info.port<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>60010<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 新增的配置 --&gt;</span></span><br></pre></td></tr></table></figure></p><p>之后访问<code>localhost:60010</code>即可访问</p>]]></content>
+        <content type="html"><![CDATA[<h2 id="一、下载HBase安装包"><a href="#一、下载HBase安装包" class="headerlink" title="一、下载HBase安装包"></a>一、下载HBase安装包</h2><p>为了防止HBase和Hadoop版本间冲突，可以在CDH上下载和Hadoop兼容的HBase版本，本次搭建选择的是<code>hbase-1.2.0</code><br>下载路径：<a href="http://archive.cloudera.com/cdh5/" target="_blank" rel="noopener">http://archive.cloudera.com/cdh5/</a></p><hr><h2 id="二、配置伪分布式环境"><a href="#二、配置伪分布式环境" class="headerlink" title="二、配置伪分布式环境"></a>二、配置伪分布式环境</h2><blockquote><p>HBase相关配置文件在<code>/conf</code>文件之下,我们需要修改的配置文件有<code>hbase-env.sh</code>和<code>hbase-site.xml</code></p><ol><li>我们先将hadoop中的<code>hdfs-site.xml</code>和<code>core-site.xml</code>文件复制HBase的<code>/conf</code>目录之下<br>之后我们需要配置HBase相关</li><li>去配置<code>hbase-env.sh</code>，修改java环境变量，因为我们使用的是JDK8所以我们将文件中的下面这两行注释掉 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export HBASE_MASTER_OPTS="$HBASE_MASTER_OPTS -XX:PermSize=128m -XX:MaxPermSize=128m"</span><br><span class="line">export HBASE_REGIONSERVER_OPTS="$HBASE_REGIONSERVER_OPTS -XX:PermSize=128m -XX:MaxPermSize=128m"</span><br></pre></td></tr></table></figure></li></ol></blockquote><pre><code>之后在最后面有下面这个注释，他表示使用HBase自带的Zookeeper进行运行<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> export HBASE_MANAGES_ZK=true</span><br></pre></td></tr></table></figure></code></pre><ol start="3"><li>配置<code>hbase-site.xml</code> <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 这个表示HBase在HDFS中的路径，因为我们的HDFS启动端口为9000，所以我们这里配置如下，这样启动后我们就可以在hdfs的根路径下看到/hbase文件夹 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.rootdir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>hdfs://localhost:9000/hbase<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 这个指HBase自带的zookeeper的datdaDir的路径 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>nbase.zookeeper.property.dataDir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>file:/XXX/HBase/zookeeper<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 这个是指是不是以集群的方式运行 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.cluster.distributed<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure></li></ol><hr><h2 id="三、-启动"><a href="#三、-启动" class="headerlink" title="三、 启动"></a>三、 启动</h2><ol><li>我们进入<code>/bin</code>目录下执行<code>./start-hbase.sh</code>指令</li><li><p>我们执行<code>jps</code>可以查看到下面三个和HBase相关的进程</p> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">91593 HQuorumPeer</span><br><span class="line">91642 HMaster</span><br><span class="line">91738 HRegionServer</span><br></pre></td></tr></table></figure></li><li><p>我们进入<code>/bin</code>执行<code>./hbase shell</code>进入HBase命令行</p></li><li><p>在HBase命令行中执行status指令查看当前状态</p> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1 active master, 0 backup masters, 1 servers, 0 dead, 2.0000 average load</span><br></pre></td></tr></table></figure></li><li><p>进入HDFS中查看有没有创建成功，进入到Hadoop的<code>/bin</code>目录下执行<code>./hdfs -dfs -ls /</code>,这个时候我们可以看到根目录下存在<code>/hbase</code>文件夹</p></li><li>至此HBase的伪分布式集群安装完毕</li></ol><h2 id="配置web管理界面"><a href="#配置web管理界面" class="headerlink" title="配置web管理界面"></a>配置web管理界面</h2><p>1.0.0之后的版本的hbase的master web 默认是不运行的，所以需要自己配置默认端口。<br>在hbase-site.xml中加入一下内容即可<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 新增的配置 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.master.info.port<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>60010<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 新增的配置 --&gt;</span></span><br></pre></td></tr></table></figure></p><p>之后访问<code>localhost:60010</code>即可访问</p>]]></content>
       
       
       <categories>
@@ -799,9 +799,9 @@
             
             <tag> 大数据 </tag>
             
-            <tag> HDFS </tag>
-            
             <tag> HBase </tag>
+            
+            <tag> HDFS </tag>
             
         </tags>
       
@@ -826,9 +826,9 @@
       
         <tags>
             
-            <tag> Hadoop </tag>
-            
             <tag> 大数据 </tag>
+            
+            <tag> Hadoop </tag>
             
             <tag> HDFS </tag>
             
@@ -971,9 +971,9 @@
             
             <tag> Java </tag>
             
-            <tag> 链式调用 </tag>
-            
             <tag> Aop </tag>
+            
+            <tag> 链式调用 </tag>
             
         </tags>
       
@@ -1085,9 +1085,9 @@
             
             <tag> Java </tag>
             
-            <tag> Stream流编程 </tag>
-            
             <tag> JDK8 </tag>
+            
+            <tag> Stream流编程 </tag>
             
         </tags>
       
@@ -1448,9 +1448,9 @@
       
         <tags>
             
-            <tag> LRU </tag>
-            
             <tag> Redis </tag>
+            
+            <tag> LRU </tag>
             
         </tags>
       
@@ -1479,9 +1479,9 @@
             
             <tag> RabbitMQ </tag>
             
-            <tag> Spring </tag>
-            
             <tag> Springboot </tag>
+            
+            <tag> Spring </tag>
             
         </tags>
       
@@ -1539,9 +1539,9 @@
             
             <tag> Java </tag>
             
-            <tag> Springboot </tag>
-            
             <tag> Redis </tag>
+            
+            <tag> Springboot </tag>
             
         </tags>
       
@@ -2136,9 +2136,9 @@
       
         <tags>
             
-            <tag> 异步队列 </tag>
-            
             <tag> Redis </tag>
+            
+            <tag> 异步队列 </tag>
             
         </tags>
       
@@ -2190,11 +2190,11 @@
       
         <tags>
             
+            <tag> 数据库 </tag>
+            
             <tag> 锁 </tag>
             
             <tag> 事务 </tag>
-            
-            <tag> 数据库 </tag>
             
             <tag> MySQL </tag>
             
@@ -2221,11 +2221,11 @@
       
         <tags>
             
+            <tag> 数据库 </tag>
+            
             <tag> 锁 </tag>
             
             <tag> 事务 </tag>
-            
-            <tag> 数据库 </tag>
             
             <tag> MySQL </tag>
             
@@ -2615,9 +2615,9 @@
       
         <tags>
             
-            <tag> Django </tag>
-            
             <tag> Python </tag>
+            
+            <tag> Django </tag>
             
         </tags>
       
@@ -2887,9 +2887,9 @@
       
         <tags>
             
-            <tag> Django </tag>
-            
             <tag> Python </tag>
+            
+            <tag> Django </tag>
             
         </tags>
       
@@ -2914,9 +2914,9 @@
       
         <tags>
             
-            <tag> Django </tag>
-            
             <tag> Python </tag>
+            
+            <tag> Django </tag>
             
         </tags>
       
@@ -2941,11 +2941,11 @@
       
         <tags>
             
-            <tag> 数据库 </tag>
-            
             <tag> Python </tag>
             
             <tag> Flask </tag>
+            
+            <tag> 数据库 </tag>
             
         </tags>
       
@@ -2970,11 +2970,11 @@
       
         <tags>
             
-            <tag> 数据库 </tag>
-            
             <tag> Python </tag>
             
             <tag> Flask </tag>
+            
+            <tag> 数据库 </tag>
             
         </tags>
       
@@ -3037,7 +3037,7 @@
     
     
     <entry>
-      <title>flask连接SQLite3数据库</title>
+      <title>Flask连接SQLite3数据库</title>
       <link href="/2018/02/12/Flask%E8%BF%9E%E6%8E%A5SQLite3%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
       <url>/2018/02/12/Flask%E8%BF%9E%E6%8E%A5SQLite3%E6%95%B0%E6%8D%AE%E5%BA%93/</url>
       
@@ -3053,11 +3053,11 @@
       
         <tags>
             
-            <tag> 数据库 </tag>
-            
             <tag> Python </tag>
             
             <tag> Flask </tag>
+            
+            <tag> 数据库 </tag>
             
             <tag> SQLite </tag>
             
@@ -3111,9 +3111,9 @@
       
         <tags>
             
-            <tag> Django </tag>
-            
             <tag> Python </tag>
+            
+            <tag> Django </tag>
             
         </tags>
       
@@ -3510,11 +3510,11 @@
       
         <tags>
             
-            <tag> TensorBoard </tag>
-            
             <tag> Python </tag>
             
             <tag> Tensorflow </tag>
+            
+            <tag> TensorBoard </tag>
             
         </tags>
       
@@ -3568,11 +3568,11 @@
       
         <tags>
             
-            <tag> 神经网络 </tag>
-            
             <tag> Python </tag>
             
             <tag> Tensorflow </tag>
+            
+            <tag> 神经网络 </tag>
             
         </tags>
       
