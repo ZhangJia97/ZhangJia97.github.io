@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.ico?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.ico?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.ico?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.ico?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Hive是为了解决海量结构化日志的数据统计框架，他是一个基于Hadoop的数据仓库工具，可以将结构化的数据映射为一张表，并提供类SQL的查询功能。本质就是将HQL转化成MR程序。">
+<meta name="keywords" content="Hadoop,大数据,Hive">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hive基础">
+<meta property="og:url" content="http://suiwo.xyz/2020/11/23/Hive基础/index.html">
+<meta property="og:site_name" content="随我的博客">
+<meta property="og:description" content="Hive是为了解决海量结构化日志的数据统计框架，他是一个基于Hadoop的数据仓库工具，可以将结构化的数据映射为一张表，并提供类SQL的查询功能。本质就是将HQL转化成MR程序。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://suiwo.xyz/images/Hive基础/0E472121-19CE-4CC2-A08C-9F3B4F42B545.jpeg">
+<meta property="og:updated_time" content="2023-01-07T14:28:23.629Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hive基础">
+<meta name="twitter:description" content="Hive是为了解决海量结构化日志的数据统计框架，他是一个基于Hadoop的数据仓库工具，可以将结构化的数据映射为一张表，并提供类SQL的查询功能。本质就是将HQL转化成MR程序。">
+<meta name="twitter:image" content="http://suiwo.xyz/images/Hive基础/0E472121-19CE-4CC2-A08C-9F3B4F42B545.jpeg">
+  <link rel="alternate" href="/atom.xml" title="随我的博客" type="application/atom+xml">
+  <link rel="canonical" href="http://suiwo.xyz/2020/11/23/Hive基础/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Hive基础 | 随我的博客</title>
+  <meta name="generator" content="Hexo 3.7.1">
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a href="https://github.com/ZhangJia97" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">随我的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录学习的点滴</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2020/11/23/Hive基础/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="随我">
+      <meta itemprop="description" content="用心做自己喜欢的事">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="随我的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Hive基础
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2020-11-23 13:46:19" itemprop="dateCreated datePublished" datetime="2020-11-23T13:46:19+08:00">2020-11-23</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/大数据/" itemprop="url" rel="index"><span itemprop="name">大数据</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <div class="post-description">Hive是为了解决海量结构化日志的数据统计框架，他是一个基于Hadoop的数据仓库工具，可以将结构化的数据映射为一张表，并提供类SQL的查询功能。本质就是将HQL转化成MR程序。</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="一、-Hive介绍"><a href="#一、-Hive介绍" class="headerlink" title="一、 Hive介绍"></a>一、 Hive介绍</h3><p>Hive是为了解决<code>海量结构化日志</code>的数据统计框架，他是一个基于Hadoop的<code>数据仓库工具</code>，可以将<code>结构化的数据映射为一张表</code>，并提供<code>类SQL</code>的查询功能。本质就是<code>将HQL转化成MR程序</code>。<br>简化流程可以理解成： </p>
+<ol>
+<li>编写SQL。</li>
+<li>Hive匹配出相对应的MR模板并将将SQL转化成MR程序。</li>
+<li>运行MR程序，生成相应的分析结果。</li>
+<li>将结果写入持久化存储。</li>
+</ol>
+<p>Hive优点：</p>
+<ol>
+<li>类SQL语句，简单易上手。</li>
+<li>自动转化成MR程序，减少开发人员学习成本。</li>
+<li>Hive支持自定义函数，用户可以根据自己需求来实现自己的函数。</li>
+</ol>
+<p>Hive缺点：</p>
+<ol>
+<li>效率低，自动生成的MR程序通常情况下不够智能，并且调优比较困难。</li>
+<li>HQL表达能力有限。</li>
+<li>只适合实时性要求不高的场合。</li>
+</ol>
+<h3 id="二、-Hive架构"><a href="#二、-Hive架构" class="headerlink" title="二、 Hive架构"></a>二、 Hive架构</h3><p><img src="/images/Hive基础/0E472121-19CE-4CC2-A08C-9F3B4F42B545.jpeg" alt="a11d648f4c81611b4ccc929be282dba6.jpeg"></p>
+<ol>
+<li><p>Hive提供了三种用户接口<br>CLI(Hive shell)： CLI启动的时候，会同时启动一个Hive副本，CLI会连接到client是Hive的客户端会连接到Hive Server。在启动Client模式的时候，需要指出Hive Server所在节点，并且在该节点启动Hive Server。<br>JDBC/ODBC：使用Java访问Hive。<br>WUI：通过浏览器访问Hive。</p>
+</li>
+<li><p>元数据Metastore<br>Hive将元数据存储在数据库中，如mysql、derby。Hive中的元数据包括表的名字，表所属的数据库(默认是 default)，表的拥有者，表的列和分区及其属性，表的属性（是否为外部表等），表的数据所在目录等。</p>
+</li>
+<li><p>Hadoop<br>Hive使用HDFS进行存储，使用MR进行计算。</p>
+</li>
+<li><p>驱动器:Driver<br>解析器(SQL Parser):将SQL字符串转换成抽象语法树AST，这一步一般都用第三方工具库完成，比如antlr;对AST进行语法分析，比如表是否存在、字段是否存在、SQL语义是否有误。<br>编译器(Physical Plan):将AST编译生成逻辑执行计划。<br>优化器(Query Optimizer):对逻辑执行计划进行优化。<br>执行器(Execution):把逻辑执行计划转换成可以运行的物理计划。对于Hive来说，就是将其转化成MR/Spark。</p>
+</li>
+</ol>
+<h3 id="三、-Hive与数据库进行比较"><a href="#三、-Hive与数据库进行比较" class="headerlink" title="三、 Hive与数据库进行比较"></a>三、 Hive与数据库进行比较</h3><p>查询语言： SQL被广泛应用在数据仓库中，因此专门针对Hive的提醒设计了类SQL的查询语句HQL。熟悉SQL的开发者可以很方便的使用Hive进行开发。<br>数据存储位： Hive是数据Hadoop生态下的一个数据仓库工具，显然，Hive中的数据是存放在HDFS中的。而数据库一般则是将数据保存在块设备或者本地文件系统中。<br>数据更新：Hive是针对数据仓库应用设计的，而数据仓库的内容一般是读多写少。因此Hive中不建议对数据进行改写。所有数据应当在加载时就确认好。而数据库中的数据通常是需要经常进行修改的，所以使用INSERT，UPDATE比较常见。<br>索引：Hive在加载数据的过程中不会对数据进行任何的处理，甚至不会对数据进行扫描，因此也没有对数据中的某些Key创建索引。Hive想要访问满足条件的特定值的时候，需要使用暴力扫描，因此访问数据的延迟比较大。也正因为延迟大，所以Hive不适合在线数据查询。因为引入了MR，Hive可以进行并行访问数据，所以即使没有索引，在遇到大数据量的访问时，Hive仍然可以体现出优势。数据库中，通常会对常用的列创建一个或者多个索引，因此可以有较高的效率以及较小的延迟。<br>执行： Hive中对的大多数查询的执行都是通过MR来实现的。而数据库通常是存在自己的执行引擎的。<br>执行延迟： Hive由于没有索引，需要扫描整个表，因此延迟较高。并且由于MR自身的延迟就较高，所以在使用MR执行Hive查询的时候，也会有较高的延迟。所以在数据量小的时候数据库的执行能力更好，但是当数据规模比较大，达到超过了数据库的数据处理能力的时候，Hive并行查询能力的优势显然能体现出来了。<br>可扩展性： 由Hive是建立在Hadoop之上的，因此Hive的可扩展性适合Hadoop的可扩展性一致的。数据库由于ACID的严格限制，扩展行非常有限。目前最先进的并行数据库Oracle在理论上的扩展能力也只有100台左右。<br>数据规模： Hive是建立在集群上的，可以利用MR进行并行计算，因此可以执行很大规模的数据。对应的数据库可以支持的数据规模较小。</p>
+<h3 id="四、-Hive常见操作"><a href="#四、-Hive常见操作" class="headerlink" title="四、 Hive常见操作"></a>四、 Hive常见操作</h3><p>在操作Hive之前，我们需要部署好Hive，这部分可以参考<a href="https://suiwo.xyz/2020/05/24/Hive%E5%88%9D%E8%AF%86/">Hive初识</a>中的介绍。<br>并且由于Hive默认的Metastore为derby的性能限制，建议将Metastore改成MYSQL，详细更改方式同样参考<a href="https://suiwo.xyz/2020/05/24/Hive%E5%88%9D%E8%AF%86/">Hive初识</a>。<br>启动Hive  进行Hive文件夹下对的bin目录，我们可以执行<code>./hive</code>启动hive客户端</p>
+<p>查看数据库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; show databases;</span><br></pre></td></tr></table></figure></p>
+<p>打开默认数据库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; use default;</span><br></pre></td></tr></table></figure></p>
+<p>显示 default 数据库中的表<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; show tables;</span><br></pre></td></tr></table></figure></p>
+<p>创建一张表<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; create table student(id int, name string);</span><br></pre></td></tr></table></figure></p>
+<p>显示数据库中有几张表<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; show tables;</span><br></pre></td></tr></table></figure></p>
+<p>查看表的结构<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; desc student;</span><br></pre></td></tr></table></figure></p>
+<p>向表中插入数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; insert into student values(1000,&quot;ss&quot;);</span><br></pre></td></tr></table></figure></p>
+<p>查询表中数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; select * from student;</span><br></pre></td></tr></table></figure></p>
+<p>退出<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hive hive&gt; quit;</span><br></pre></td></tr></table></figure></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Hadoop/" rel="tag"><i class="fa fa-tag"></i> Hadoop</a>
+            
+              <a href="/tags/大数据/" rel="tag"><i class="fa fa-tag"></i> 大数据</a>
+            
+              <a href="/tags/Hive/" rel="tag"><i class="fa fa-tag"></i> Hive</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2020/08/07/MR学习总结/" rel="next" title="MR学习总结">
+                  <i class="fa fa-chevron-left"></i> MR学习总结
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc" data-target="post-toc-wrap">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、-Hive介绍"><span class="nav-number">1.</span> <span class="nav-text">一、 Hive介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、-Hive架构"><span class="nav-number">2.</span> <span class="nav-text">二、 Hive架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、-Hive与数据库进行比较"><span class="nav-number">3.</span> <span class="nav-text">三、 Hive与数据库进行比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、-Hive常见操作"><span class="nav-number">4.</span> <span class="nav-text">四、 Hive常见操作</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.png"
+      alt="随我">
+  <p class="site-author-name" itemprop="name">随我</p>
+  <div class="site-description" itemprop="description">用心做自己喜欢的事</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">90</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/ZhangJia97" title="GitHub &rarr; https://github.com/ZhangJia97" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:isuiwo@qq.com" title="E-Mail &rarr; mailto:isuiwo@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      友链
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://wqf1234.github.io/" title="https://wqf1234.github.io/" rel="noopener" target="_blank">AC的博客</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/qq_38542085" title="https://blog.csdn.net/qq_38542085" rel="noopener" target="_blank">随我的CSDN</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2023</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">随我</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.7.1</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共132.5k字</span>
+</div>
+
+<div class="BbeiAn-info">
+    <a target="_blank" href="http://beian.miit.gov.cn" rel="nofollow">豫ICP备18013715号-1</a> <!--a标签中增加nofollow属性，避免爬虫出站。-->
+</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.3.0"></script><script src="/js/motion.js?v=7.3.0"></script>
+<script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
