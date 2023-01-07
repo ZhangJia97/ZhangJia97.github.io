@@ -54,22 +54,20 @@
   };
 </script>
 
-  <meta name="description" content="本文总结了在chrome以及firefox两个浏览器的情况下如何使用selenium进行文件下载">
-<meta name="keywords" content="python,selenium">
+  <meta name="description" content="对于每一个Hive表（包括分区表），Hive可以进一步对数据进行分桶，桶是更细粒度的数据范围划分。">
+<meta name="keywords" content="Hadoop,大数据,Hive">
 <meta property="og:type" content="article">
-<meta property="og:title" content="selenium下载文件">
-<meta property="og:url" content="http://suiwo.xyz/2017/11/09/selenium下载文件/index.html">
+<meta property="og:title" content="Hive之分桶">
+<meta property="og:url" content="http://suiwo.xyz/2020/11/27/Hive之分桶/index.html">
 <meta property="og:site_name" content="随我的博客">
-<meta property="og:description" content="本文总结了在chrome以及firefox两个浏览器的情况下如何使用selenium进行文件下载">
+<meta property="og:description" content="对于每一个Hive表（包括分区表），Hive可以进一步对数据进行分桶，桶是更细粒度的数据范围划分。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://suiwo.xyz/images/selenium下载文件/4215C8D9-2CA6-4CD2-A229-AC1EDD125898.png">
-<meta property="og:updated_time" content="2018-04-24T12:11:20.000Z">
+<meta property="og:updated_time" content="2023-01-07T14:53:29.939Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="selenium下载文件">
-<meta name="twitter:description" content="本文总结了在chrome以及firefox两个浏览器的情况下如何使用selenium进行文件下载">
-<meta name="twitter:image" content="http://suiwo.xyz/images/selenium下载文件/4215C8D9-2CA6-4CD2-A229-AC1EDD125898.png">
+<meta name="twitter:title" content="Hive之分桶">
+<meta name="twitter:description" content="对于每一个Hive表（包括分区表），Hive可以进一步对数据进行分桶，桶是更细粒度的数据范围划分。">
   <link rel="alternate" href="/atom.xml" title="随我的博客" type="application/atom+xml">
-  <link rel="canonical" href="http://suiwo.xyz/2017/11/09/selenium下载文件/">
+  <link rel="canonical" href="http://suiwo.xyz/2020/11/27/Hive之分桶/">
 
 
 <script id="page-configurations">
@@ -83,7 +81,7 @@
   };
 </script>
 
-  <title>selenium下载文件 | 随我的博客</title>
+  <title>Hive之分桶 | 随我的博客</title>
   <meta name="generator" content="Hexo 3.7.1">
   
 
@@ -223,7 +221,7 @@
   
   
   <div class="post-block post">
-    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2017/11/09/selenium下载文件/">
+    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2020/11/27/Hive之分桶/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="随我">
@@ -235,7 +233,7 @@
       <meta itemprop="name" content="随我的博客">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">selenium下载文件
+        <h1 class="post-title" itemprop="name headline">Hive之分桶
 
           
         </h1>
@@ -251,7 +249,7 @@
                 
               
 
-              <time title="创建时间：2017-11-09 23:33:28" itemprop="dateCreated datePublished" datetime="2017-11-09T23:33:28+08:00">2017-11-09</time>
+              <time title="创建时间：2020-11-27 14:43:35" itemprop="dateCreated datePublished" datetime="2020-11-27T14:43:35+08:00">2020-11-27</time>
             </span>
           
             <span class="post-meta-item">
@@ -260,7 +258,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/selenium/" itemprop="url" rel="index"><span itemprop="name">selenium</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/大数据/" itemprop="url" rel="index"><span itemprop="name">大数据</span></a></span>
 
                 
                 
@@ -269,7 +267,7 @@
           
 
           
-            <div class="post-description">本文总结了在chrome以及firefox两个浏览器的情况下如何使用selenium进行文件下载</div>
+            <div class="post-description">对于每一个Hive表（包括分区表），Hive可以进一步对数据进行分桶，桶是更细粒度的数据范围划分。</div>
           
 
         </div>
@@ -281,13 +279,13 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="一、Firefox文件下载"><a href="#一、Firefox文件下载" class="headerlink" title="一、Firefox文件下载"></a>一、Firefox文件下载</h2><hr>
-<h3 id="Web容许我们设置默认的文件下载路劲，文件会自动下载并且存放在指定的目录下。"><a href="#Web容许我们设置默认的文件下载路劲，文件会自动下载并且存放在指定的目录下。" class="headerlink" title="Web容许我们设置默认的文件下载路劲，文件会自动下载并且存放在指定的目录下。"></a>Web容许我们设置默认的文件下载路劲，文件会自动下载并且存放在指定的目录下。</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line">fp = webdriver.FirefoxProfile()</span><br><span class="line">fp.set_preference(<span class="string">"browser.download.folderList"</span>,<span class="number">0</span>)</span><br><span class="line">fp.set_preference(<span class="string">"browser.download.manager.showhenStarting"</span>,<span class="keyword">True</span>)</span><br><span class="line">fp.set_preference(<span class="string">"browser.download.dir"</span>,os.getcwd())</span><br><span class="line">fp.set_preference(<span class="string">"browser.helperApps.neverAsk.saveToDisk"</span>,<span class="string">"applaction/octet-stream"</span>)<span class="comment">#下载文件类型</span></span><br><span class="line"></span><br><span class="line">driver = webdriver.Firefox(firefox_profile = fp)</span><br><span class="line">driver.get(<span class="string">"http://pypi.Python.org/pypi/selenium"</span>)</span><br><span class="line">driver.find_element_by_xpath(<span class="string">"//*[@id='download-button']/a"</span>).click()</span><br><span class="line"> </span><br><span class="line">driver.find_element_by_xpath(<span class="string">"//*[@id='content']/div[3]/table/tbody/tr[3]/td[1]/span/a[1]"</span>).click()</span><br></pre></td></tr></table></figure>
-<h4 id="为了让Firefox浏览器能实现文件下载，需要通过FirefoxProfile（）对其做一些设置。"><a href="#为了让Firefox浏览器能实现文件下载，需要通过FirefoxProfile（）对其做一些设置。" class="headerlink" title="为了让Firefox浏览器能实现文件下载，需要通过FirefoxProfile（）对其做一些设置。"></a>为了让Firefox浏览器能实现文件下载，需要通过FirefoxProfile（）对其做一些设置。</h4><h4 id="browser-download-foladerList-设置成0代表下载到浏览器默认下载路径，设置成2则可以保存到指定的目录。"><a href="#browser-download-foladerList-设置成0代表下载到浏览器默认下载路径，设置成2则可以保存到指定的目录。" class="headerlink" title="browser.download.foladerList :设置成0代表下载到浏览器默认下载路径，设置成2则可以保存到指定的目录。"></a>browser.download.foladerList :设置成0代表下载到浏览器默认下载路径，设置成2则可以保存到指定的目录。</h4><h4 id="browser-download-manager-showWhenStarting-是否显示开始：True为显示开始，Flase为不显示开始。"><a href="#browser-download-manager-showWhenStarting-是否显示开始：True为显示开始，Flase为不显示开始。" class="headerlink" title="browser.download.manager.showWhenStarting  :是否显示开始：True为显示开始，Flase为不显示开始。"></a>browser.download.manager.showWhenStarting  :是否显示开始：True为显示开始，Flase为不显示开始。</h4><h4 id="browser-download-dir-用于指定所下载文件的目录。"><a href="#browser-download-dir-用于指定所下载文件的目录。" class="headerlink" title="browser.download.dir :用于指定所下载文件的目录。"></a>browser.download.dir :用于指定所下载文件的目录。</h4><h4 id="os-getcwd（）函数不需要传递参数。用于返回当前的目录。"><a href="#os-getcwd（）函数不需要传递参数。用于返回当前的目录。" class="headerlink" title="os.getcwd（）函数不需要传递参数。用于返回当前的目录。"></a>os.getcwd（）函数不需要传递参数。用于返回当前的目录。</h4><h4 id="browser-helperApps-neverAsk-saveToDisk-对所给文件类型不再弹出框进行询问。"><a href="#browser-helperApps-neverAsk-saveToDisk-对所给文件类型不再弹出框进行询问。" class="headerlink" title="browser.helperApps.neverAsk.saveToDisk  :对所给文件类型不再弹出框进行询问。"></a>browser.helperApps.neverAsk.saveToDisk  :对所给文件类型不再弹出框进行询问。</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> sleep</span><br><span class="line"></span><br><span class="line">profile = webdriver.FirefoxProfile()</span><br><span class="line">profile.set_preference(<span class="string">'browser.download.dir'</span>, <span class="string">'d:\\'</span>)  <span class="comment">#现在文件存放的目录</span></span><br><span class="line">profile.set_preference(<span class="string">'browser.download.folderList'</span>, <span class="number">2</span>)</span><br><span class="line">profile.set_preference(<span class="string">'browser.download.manager.showWhenStarting'</span>, <span class="keyword">False</span>)</span><br><span class="line">profile.set_preference(<span class="string">'browser.helperApps.neverAsk.saveToDisk'</span>, <span class="string">'application/zip'</span>)</span><br><span class="line"></span><br><span class="line">driver = webdriver.Firefox(firefox_profile=profile)</span><br><span class="line"></span><br><span class="line">driver.get(<span class="string">'http://sahitest.com/demo/saveAs.htm'</span>)</span><br><span class="line"><span class="comment">#driver.find_element_by_xpath('//a[text()="testsaveas.zip"]').click()</span></span><br><span class="line">driver.find_element_by_xpath(<span class="string">'/html/body/a[1]'</span>).click()</span><br><span class="line">sleep(<span class="number">20</span>)</span><br><span class="line">driver.quit()</span><br></pre></td></tr></table></figure>
-<hr>
-<h2 id="二、Chrome文件下载"><a href="#二、Chrome文件下载" class="headerlink" title="二、Chrome文件下载"></a>二、Chrome文件下载</h2><hr>
-<h3 id="download-default-directory-设置下载路径"><a href="#download-default-directory-设置下载路径" class="headerlink" title="download.default_directory:设置下载路径"></a>download.default_directory:设置下载路径</h3><h3 id="profile-default-content-settings-popups-设置为0禁止弹出窗口"><a href="#profile-default-content-settings-popups-设置为0禁止弹出窗口" class="headerlink" title="profile.default_content_settings.popups:设置为0禁止弹出窗口"></a>profile.default_content_settings.popups:设置为0禁止弹出窗口</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver </span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> sleep</span><br><span class="line">options = webdriver.ChromeOptions() </span><br><span class="line">prefs = &#123;<span class="string">'profile.default_content_settings.popups'</span>: <span class="number">0</span>, <span class="string">'download.default_directory'</span>: <span class="string">'d:\\'</span>&#125;</span><br><span class="line">options.add_experimental_option(<span class="string">'prefs'</span>, prefs) </span><br><span class="line">driver = webdriver.Chrome(executable_path=<span class="string">'D:\\chromedriver.exe'</span>, chrome_options=options) </span><br><span class="line">driver.get(<span class="string">'http://sahitest.com/demo/saveAs.htm'</span>) </span><br><span class="line">driver.find_element_by_xpath(<span class="string">'//a[text()="testsaveas.zip"]'</span>).click() </span><br><span class="line">sleep(<span class="number">3</span>) </span><br><span class="line">driver.quit()</span><br></pre></td></tr></table></figure>
-<p><img src="/images/selenium下载文件/4215C8D9-2CA6-4CD2-A229-AC1EDD125898.png" alt="这里写图片描述"></p>
+        <h3 id="一、分桶及抽样数据存储"><a href="#一、分桶及抽样数据存储" class="headerlink" title="一、分桶及抽样数据存储"></a>一、分桶及抽样数据存储</h3><p>分区针对的是数据的存储路径；分桶针对的是数据文件。</p>
+<p>分区提供一个隔离数据和优化查询到的便利方式。不过并非所有的数据集都可形成合理的分区，特别是之前所提到的要确定合适的划分大小这个疑虑。<br>分桶试讲数据及分解成更容易管理的若干部分的另一个技术。</p>
+<h3 id="二、创建分桶表"><a href="#二、创建分桶表" class="headerlink" title="二、创建分桶表"></a>二、创建分桶表</h3><h4 id="2-1-首先设置相关属性"><a href="#2-1-首先设置相关属性" class="headerlink" title="2.1 首先设置相关属性"></a>2.1 首先设置相关属性</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> hive.ecforce.bucketing=<span class="literal">true</span>;</span><br><span class="line"><span class="keyword">set</span> mapreduce.job.reduces=<span class="number">-1</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="2-2-创建一个分桶表"><a href="#2-2-创建一个分桶表" class="headerlink" title="2.2 创建一个分桶表"></a>2.2 创建一个分桶表</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> stu_bucket(<span class="keyword">id</span> <span class="built_in">int</span>, <span class="keyword">name</span> <span class="keyword">string</span>)</span><br><span class="line">clustered <span class="keyword">by</span> (<span class="keyword">id</span>) <span class="keyword">into</span> <span class="number">4</span> buckets</span><br><span class="line"><span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span> <span class="keyword">field</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">'\n'</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="2-3-将stu表的数据导入分桶表中"><a href="#2-3-将stu表的数据导入分桶表中" class="headerlink" title="2.3 将stu表的数据导入分桶表中"></a>2.3 将stu表的数据导入分桶表中</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">table</span> stu_buck</span><br><span class="line"><span class="keyword">select</span> <span class="keyword">id</span>, <span class="keyword">name</span> <span class="keyword">from</span> stu;</span><br></pre></td></tr></table></figure>
+<h3 id="三、分桶抽样调查"><a href="#三、分桶抽样调查" class="headerlink" title="三、分桶抽样调查"></a>三、分桶抽样调查</h3><p>对于非常大的数据集，又是用户需要使用过的是一个具有代表性的查询结果而不是全部结果。Hive可以通过对表的抽样来满足这个需求<br>查询表stu_buck中的数据<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> stu_buck tablesample(bucket <span class="number">1</span> <span class="keyword">out</span> <span class="keyword">of</span> <span class="number">4</span> <span class="keyword">on</span> <span class="keyword">id</span>);</span><br></pre></td></tr></table></figure></p>
+<p>tablesample是抽样语句，语法：TABLESAMPLE(BUCKET x OUT OF y)<br>y必须是table总bucket数的倍数或者因子。Hive根据y的大小，决定取样的比例。例如table总共有4份，如果y=2是，则抽取2个bucket数据， 如果y=8，则抽取1/2个bucket的数据。<br>x表示从哪个bucket开始抽取，如果需要取多个分区，以后的分区号为当前分区号加上y。例如tablesample(bucket 1 out of 2)，表示总共抽取(4/2=)2个bucket的数据，抽取第1(x)个和第3(x+y)个bucket的数据。</p>
 
     </div>
 
@@ -303,9 +301,11 @@
           
           <div class="post-tags">
             
-              <a href="/tags/python/" rel="tag"><i class="fa fa-tag"></i> python</a>
+              <a href="/tags/Hadoop/" rel="tag"><i class="fa fa-tag"></i> Hadoop</a>
             
-              <a href="/tags/selenium/" rel="tag"><i class="fa fa-tag"></i> selenium</a>
+              <a href="/tags/大数据/" rel="tag"><i class="fa fa-tag"></i> 大数据</a>
+            
+              <a href="/tags/Hive/" rel="tag"><i class="fa fa-tag"></i> Hive</a>
             
           </div>
         
@@ -315,8 +315,8 @@
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
               
-                <a href="/2017/11/09/selenium中的常见报错/" rel="next" title="selenium中的常见报错">
-                  <i class="fa fa-chevron-left"></i> selenium中的常见报错
+                <a href="/2020/11/24/HiveDML数据操作之导入导出/" rel="next" title="HiveDML数据操作之导入导出">
+                  <i class="fa fa-chevron-left"></i> HiveDML数据操作之导入导出
                 </a>
               
             </div>
@@ -324,10 +324,6 @@
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-              
-                <a href="/2017/11/10/Tensorflow的变量管理/" rel="prev" title="Tensorflow的变量管理">
-                  Tensorflow的变量管理 <i class="fa fa-chevron-right"></i>
-                </a>
               
             </div>
           </div>
@@ -376,7 +372,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、Firefox文件下载"><span class="nav-number">1.</span> <span class="nav-text">一、Firefox文件下载</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Web容许我们设置默认的文件下载路劲，文件会自动下载并且存放在指定的目录下。"><span class="nav-number">1.1.</span> <span class="nav-text">Web容许我们设置默认的文件下载路劲，文件会自动下载并且存放在指定的目录下。</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#为了让Firefox浏览器能实现文件下载，需要通过FirefoxProfile（）对其做一些设置。"><span class="nav-number">1.1.1.</span> <span class="nav-text">为了让Firefox浏览器能实现文件下载，需要通过FirefoxProfile（）对其做一些设置。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#browser-download-foladerList-设置成0代表下载到浏览器默认下载路径，设置成2则可以保存到指定的目录。"><span class="nav-number">1.1.2.</span> <span class="nav-text">browser.download.foladerList :设置成0代表下载到浏览器默认下载路径，设置成2则可以保存到指定的目录。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#browser-download-manager-showWhenStarting-是否显示开始：True为显示开始，Flase为不显示开始。"><span class="nav-number">1.1.3.</span> <span class="nav-text">browser.download.manager.showWhenStarting  :是否显示开始：True为显示开始，Flase为不显示开始。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#browser-download-dir-用于指定所下载文件的目录。"><span class="nav-number">1.1.4.</span> <span class="nav-text">browser.download.dir :用于指定所下载文件的目录。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#os-getcwd（）函数不需要传递参数。用于返回当前的目录。"><span class="nav-number">1.1.5.</span> <span class="nav-text">os.getcwd（）函数不需要传递参数。用于返回当前的目录。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#browser-helperApps-neverAsk-saveToDisk-对所给文件类型不再弹出框进行询问。"><span class="nav-number">1.1.6.</span> <span class="nav-text">browser.helperApps.neverAsk.saveToDisk  :对所给文件类型不再弹出框进行询问。</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、Chrome文件下载"><span class="nav-number">2.</span> <span class="nav-text">二、Chrome文件下载</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#download-default-directory-设置下载路径"><span class="nav-number">2.1.</span> <span class="nav-text">download.default_directory:设置下载路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#profile-default-content-settings-popups-设置为0禁止弹出窗口"><span class="nav-number">2.2.</span> <span class="nav-text">profile.default_content_settings.popups:设置为0禁止弹出窗口</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、分桶及抽样数据存储"><span class="nav-number">1.</span> <span class="nav-text">一、分桶及抽样数据存储</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、创建分桶表"><span class="nav-number">2.</span> <span class="nav-text">二、创建分桶表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-首先设置相关属性"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 首先设置相关属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-创建一个分桶表"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 创建一个分桶表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-将stu表的数据导入分桶表中"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 将stu表的数据导入分桶表中</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、分桶抽样调查"><span class="nav-number">3.</span> <span class="nav-text">三、分桶抽样调查</span></a></li></ol></div>
         
       </div>
       <!--/noindex-->
