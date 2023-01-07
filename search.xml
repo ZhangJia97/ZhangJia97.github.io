@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Hive之窗口函数]]></title>
+    <url>%2F2020%2F11%2F30%2FHive%E4%B9%8B%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0%2F</url>
+    <content type="text"><![CDATA[一、常见窗口函数函数 OVER() 指定分析函数工作的数据窗口大小，这个数据窗口的大小可能会随着行的变化而变化。 CURRENT ROW： 当前行 n PRECEDING：往前n行数据 n FOLLOWING：往后n行数据 UNBOUNDED：起点，UNBOUNDED PRECEDING表示从前面的起点，UNBOUNDED FOLLOWING表示到后面的终点 LAG(col, n)： 往前第n行数据 LEAD(col, n)： 往后第n行数据 NTILE(n)：把有序分区中的行分发到指定数据的组中，各个组有编号，编号从1开始，对于每一行，NTILE返回此行所属的组的编号。注意：n必须为int类型。 二、案例实操2.1 数据准备 business表123456789101112131415name，orderdate，costjack,2017-01-01,10tony,2017-01-02,15jack,2017-02-03,23tony,2017-01-04,29jack,2017-01-05,46jack,2017-04-06,42tony,2017-01-07,50jack,2017-01-08,55mart,2017-04-08,62mart,2017-04-09,68neil,2017-05-10,12mart,2017-04-11,75neil,2017-06-12,80mart,2017-04-13,94 2.2 查询在2017年4月份购买过的顾客及总人数1234select name, count(*) over()from businesswhere substring(ordergate, 1, 7) = '2017-04'group by name; 2.3 查询顾客的购买明细及月购买总额12select name, orderdate, cost, sum(cost) over(partition by substring(ordergate, 1, 7))from business 2.4 上述的场景,要将cost按照日期进行累加123456789select name,orderdate,cost,sum(cost) over() as sample1,--所有行相加sum(cost) over(partition by name) as sample2,--按name分组，组内 数据相加sum(cost) over(partition by name order by orderdate) as sample3,--按name分组，组内数据累加sum(cost) over(partition by name order by orderdate rows between UNBOUNDED PRECEDING and current row ) as sample4 ,--和sample3一样,由起点到当前行的聚合sum(cost) over(partition by name order by orderdate rows between 1 PRECEDING and current row) as sample5, --当前行和前面一行做聚合sum(cost) over(partition by name order by orderdate rows between 1 PRECEDING AND 1 FOLLOWING ) as sample6,--当前行和前边一行及后面一行sum(cost) over(partition by name order by orderdate rows between current row and UNBOUNDED FOLLOWING ) as sample7 --当前行及后面所有行from business; 2.5 查询顾客上次的购买时间12select name, orderdate, cost, lag(orderdate, 1, '1900-01-01') over(partition by name, order by orderdate) as time1from business; 2.6 查询前20%时间的订单信息123select *from (select name,orderdate,cost, ntile(5) over(order by orderdate) sorted from business)twhere sorted = 1;]]></content>
+      <categories>
+        <category>大数据</category>
+      </categories>
+      <tags>
+        <tag>Hadoop</tag>
+        <tag>大数据</tag>
+        <tag>Hive</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Hive之分桶]]></title>
     <url>%2F2020%2F11%2F27%2FHive%E4%B9%8B%E5%88%86%E6%A1%B6%2F</url>
     <content type="text"><![CDATA[一、分桶及抽样数据存储分区针对的是数据的存储路径；分桶针对的是数据文件。 分区提供一个隔离数据和优化查询到的便利方式。不过并非所有的数据集都可形成合理的分区，特别是之前所提到的要确定合适的划分大小这个疑虑。分桶试讲数据及分解成更容易管理的若干部分的另一个技术。 二、创建分桶表2.1 首先设置相关属性12set hive.ecforce.bucketing=true;set mapreduce.job.reduces=-1; 2.2 创建一个分桶表123create table stu_bucket(id int, name string)clustered by (id) into 4 bucketsrow format delimited field terminated by '\n'; 2.3 将stu表的数据导入分桶表中12insert into table stu_buckselect id, name from stu; 三、分桶抽样调查对于非常大的数据集，又是用户需要使用过的是一个具有代表性的查询结果而不是全部结果。Hive可以通过对表的抽样来满足这个需求查询表stu_buck中的数据1select * from stu_buck tablesample(bucket 1 out of 4 on id); tablesample是抽样语句，语法：TABLESAMPLE(BUCKET x OUT OF y)y必须是table总bucket数的倍数或者因子。Hive根据y的大小，决定取样的比例。例如table总共有4份，如果y=2是，则抽取2个bucket数据， 如果y=8，则抽取1/2个bucket的数据。x表示从哪个bucket开始抽取，如果需要取多个分区，以后的分区号为当前分区号加上y。例如tablesample(bucket 1 out of 2)，表示总共抽取(4/2=)2个bucket的数据，抽取第1(x)个和第3(x+y)个bucket的数据。]]></content>

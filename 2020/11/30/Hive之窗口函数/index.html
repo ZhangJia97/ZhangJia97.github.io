@@ -54,23 +54,20 @@
   };
 </script>
 
-  <meta name="description" content="本文是听了慕课计网相关课程后参考了菜鸟教程进行的总结">
-<meta name="keywords" content="计算机网络">
+  <meta name="description" content="窗口函数又名开窗函数，属于分析函数的一种，用于解决复杂报表统计需求的功能强大的函数。">
+<meta name="keywords" content="Hadoop,大数据,Hive">
 <meta property="og:type" content="article">
-<meta property="og:title" content="计算机网络相关知识总结之HTTP">
-<meta property="og:url" content="http://suiwo.xyz/2019/02/01/计算机网络相关知识总结之HTTP/index.html">
+<meta property="og:title" content="Hive之窗口函数">
+<meta property="og:url" content="http://suiwo.xyz/2020/11/30/Hive之窗口函数/index.html">
 <meta property="og:site_name" content="随我的博客">
-<meta property="og:description" content="本文是听了慕课计网相关课程后参考了菜鸟教程进行的总结">
+<meta property="og:description" content="窗口函数又名开窗函数，属于分析函数的一种，用于解决复杂报表统计需求的功能强大的函数。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://suiwo.xyz/images/计算机网络相关知识总结之HTTP/2012072810301161.png">
-<meta property="og:image" content="http://suiwo.xyz/images/计算机网络相关知识总结之HTTP/httpmessage.jpg">
-<meta property="og:updated_time" content="2019-04-13T02:26:26.000Z">
+<meta property="og:updated_time" content="2023-01-07T14:57:40.332Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="计算机网络相关知识总结之HTTP">
-<meta name="twitter:description" content="本文是听了慕课计网相关课程后参考了菜鸟教程进行的总结">
-<meta name="twitter:image" content="http://suiwo.xyz/images/计算机网络相关知识总结之HTTP/2012072810301161.png">
+<meta name="twitter:title" content="Hive之窗口函数">
+<meta name="twitter:description" content="窗口函数又名开窗函数，属于分析函数的一种，用于解决复杂报表统计需求的功能强大的函数。">
   <link rel="alternate" href="/atom.xml" title="随我的博客" type="application/atom+xml">
-  <link rel="canonical" href="http://suiwo.xyz/2019/02/01/计算机网络相关知识总结之HTTP/">
+  <link rel="canonical" href="http://suiwo.xyz/2020/11/30/Hive之窗口函数/">
 
 
 <script id="page-configurations">
@@ -84,7 +81,7 @@
   };
 </script>
 
-  <title>计算机网络相关知识总结之HTTP | 随我的博客</title>
+  <title>Hive之窗口函数 | 随我的博客</title>
   <meta name="generator" content="Hexo 3.7.1">
   
 
@@ -224,7 +221,7 @@
   
   
   <div class="post-block post">
-    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2019/02/01/计算机网络相关知识总结之HTTP/">
+    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2020/11/30/Hive之窗口函数/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="随我">
@@ -236,7 +233,7 @@
       <meta itemprop="name" content="随我的博客">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">计算机网络相关知识总结之HTTP
+        <h1 class="post-title" itemprop="name headline">Hive之窗口函数
 
           
         </h1>
@@ -252,7 +249,7 @@
                 
               
 
-              <time title="创建时间：2019-02-01 15:12:17" itemprop="dateCreated datePublished" datetime="2019-02-01T15:12:17+08:00">2019-02-01</time>
+              <time title="创建时间：2020-11-30 11:31:46" itemprop="dateCreated datePublished" datetime="2020-11-30T11:31:46+08:00">2020-11-30</time>
             </span>
           
             <span class="post-meta-item">
@@ -261,7 +258,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/计算机网络/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/大数据/" itemprop="url" rel="index"><span itemprop="name">大数据</span></a></span>
 
                 
                 
@@ -270,7 +267,7 @@
           
 
           
-            <div class="post-description">本文是听了慕课计网相关课程后参考了菜鸟教程进行的总结</div>
+            <div class="post-description">窗口函数又名开窗函数，属于分析函数的一种，用于解决复杂报表统计需求的功能强大的函数。</div>
           
 
         </div>
@@ -282,118 +279,22 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h4 id="1-HTTP简介"><a href="#1-HTTP简介" class="headerlink" title="1.HTTP简介"></a>1.HTTP简介</h4><h6 id="HTTP协议（HyperText-Transfer-Protocol，超文本传输协议）是因特网上应用最为广泛的一种网络传输协议，所有的WWW文件都必须遵守这个标准。HTTP是一个基于TCP-IP通信协议来传递数据（HTML-文件-图片文件-查询结果等）。"><a href="#HTTP协议（HyperText-Transfer-Protocol，超文本传输协议）是因特网上应用最为广泛的一种网络传输协议，所有的WWW文件都必须遵守这个标准。HTTP是一个基于TCP-IP通信协议来传递数据（HTML-文件-图片文件-查询结果等）。" class="headerlink" title="HTTP协议（HyperText Transfer Protocol，超文本传输协议）是因特网上应用最为广泛的一种网络传输协议，所有的WWW文件都必须遵守这个标准。HTTP是一个基于TCP/IP通信协议来传递数据（HTML 文件, 图片文件, 查询结果等）。"></a>HTTP协议（HyperText Transfer Protocol，超文本传输协议）是因特网上应用最为广泛的一种网络传输协议，所有的WWW文件都必须遵守这个标准。HTTP是一个基于TCP/IP通信协议来传递数据（HTML 文件, 图片文件, 查询结果等）。</h6><h6 id="HTTP三点注意事项："><a href="#HTTP三点注意事项：" class="headerlink" title="HTTP三点注意事项："></a>HTTP三点注意事项：</h6><blockquote>
-<p>1.HTTP是无连接：无连接的含义是限制每次连接只处理一个请求。服务器处理完客户的请求，并收到客户的应答后，即断开连接。采用这种方式可以节省传输时间。<br>2.HTTP是媒体独立的：这意味着，只要客户端和服务器知道如何处理的数据内容，任何类型的数据都可以通过HTTP发送。客户端以及服务器指定使用适合的MIME-type内容类型。<br>3.HTTP是无状态：HTTP协议是无状态协议。无状态是指协议对于事务处理没有记忆能力。缺少状态意味着如果后续处理需要前面的信息，则它必须重传，这样可能导致每次连接传送的数据量增大。另一方面，在服务器不需要先前信息时它的应答就较快。</p>
-</blockquote>
-<hr>
-<h4 id="2-HTTP消息结构"><a href="#2-HTTP消息结构" class="headerlink" title="2.HTTP消息结构"></a>2.HTTP消息结构</h4><h6 id="客户端请求消息：客户端发送一个HTTP请求到服务器的请求消息包括以下格式：请求行（request-line）、请求头部（header）、空行和请求数据四个部分组成，下图给出了请求报文的一般格式。"><a href="#客户端请求消息：客户端发送一个HTTP请求到服务器的请求消息包括以下格式：请求行（request-line）、请求头部（header）、空行和请求数据四个部分组成，下图给出了请求报文的一般格式。" class="headerlink" title="客户端请求消息：客户端发送一个HTTP请求到服务器的请求消息包括以下格式：请求行（request line）、请求头部（header）、空行和请求数据四个部分组成，下图给出了请求报文的一般格式。"></a>客户端请求消息：客户端发送一个HTTP请求到服务器的请求消息包括以下格式：请求行（request line）、请求头部（header）、空行和请求数据四个部分组成，下图给出了请求报文的一般格式。</h6><p><img src="/images/计算机网络相关知识总结之HTTP/2012072810301161.png" alt="这里写图片描述"><br><figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GET</span> <span class="string">/hello.txt</span> HTTP/1.1</span><br><span class="line"><span class="attribute">User-Agent</span>: curl/7.16.3 libcurl/7.16.3 OpenSSL/0.9.7l zlib/1.2.3</span><br><span class="line"><span class="attribute">Host</span>: www.example.com</span><br><span class="line"><span class="attribute">Accept-Language</span>: en, mi</span><br></pre></td></tr></table></figure></p>
-<h5 id="服务器响应消息：HTTP响应也由四个部分组成，分别是：状态行、消息报头、空行和响应正文。"><a href="#服务器响应消息：HTTP响应也由四个部分组成，分别是：状态行、消息报头、空行和响应正文。" class="headerlink" title="服务器响应消息：HTTP响应也由四个部分组成，分别是：状态行、消息报头、空行和响应正文。"></a>服务器响应消息：HTTP响应也由四个部分组成，分别是：状态行、消息报头、空行和响应正文。</h5><p><img src="/images/计算机网络相关知识总结之HTTP/httpmessage.jpg" alt="这里写图片描述"></p>
-<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 <span class="number">200</span> OK</span><br><span class="line"><span class="attribute">Date</span>: Mon, 27 Jul 2009 12:28:53 GMT</span><br><span class="line"><span class="attribute">Server</span>: Apache</span><br><span class="line"><span class="attribute">Last-Modified</span>: Wed, 22 Jul 2009 19:15:56 GMT</span><br><span class="line"><span class="attribute">ETag</span>: "34aa387-d-1568eb00"</span><br><span class="line"><span class="attribute">Accept-Ranges</span>: bytes</span><br><span class="line"><span class="attribute">Content-Length</span>: 51</span><br><span class="line"><span class="attribute">Vary</span>: Accept-Encoding</span><br><span class="line"><span class="attribute">Content-Type</span>: text/plain</span><br></pre></td></tr></table></figure>
-<hr>
-<h4 id="3-HTTP请求方法"><a href="#3-HTTP请求方法" class="headerlink" title="3.HTTP请求方法"></a>3.HTTP请求方法</h4><p>根据HTTP标准，HTTP请求可以使用多种请求方法。<br>HTTP1.0定义了三种请求方法： GET, POST 和 HEAD方法。<br>HTTP1.1新增了五种请求方法：OPTIONS, PUT, DELETE, TRACE 和 CONNECT 方法。</p>
-<table>
-<thead>
-<tr>
-<th>序号</th>
-<th>方法</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>GET</td>
-<td>请求指定的页面信息，并返回实体主体。</td>
-</tr>
-<tr>
-<td>2</td>
-<td>HEAD</td>
-<td>类似于get请求，只不过返回的响应中没有具体的内容，用于获取报头</td>
-</tr>
-<tr>
-<td>3</td>
-<td>POST</td>
-<td>向指定资源提交数据进行处理请求（例如提交表单或者上传文件）。数据被包含在请求体中。POST请求可能会导致新的资源的建立和/或已有资源的修改。</td>
-</tr>
-<tr>
-<td>4</td>
-<td>PUT</td>
-<td>从客户端向服务器传送的数据取代指定的文档的内容。</td>
-</tr>
-<tr>
-<td>5</td>
-<td>DELETE</td>
-<td>请求服务器删除指定的页面。</td>
-</tr>
-<tr>
-<td>6</td>
-<td>CONNECT</td>
-<td>HTTP/1.1协议中预留给能够将连接改为管道方式的代理服务器。</td>
-</tr>
-<tr>
-<td>7</td>
-<td>OPTIONS</td>
-<td>允许客户端查看服务器的性能。</td>
-</tr>
-<tr>
-<td>8</td>
-<td>TRACE</td>
-<td>回显服务器收到的请求，主要用于测试或诊断。</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<h4 id="4-HTTP常见状态码"><a href="#4-HTTP常见状态码" class="headerlink" title="4.HTTP常见状态码"></a>4.HTTP常见状态码</h4><table>
-<thead>
-<tr>
-<th>状态码</th>
-<th>状态码英文名称</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>200</td>
-<td>OK</td>
-<td>正常返回信息</td>
-</tr>
-<tr>
-<td>400</td>
-<td>Bad Request</td>
-<td>客户端请求有语法错误，不能被服务器所理解</td>
-</tr>
-<tr>
-<td>401</td>
-<td>Unauthorized</td>
-<td>请求未经授权，这个状态代码必须和WWW-Authenticate报头域- - 起使用</td>
-</tr>
-<tr>
-<td>403</td>
-<td>Forbidden</td>
-<td>服务器收到请求，但是拒绝提供服务</td>
-</tr>
-<tr>
-<td>404</td>
-<td>Not Found</td>
-<td>请求资源不存在，eg, 输入了错误的URL</td>
-</tr>
-<tr>
-<td>500</td>
-<td>Internal Server Error</td>
-<td>服务器发生不可预期的错误</td>
-</tr>
-<tr>
-<td>503</td>
-<td>Server Unavailable</td>
-<td>服务器当前不能处理客户端的请求，一段时间后可能恢复正常</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<h4 id="5-HTTP中POST与GET的区别"><a href="#5-HTTP中POST与GET的区别" class="headerlink" title="5.HTTP中POST与GET的区别"></a>5.HTTP中POST与GET的区别</h4><p>从三个层面来解答：</p>
-<blockquote>
-<p>1.从Http报文层面: GET将请求信息放在URL , POST放在报文体中<br>2.数据库层面: CET符合幂等性和安全性, POST不符合<br>3.其他层面: GET可以被缓存、被存储,而POST不行</p>
-</blockquote>
+        <h3 id="一、常见窗口函数函数"><a href="#一、常见窗口函数函数" class="headerlink" title="一、常见窗口函数函数"></a>一、常见窗口函数函数</h3><ol>
+<li>OVER() 指定分析函数工作的数据窗口大小，这个数据窗口的大小可能会随着行的变化而变化。</li>
+<li>CURRENT ROW： 当前行</li>
+<li>n PRECEDING：往前n行数据</li>
+<li>n FOLLOWING：往后n行数据</li>
+<li>UNBOUNDED：起点，UNBOUNDED PRECEDING表示从前面的起点，UNBOUNDED FOLLOWING表示到后面的终点</li>
+<li>LAG(col, n)： 往前第n行数据</li>
+<li>LEAD(col, n)： 往后第n行数据</li>
+<li>NTILE(n)：把有序分区中的行分发到指定数据的组中，各个组有编号，编号从1开始，对于每一行，NTILE返回此行所属的组的编号。注意：n必须为int类型。</li>
+</ol>
+<h3 id="二、案例实操"><a href="#二、案例实操" class="headerlink" title="二、案例实操"></a>二、案例实操</h3><h4 id="2-1-数据准备-business表"><a href="#2-1-数据准备-business表" class="headerlink" title="2.1 数据准备 business表"></a>2.1 数据准备 business表</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">name，orderdate，cost</span><br><span class="line">jack,2017-01-01,10</span><br><span class="line">tony,2017-01-02,15</span><br><span class="line">jack,2017-02-03,23</span><br><span class="line">tony,2017-01-04,29</span><br><span class="line">jack,2017-01-05,46</span><br><span class="line">jack,2017-04-06,42</span><br><span class="line">tony,2017-01-07,50</span><br><span class="line">jack,2017-01-08,55</span><br><span class="line">mart,2017-04-08,62</span><br><span class="line">mart,2017-04-09,68</span><br><span class="line">neil,2017-05-10,12</span><br><span class="line">mart,2017-04-11,75</span><br><span class="line">neil,2017-06-12,80</span><br><span class="line">mart,2017-04-13,94</span><br></pre></td></tr></table></figure>
+<h4 id="2-2-查询在2017年4月份购买过的顾客及总人数"><a href="#2-2-查询在2017年4月份购买过的顾客及总人数" class="headerlink" title="2.2 查询在2017年4月份购买过的顾客及总人数"></a>2.2 查询在2017年4月份购买过的顾客及总人数</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">name</span>, <span class="keyword">count</span>(*) <span class="keyword">over</span>()</span><br><span class="line"><span class="keyword">from</span> business</span><br><span class="line"><span class="keyword">where</span> <span class="keyword">substring</span>(ordergate, <span class="number">1</span>, <span class="number">7</span>) = <span class="string">'2017-04'</span></span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">name</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="2-3-查询顾客的购买明细及月购买总额"><a href="#2-3-查询顾客的购买明细及月购买总额" class="headerlink" title="2.3 查询顾客的购买明细及月购买总额"></a>2.3 查询顾客的购买明细及月购买总额</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">name</span>, orderdate, <span class="keyword">cost</span>, <span class="keyword">sum</span>(<span class="keyword">cost</span>) <span class="keyword">over</span>(<span class="keyword">partition</span> <span class="keyword">by</span> <span class="keyword">substring</span>(ordergate, <span class="number">1</span>, <span class="number">7</span>))</span><br><span class="line"><span class="keyword">from</span> business</span><br></pre></td></tr></table></figure>
+<h4 id="2-4-上述的场景-要将cost按照日期进行累加"><a href="#2-4-上述的场景-要将cost按照日期进行累加" class="headerlink" title="2.4 上述的场景,要将cost按照日期进行累加"></a>2.4 上述的场景,要将cost按照日期进行累加</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">name</span>,orderdate,<span class="keyword">cost</span>,</span><br><span class="line"><span class="keyword">sum</span>(<span class="keyword">cost</span>) <span class="keyword">over</span>() <span class="keyword">as</span> sample1,<span class="comment">--所有行相加</span></span><br><span class="line"><span class="keyword">sum</span>(<span class="keyword">cost</span>) <span class="keyword">over</span>(<span class="keyword">partition</span> <span class="keyword">by</span> <span class="keyword">name</span>) <span class="keyword">as</span> sample2,<span class="comment">--按name分组，组内 数据相加</span></span><br><span class="line"><span class="keyword">sum</span>(<span class="keyword">cost</span>) <span class="keyword">over</span>(<span class="keyword">partition</span> <span class="keyword">by</span> <span class="keyword">name</span> <span class="keyword">order</span> <span class="keyword">by</span> orderdate) <span class="keyword">as</span> sample3,<span class="comment">--按name分组，组内数据累加</span></span><br><span class="line"><span class="keyword">sum</span>(<span class="keyword">cost</span>) <span class="keyword">over</span>(<span class="keyword">partition</span> <span class="keyword">by</span> <span class="keyword">name</span> <span class="keyword">order</span> <span class="keyword">by</span> orderdate <span class="keyword">rows</span> <span class="keyword">between</span> <span class="keyword">UNBOUNDED</span> <span class="keyword">PRECEDING</span> <span class="keyword">and</span> <span class="keyword">current</span> <span class="keyword">row</span> ) <span class="keyword">as</span> sample4 ,<span class="comment">--和sample3一样,由起点到当前行的聚合</span></span><br><span class="line"><span class="keyword">sum</span>(<span class="keyword">cost</span>) <span class="keyword">over</span>(<span class="keyword">partition</span> <span class="keyword">by</span> <span class="keyword">name</span> <span class="keyword">order</span> <span class="keyword">by</span> orderdate <span class="keyword">rows</span> <span class="keyword">between</span> <span class="number">1</span> <span class="keyword">PRECEDING</span> <span class="keyword">and</span> <span class="keyword">current</span> <span class="keyword">row</span>) <span class="keyword">as</span> sample5, <span class="comment">--当前行和前面一行做聚合</span></span><br><span class="line"><span class="keyword">sum</span>(<span class="keyword">cost</span>) <span class="keyword">over</span>(<span class="keyword">partition</span> <span class="keyword">by</span> <span class="keyword">name</span> <span class="keyword">order</span> <span class="keyword">by</span> orderdate <span class="keyword">rows</span> <span class="keyword">between</span> <span class="number">1</span> <span class="keyword">PRECEDING</span> <span class="keyword">AND</span> <span class="number">1</span> <span class="keyword">FOLLOWING</span> ) <span class="keyword">as</span> sample6,<span class="comment">--当前行和前边一行及后面一行</span></span><br><span class="line"><span class="keyword">sum</span>(<span class="keyword">cost</span>) <span class="keyword">over</span>(<span class="keyword">partition</span> <span class="keyword">by</span> <span class="keyword">name</span> <span class="keyword">order</span> <span class="keyword">by</span> orderdate <span class="keyword">rows</span> <span class="keyword">between</span> <span class="keyword">current</span> <span class="keyword">row</span> <span class="keyword">and</span> <span class="keyword">UNBOUNDED</span> <span class="keyword">FOLLOWING</span> ) <span class="keyword">as</span> sample7 <span class="comment">--当前行及后面所有行</span></span><br><span class="line"><span class="keyword">from</span> business;</span><br></pre></td></tr></table></figure>
+<h4 id="2-5-查询顾客上次的购买时间"><a href="#2-5-查询顾客上次的购买时间" class="headerlink" title="2.5 查询顾客上次的购买时间"></a>2.5 查询顾客上次的购买时间</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">name</span>, orderdate, <span class="keyword">cost</span>, lag(orderdate, <span class="number">1</span>, <span class="string">'1900-01-01'</span>) <span class="keyword">over</span>(<span class="keyword">partition</span> <span class="keyword">by</span> <span class="keyword">name</span>, <span class="keyword">order</span> <span class="keyword">by</span> orderdate) <span class="keyword">as</span> time1</span><br><span class="line"><span class="keyword">from</span> business;</span><br></pre></td></tr></table></figure>
+<h4 id="2-6-查询前20-时间的订单信息"><a href="#2-6-查询前20-时间的订单信息" class="headerlink" title="2.6 查询前20%时间的订单信息"></a>2.6 查询前20%时间的订单信息</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> *</span><br><span class="line"><span class="keyword">from</span> (<span class="keyword">select</span> <span class="keyword">name</span>,orderdate,<span class="keyword">cost</span>, ntile(<span class="number">5</span>) <span class="keyword">over</span>(<span class="keyword">order</span> <span class="keyword">by</span> orderdate) sorted <span class="keyword">from</span> business)t</span><br><span class="line"><span class="keyword">where</span> sorted = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -409,7 +310,11 @@
           
           <div class="post-tags">
             
-              <a href="/tags/计算机网络/" rel="tag"><i class="fa fa-tag"></i> 计算机网络</a>
+              <a href="/tags/Hadoop/" rel="tag"><i class="fa fa-tag"></i> Hadoop</a>
+            
+              <a href="/tags/大数据/" rel="tag"><i class="fa fa-tag"></i> 大数据</a>
+            
+              <a href="/tags/Hive/" rel="tag"><i class="fa fa-tag"></i> Hive</a>
             
           </div>
         
@@ -419,8 +324,8 @@
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
               
-                <a href="/2019/01/23/前后端通过Json传数据，并将Json转化成实体类/" rel="next" title="前后端通过Json传数据，并将Json转化成实体类">
-                  <i class="fa fa-chevron-left"></i> 前后端通过Json传数据，并将Json转化成实体类
+                <a href="/2020/11/27/Hive之分桶/" rel="next" title="Hive之分桶">
+                  <i class="fa fa-chevron-left"></i> Hive之分桶
                 </a>
               
             </div>
@@ -428,10 +333,6 @@
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-              
-                <a href="/2019/02/01/数据库事务并发访问中的问题及隔离机制/" rel="prev" title="数据库事务并发访问中的问题及隔离机制">
-                  数据库事务并发访问中的问题及隔离机制 <i class="fa fa-chevron-right"></i>
-                </a>
               
             </div>
           </div>
@@ -480,7 +381,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-HTTP简介"><span class="nav-number">1.</span> <span class="nav-text">1.HTTP简介</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#HTTP协议（HyperText-Transfer-Protocol，超文本传输协议）是因特网上应用最为广泛的一种网络传输协议，所有的WWW文件都必须遵守这个标准。HTTP是一个基于TCP-IP通信协议来传递数据（HTML-文件-图片文件-查询结果等）。"><span class="nav-number">1.0.1.</span> <span class="nav-text">HTTP协议（HyperText Transfer Protocol，超文本传输协议）是因特网上应用最为广泛的一种网络传输协议，所有的WWW文件都必须遵守这个标准。HTTP是一个基于TCP/IP通信协议来传递数据（HTML 文件, 图片文件, 查询结果等）。</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#HTTP三点注意事项："><span class="nav-number">1.0.2.</span> <span class="nav-text">HTTP三点注意事项：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-HTTP消息结构"><span class="nav-number">2.</span> <span class="nav-text">2.HTTP消息结构</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#客户端请求消息：客户端发送一个HTTP请求到服务器的请求消息包括以下格式：请求行（request-line）、请求头部（header）、空行和请求数据四个部分组成，下图给出了请求报文的一般格式。"><span class="nav-number">2.0.1.</span> <span class="nav-text">客户端请求消息：客户端发送一个HTTP请求到服务器的请求消息包括以下格式：请求行（request line）、请求头部（header）、空行和请求数据四个部分组成，下图给出了请求报文的一般格式。</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#服务器响应消息：HTTP响应也由四个部分组成，分别是：状态行、消息报头、空行和响应正文。"><span class="nav-number">2.1.</span> <span class="nav-text">服务器响应消息：HTTP响应也由四个部分组成，分别是：状态行、消息报头、空行和响应正文。</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-HTTP请求方法"><span class="nav-number">3.</span> <span class="nav-text">3.HTTP请求方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-HTTP常见状态码"><span class="nav-number">4.</span> <span class="nav-text">4.HTTP常见状态码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-HTTP中POST与GET的区别"><span class="nav-number">5.</span> <span class="nav-text">5.HTTP中POST与GET的区别</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、常见窗口函数函数"><span class="nav-number">1.</span> <span class="nav-text">一、常见窗口函数函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、案例实操"><span class="nav-number">2.</span> <span class="nav-text">二、案例实操</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-数据准备-business表"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 数据准备 business表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-查询在2017年4月份购买过的顾客及总人数"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 查询在2017年4月份购买过的顾客及总人数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-查询顾客的购买明细及月购买总额"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 查询顾客的购买明细及月购买总额</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-上述的场景-要将cost按照日期进行累加"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 上述的场景,要将cost按照日期进行累加</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-查询顾客上次的购买时间"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 查询顾客上次的购买时间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-6-查询前20-时间的订单信息"><span class="nav-number">2.6.</span> <span class="nav-text">2.6 查询前20%时间的订单信息</span></a></li></ol></li></ol></div>
         
       </div>
       <!--/noindex-->
