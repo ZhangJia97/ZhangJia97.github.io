@@ -54,18 +54,20 @@
   };
 </script>
 
-  <meta name="description" content="用心做自己喜欢的事">
-<meta property="og:type" content="website">
-<meta property="og:title" content="随我的博客">
-<meta property="og:url" content="http://suiwo.xyz/tags/锁/index.html">
+  <meta name="description" content="使用HiveDML将数据进行导入导出。">
+<meta name="keywords" content="Hadoop,大数据,Hive">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HiveDML数据操作之导入导出">
+<meta property="og:url" content="http://suiwo.xyz/2020/11/24/HiveDML数据操作之导入导出/index.html">
 <meta property="og:site_name" content="随我的博客">
-<meta property="og:description" content="用心做自己喜欢的事">
+<meta property="og:description" content="使用HiveDML将数据进行导入导出。">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2023-01-07T14:42:25.021Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="随我的博客">
-<meta name="twitter:description" content="用心做自己喜欢的事">
+<meta name="twitter:title" content="HiveDML数据操作之导入导出">
+<meta name="twitter:description" content="使用HiveDML将数据进行导入导出。">
   <link rel="alternate" href="/atom.xml" title="随我的博客" type="application/atom+xml">
-  <link rel="canonical" href="http://suiwo.xyz/tags/锁/">
+  <link rel="canonical" href="http://suiwo.xyz/2020/11/24/HiveDML数据操作之导入导出/">
 
 
 <script id="page-configurations">
@@ -73,13 +75,13 @@
   CONFIG.page = {
     sidebar: "",
     isHome: false,
-    isPost: false,
+    isPost: true,
     isPage: false,
     isArchive: false
   };
 </script>
 
-  <title>标签: 锁 | 随我的博客</title>
+  <title>HiveDML数据操作之导入导出 | 随我的博客</title>
   <meta name="generator" content="Hexo 3.7.1">
   
 
@@ -210,226 +212,140 @@
         <div class="content-wrap">
             
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
   
   
   
-  <div class="post-block tag">
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1 class="collection-header">锁<small>标签</small>
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2020/11/24/HiveDML数据操作之导入导出/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="随我">
+      <meta itemprop="description" content="用心做自己喜欢的事">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="随我的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">HiveDML数据操作之导入导出
+
+          
         </h1>
-      </div>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2020-11-24 14:54:50" itemprop="dateCreated datePublished" datetime="2020-11-24T14:54:50+08:00">2020-11-24</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/大数据/" itemprop="url" rel="index"><span itemprop="name">大数据</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <div class="post-description">使用HiveDML将数据进行导入导出。</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
+        <h3 id="数据导入"><a href="#数据导入" class="headerlink" title="数据导入"></a>数据导入</h3><p>向表中加载数据Load<br>语法<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">load</span> <span class="keyword">data</span> [<span class="keyword">local</span>] inpath <span class="string">'/opt/module/datas/student.txt'</span> [overwrite] | <span class="keyword">into</span> <span class="keyword">table</span> student [<span class="keyword">partition</span> (partcol1=val1,...)];</span><br></pre></td></tr></table></figure></p>
+<p>load data：表示加载数据<br>local： 表示从本地数据中加载数据到Hive表中，否则是从HDFS中加载数据到Hive表<br>inpath： 表示加载数据的路径<br>overwrite： 表示覆盖表中的已有数据，否则表示追加<br>into table： 表示加载到哪张表<br>student： 表示表名<br>partition： 表示上传到指定的分区</p>
+<p>案例实操</p>
+<p>创建一张表<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> student(<span class="keyword">id</span> <span class="keyword">string</span>, <span class="keyword">name</span> <span class="keyword">string</span>)</span><br><span class="line"><span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">'\t'</span>;</span><br></pre></td></tr></table></figure></p>
+<p>加载本地文件到hive<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">load</span> <span class="keyword">data</span> <span class="keyword">local</span> inpath <span class="string">'/opt/module/datas/student.txt'</span> <span class="keyword">into</span> <span class="keyword">table</span> default.student;</span><br></pre></td></tr></table></figure></p>
+<p>加载HDFS文件到Hive<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">load</span> <span class="keyword">data</span> inpath <span class="string">'/user/suiwo/hive/student.txt'</span> <span class="keyword">into</span> <span class="keyword">table</span> default.student;</span><br></pre></td></tr></table></figure></p>
+<p>加载数据覆盖表中的已有的数据<br>上传文件到HDFS<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dfs -put /opt/module/datas/student.txt /user/suiwo/hive;</span><br></pre></td></tr></table></figure></p>
+<p>加载数据覆盖表中已有的数据<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">load</span> <span class="keyword">data</span> inpath <span class="string">"/user/suiwo/hive/student.txt"</span> overwrite <span class="keyword">into</span> <span class="keyword">table</span> default.student;</span><br></pre></td></tr></table></figure></p>
+<p>通过查询语句向表中插入数据<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">insert</span> overwrite <span class="keyword">table</span> student <span class="keyword">partition</span>(<span class="keyword">month</span>=<span class="string">'201708'</span>)</span><br><span class="line"><span class="keyword">select</span> <span class="keyword">id</span>, <span class="keyword">name</span> <span class="keyword">from</span> student <span class="keyword">where</span> <span class="keyword">month</span>=<span class="string">'201709'</span>;</span><br></pre></td></tr></table></figure></p>
+<p>查询语句中创建表并加载数据<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">exists</span> student3</span><br><span class="line"><span class="keyword">as</span> <span class="keyword">select</span> <span class="keyword">id</span>, <span class="keyword">name</span> <span class="keyword">from</span> student;</span><br></pre></td></tr></table></figure></p>
+<p>import数据到指定的Hive表中（此处导入的数据格式应该是和导出的数据格式相同）<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import table student2 partition(month='201709') from '/user/hive/warehouse/export/student';</span><br></pre></td></tr></table></figure></p>
+<h3 id="数据导出"><a href="#数据导出" class="headerlink" title="数据导出"></a>数据导出</h3><p>将查询的结果导出到本地（将local去掉便是将数据导出到HDFS）<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">insert</span> overwrite <span class="keyword">local</span> <span class="keyword">directory</span> <span class="string">'/opt/module/datas/export/student1'</span> <span class="keyword">select</span> * <span class="keyword">from</span> student;</span><br></pre></td></tr></table></figure></p>
+<p>将查询的结果格式化导出到本地<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">insert</span> overwrite <span class="keyword">local</span> <span class="keyword">directory</span> <span class="string">'/opt/module/datas/export/student1'</span> <span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span> dields <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">'\t'</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> student;</span><br></pre></td></tr></table></figure></p>
+<p>Hadoop命令导出到本地<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dfs -get /user/hive/warehouse/student/month=2017/00000_0</span><br><span class="line">/opt/module/datas/export/studemt3.txt</span><br></pre></td></tr></table></figure></p>
+<p>Hive Shell 命令导出<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin/hive -e <span class="string">'select * from default.student;'</span> &gt; /opt/module/datas/<span class="built_in">export</span>/student3.txt;</span><br></pre></td></tr></table></figure></p>
+<p>export 导出到HDFS上<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export table default.student to '/user/hive/warehouse/export/student'</span><br></pre></td></tr></table></figure></p>
 
-  
-  
+    </div>
 
-  
     
-    <div class="collection-year">
-      <h1 class="collection-header">2019</h1>
-    </div>
-  
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
+    
+    
         
-          <a class="post-title-link" href="/2019/04/21/synchronized及其优化/" itemprop="url">
-            <span itemprop="name">synchronized及其优化</span>
-          </a>
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Hadoop/" rel="tag"><i class="fa fa-tag"></i> Hadoop</a>
+            
+              <a href="/tags/大数据/" rel="tag"><i class="fa fa-tag"></i> 大数据</a>
+            
+              <a href="/tags/Hive/" rel="tag"><i class="fa fa-tag"></i> Hive</a>
+            
+          </div>
         
-      </h2>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2019-04-21T01:03:43+08:00"
-              content="2019-04-21">
-          04-21
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-  
-  
-
-  
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
         
-          <a class="post-title-link" href="/2019/04/20/synchronized,lock和volatile的区别/" itemprop="url">
-            <span itemprop="name">synchronized,lock和volatile的区别</span>
-          </a>
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2020/11/23/HiveDDL数据操作/" rel="next" title="HiveDDL数据操作">
+                  <i class="fa fa-chevron-left"></i> HiveDDL数据操作
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
         
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2019-04-20T21:33:50+08:00"
-              content="2019-04-20">
-          04-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-  
-  
-
-  
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2019/04/20/Java中Lock接口解析/" itemprop="url">
-            <span itemprop="name">Java中Lock接口解析</span>
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2019-04-20T19:03:52+08:00"
-              content="2019-04-20">
-          04-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-  
-  
-
-  
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2019/02/13/redis如何实现分布式锁/" itemprop="url">
-            <span itemprop="name">redis如何实现分布式锁</span>
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2019-02-13T23:32:00+08:00"
-              content="2019-02-13">
-          02-13
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-  
-  
-
-  
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2019/02/13/当前读与快照读/" itemprop="url">
-            <span itemprop="name">当前读与快照读</span>
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2019-02-13T14:44:25+08:00"
-              content="2019-02-13">
-          02-13
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-  
-  
-
-  
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2019/02/01/数据库事务并发访问中的问题及隔离机制/" itemprop="url">
-            <span itemprop="name">数据库事务并发访问中的问题及隔离机制</span>
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2019-02-01T19:25:28+08:00"
-              content="2019-02-01">
-          02-01
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    </div>
+      </footer>
+    
   </div>
   
   
   
+  </article>
 
-  
-
+  </div>
 
 
           </div>
@@ -448,6 +364,11 @@
 
   <aside class="sidebar">
     <div class="sidebar-inner">
+        
+        
+        
+        
+      
 
       <ul class="sidebar-nav motion-element">
         <li class="sidebar-nav-toc" data-target="post-toc-wrap">
@@ -460,6 +381,8 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据导入"><span class="nav-number">1.</span> <span class="nav-text">数据导入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据导出"><span class="nav-number">2.</span> <span class="nav-text">数据导出</span></a></li></ol></div>
+        
       </div>
       <!--/noindex-->
 
