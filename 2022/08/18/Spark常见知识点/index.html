@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.ico?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.ico?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.ico?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.ico?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="本文将对Spark中常遇到的知识点和面试题进行总结。">
+<meta name="keywords" content="大数据,Spark">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spark常见知识点">
+<meta property="og:url" content="http://suiwo.xyz/2022/08/18/Spark常见知识点/index.html">
+<meta property="og:site_name" content="随我的博客">
+<meta property="og:description" content="本文将对Spark中常遇到的知识点和面试题进行总结。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://suiwo.xyz/images/spark常见知识点/B88CDF76-5160-49FE-AB4C-7EA898015A4B_4_5005_c.jpeg">
+<meta property="og:image" content="http://suiwo.xyz/images/spark常见知识点/A5561B89-2C96-4E5F-8833-9558D80B12D0.jpeg">
+<meta property="og:updated_time" content="2023-01-07T15:51:51.019Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spark常见知识点">
+<meta name="twitter:description" content="本文将对Spark中常遇到的知识点和面试题进行总结。">
+<meta name="twitter:image" content="http://suiwo.xyz/images/spark常见知识点/B88CDF76-5160-49FE-AB4C-7EA898015A4B_4_5005_c.jpeg">
+  <link rel="alternate" href="/atom.xml" title="随我的博客" type="application/atom+xml">
+  <link rel="canonical" href="http://suiwo.xyz/2022/08/18/Spark常见知识点/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Spark常见知识点 | 随我的博客</title>
+  <meta name="generator" content="Hexo 3.7.1">
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a href="https://github.com/ZhangJia97" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">随我的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录学习的点滴</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2022/08/18/Spark常见知识点/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="随我">
+      <meta itemprop="description" content="用心做自己喜欢的事">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="随我的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Spark常见知识点
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2022-08-18 18:29:20" itemprop="dateCreated datePublished" datetime="2022-08-18T18:29:20+08:00">2022-08-18</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Spark/" itemprop="url" rel="index"><span itemprop="name">Spark</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <div class="post-description">本文将对Spark中常遇到的知识点和面试题进行总结。</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="https://github.com/will-che/BigData-Interview" target="_blank" rel="noopener">大数据面试题【github】</a></p>
+<h3 id="1-spark运行架构"><a href="#1-spark运行架构" class="headerlink" title="1. spark运行架构"></a>1. spark运行架构</h3><p><img src="/images/spark常见知识点/B88CDF76-5160-49FE-AB4C-7EA898015A4B_4_5005_c.jpeg" alt="B88CDF76-5160-49FE-AB4C-7EA898015A4B_4_5005_c.jpeg"></p>
+<ol>
+<li>当<code>Spark应用</code>提交时，根据提交的参数在<code>Driver</code>中创建进程，初始化<code>SparkContext对象</code>。并找到<code>Cluster Manager（Master）进程</code>，对Spark应用进行注册。</li>
+<li>当<code>Master</code>收到Spark应用注册申请，会发送请求给<code>Worker</code>，进行资源的调度和分配。</li>
+<li>Worker收到Master请求后，会为Spark应用启动<code>Executor进程</code>。具体数量由参数决定。Executor启动后，会向Driver反注册，这样Driver就可以知道哪些Executor在运行。</li>
+<li>Driver会根据我们对RDD定义的操作，提交一堆的<code>Task</code>去Executor上执行，<code>Task</code>里面执行的就是具体的<code>map、flatMap</code>这些操作。</li>
+</ol>
+<h3 id="2-一个spark程序的执行流程"><a href="#2-一个spark程序的执行流程" class="headerlink" title="2.一个spark程序的执行流程"></a>2.一个spark程序的执行流程</h3><p><a href="https://zhuanlan.zhihu.com/p/35713084" target="_blank" rel="noopener">参考文章</a><br><img src="/images/spark常见知识点/A5561B89-2C96-4E5F-8833-9558D80B12D0.jpeg" alt="A5561B89-2C96-4E5F-8833-9558D80B12D0.jpeg"></p>
+<ul>
+<li><p>A: 每当Driver进程被启动之后，都会做哪些事情来初始化操作呢？首先它将发送请求到Master上，进行Spark应用程序的注册，也就是我们要让Master知道，现在有一个新的Spark应用程序要运行了。</p>
+</li>
+<li><p>B: 那Master在接收到Spark应用程序的注册申请之后，会发送给Worker，让其进行资源的调度和分配。这也说明资源分配是由executor来分配管理。</p>
+</li>
+<li><p>C: Worter接收Master的请求之后，会为Spark应用启动Executor，来给分配资源。</p>
+</li>
+<li><p>D: Executor启动分配资源好后，就会向Driver进行反注册，这也Driver就会知道哪些Executor是为他进行服务的了。</p>
+</li>
+<li><p>E: 当Driver得到注册了Executor之后，就可以开启正式执行我们的spark应用程序了。首先第一步，就是创建初始RDD，读取数据源，再执行之后的一系列算子。HDFS文件内容被读取到多个worker节点上，形成内存中的分布式数据集，也就是初始RDD 。</p>
+</li>
+<li><p>F: 这时候，Driver就会根据Job任务中的算子形成对应的task，最后提交给Executor，来分配task进行计算的线程。</p>
+</li>
+<li><p>G: 这时的task就会去调用对应自己任务的数据(也就是第一步初始化RDD的partition)来计算，并且task会对调用过来的RDD的partition数据执行指定的算子操作，形成新的RDD的partition，这时一个大的循环就结束了。</p>
+</li>
+</ul>
+<h3 id="3-spark的shuffle介绍"><a href="#3-spark的shuffle介绍" class="headerlink" title="3. spark的shuffle介绍"></a>3. spark的shuffle介绍</h3><p>待整理</p>
+<h3 id="4-Spark的-partitioner-都有哪些"><a href="#4-Spark的-partitioner-都有哪些" class="headerlink" title="4. Spark的 partitioner 都有哪些?"></a>4. Spark的 partitioner 都有哪些?</h3><p><code>Partitioner</code>主要由两个实现类：<code>HashPartitioner</code>和<code>RangePartitioner</code>。<code>HashPartitioner</code>主要用于<code>tansformation算子</code>的默认实现。<code>RangePartitoner</code>主要用于<code>sortBy</code>和<code>sortByKey</code>。</p>
+<ul>
+<li><p>HashPartitoner: numPartitions方法返回传入的分区数，getPartition方法使用key的hashCode值对分区数取模得到PartitionId，写入到对应的bucket中。</p>
+</li>
+<li><p>RangePartioner: 相比于HashPartitoner，RangePartioner能保证每个分区中的数据量的均匀</p>
+</li>
+</ul>
+<h3 id="5-coalesce和repartition区别"><a href="#5-coalesce和repartition区别" class="headerlink" title="5. coalesce和repartition区别"></a>5. coalesce和repartition区别</h3><ul>
+<li>coalesce用已有的partition去尽量减少数据shuffle。</li>
+<li>repartition创建新的partition并且使用 full shuffle。repartition使得每个partition的数据大小都粗略地相等。</li>
+<li>coalesce会使得每个partition不同数量的数据分布（有些时候各个partition会有不同的size）<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">repartition</span></span>(numPartitions: <span class="type">Int</span>)(<span class="keyword">implicit</span> ord: <span class="type">Ordering</span>[<span class="type">T</span>] = <span class="literal">null</span>): <span class="type">RDD</span>[<span class="type">T</span>] = withScope &#123;</span><br><span class="line">  coalesce(numPartitions, shuffle = <span class="literal">true</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="6-coalesce如果不进行shuffle为什么会导致数据倾斜"><a href="#6-coalesce如果不进行shuffle为什么会导致数据倾斜" class="headerlink" title="6. coalesce如果不进行shuffle为什么会导致数据倾斜"></a>6. coalesce如果不进行shuffle为什么会导致数据倾斜</h3><ol>
+<li>进行分区缩小时，如果原分区为3个分区中的数据分别为[1,2],[3,4],[5,6]，此时缩小为2若不shuffle，便可能是[1,2],[3,4,5,6]或[1,2,3,4],[5,6]</li>
+<li>进行分区缩小时，如果原分区为2个分区中的数据分别为[1,2],[3,4]，此时扩大为3若不shuffle，便是[1,2],[3,4],[]</li>
+</ol>
+<h3 id="7-Spark有哪几种join"><a href="#7-Spark有哪几种join" class="headerlink" title="7. Spark有哪几种join"></a>7. Spark有哪几种join</h3><p>spark中和join相关的算子有这几个：<code>join</code>, <code>fullOuterJoin</code>, <code>leftOuterJoin</code>, <code>rightOuterJoin</code></p>
+<ul>
+<li><p><code>join</code>: join函数会输出两个RDD中key相同的所有项，并将它们的value联结起来，它联结的key要求在两个表中都存在，类似于SQL中的INNER JOIN。但它不满足交换律，a.join(b)与b.join(a)的结果不完全相同，值插入的顺序与调用关系有关。</p>
+</li>
+<li><p><code>leftOuterJoin</code>: leftOuterJoin会保留对象的所有key，而用None填充在参数RDD other中缺失的值，因此调用顺序会使结果完全不同。如下面展示的结果，</p>
+</li>
+<li><p><code>rightOuterJoin</code>: rightOuterJoin与leftOuterJoin基本一致，区别在于它的结果保留的是参数other这个RDD中所有的key。</p>
+</li>
+<li><p><code>fullOuterJoin</code>: fullOuterJoin会保留两个RDD中所有的key，因此所有的值列都有可能出现缺失的情况，所有的值列都会转为Some对象。</p>
+</li>
+</ul>
+<h3 id="8-RDD有哪些特点"><a href="#8-RDD有哪些特点" class="headerlink" title="8. RDD有哪些特点"></a>8. RDD有哪些特点</h3><ol>
+<li><code>a list of partition</code>: RDD是一个有多个partition（某个节点里的某一片连续的数据）组成的list，将数据加载为RDD是，一般会遵循数据的本地性（一般一个hdfs里的block会记载成一个partition）。</li>
+<li><code>a function for computing each split</code>: RDD的每个partition上面都会有function，也就是函数应用，其作用是实现RDD之间的partition的转换。</li>
+<li><code>A list of dependencies on other RDDs</code>: RDD会记录他的依赖，为了容错（重算，cache，checkpoint），也就是说在内存中的RDD操作是出错或丢失会进行重算。</li>
+<li><code>Optionally, a partitioner for key-value RDDs</code>: 可选项，如果RDD里面存的数据时key-value形式，则可以传递一个自定义的partitioner进行重分区，例如这里自定义的partitioner是基于key进行分区，那则会将不容的RDD里面相同的key的数据放到同一个partition里面。</li>
+<li><code>Optionally, a list of prefered locations to compute each split on</code>: 根据数据的位置进行最优位置的计算。</li>
+</ol>
+<h3 id="9-讲一下宽依赖以及窄依赖"><a href="#9-讲一下宽依赖以及窄依赖" class="headerlink" title="9. 讲一下宽依赖以及窄依赖"></a>9. 讲一下宽依赖以及窄依赖</h3><p><a href="https://www.jianshu.com/p/736a4e628f0f" target="_blank" rel="noopener">spark宽依赖和窄依赖</a><br>宽依赖和窄依赖的区别就是RDD之间是否存在shuffle操作。<br>如果父RDD分区对应1个子RDD的分区就是窄依赖，否则就是宽依赖。</p>
+<h4 id="1-窄依赖"><a href="#1-窄依赖" class="headerlink" title="1.窄依赖"></a>1.窄依赖</h4><p>窄依赖指父RDD的每一个分区最多被一个子RDD的分区所用，即一个父RDD对应一个子RDD或者多个父RDD对应一个子RDD。</p>
+<ul>
+<li>map, filter, union 属于窄依赖</li>
+<li>co-partioned join 属于窄依赖<blockquote>
+<p>join分为宽依赖和窄依赖，如果RDD有相同的partitioner，那么将不会引起shuffle，因此我们可以对RDD进行Hash分区。分别对A和B用同一个函数进行Partition，比如按照首字母进行Partition，那么A和B都可以分成26个Partition，并且A1只需要和B1进行join，A1不需要和B剩下的25个Partition进行join，这样就大大的减少了join次数，最好的办法是对表进行分区，每次只取两个对应分区的数据进行join操作。</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="2-宽依赖"><a href="#2-宽依赖" class="headerlink" title="2.宽依赖"></a>2.宽依赖</h4><p>宽依赖指子RDD的每个分区都依赖于父RDD的多个分区</p>
+<ul>
+<li>group by和join 都属于宽依赖</li>
+<li>DAGScheduler从当前算子往前推，遇到宽依赖就生成一个stage。</li>
+</ul>
+<h4 id="3-为什么spark将依赖分位窄依赖和宽依赖"><a href="#3-为什么spark将依赖分位窄依赖和宽依赖" class="headerlink" title="3.为什么spark将依赖分位窄依赖和宽依赖"></a>3.为什么spark将依赖分位窄依赖和宽依赖</h4><ul>
+<li><p>窄依赖<br>可以支持在一个集群的Executor上，以pipeline管道形式顺序执行多条命令。同时也由于分区内的计算收敛，不需要依赖所有分区的数据，可以并行的在不同的节点计算。所以他的失败恢复也更简单。只需要重新计算丢失的parent partition即可。</p>
+</li>
+<li><p>宽依赖<br>宽依赖需要所有父分区都是可用的，必须等RDD的parent partition数据全部ready之后才能进行计算。从数据恢复的角度，shuffle dependency牵扯到RDD各级的多个parent partition。对于宽依赖，重算的父RDD分区对应多个子RDD分区，这样实际上父RDD 中只有一部分的数据是被用于恢复这个丢失的子RDD分区的，另一部分对应子RDD的其它未丢失分区，这就造成了多余的计算；更一般的，宽依赖中子RDD分区通常来自多个父RDD分区，极端情况下，所有的父RDD分区都要进行重新计算。</p>
+</li>
+</ul>
+<h3 id="10-Spark中的算子有哪些"><a href="#10-Spark中的算子有哪些" class="headerlink" title="10. Spark中的算子有哪些"></a>10. Spark中的算子有哪些</h3><p>Spark分位两大类算子：<br>Transformation 变换/转换算子：这种变换并不触发提交作业，完成作业中间过程处理。Transformation操作是延迟计算的，也就是说从一个RDD转换成另一个RDD的转换操作不是马上执行，需要等到有Action操作的时候才会真正触发计算。</p>
+<p>Action行动算子：这类算子会触发SparkContext提交Job作业。</p>
+<ol>
+<li><p>Value数据类型的Transformation算子</p>
+<ol>
+<li><p>一对一<br>map算子<br>flatMap算子<br>mapPartitions算子<br>glom算子</p>
+</li>
+<li><p>多对一<br>union算子<br>cartesian算子（笛卡尔）</p>
+</li>
+<li><p>多对多<br>groupBy算子</p>
+</li>
+<li><p>输出为输入子集<br>filter算子<br>distinct算子<br>subtract算子（差集）<br>sample算子（抽样调查）<br>takeSample算子</p>
+</li>
+<li><p>Cache型<br>cache算子<br>persist算子</p>
+</li>
+</ol>
+</li>
+<li><p>Key-Value数据类型的Transformation算子</p>
+<ol>
+<li><p>一对一<br>mapValues算子 [对于(K,V)形式的类型只对V进行操作]</p>
+</li>
+<li><p>对单个RDD或两个RDD聚集<br>combineByKey算子<br>reduceByKey算子<br>partitionBy算子<br>Cogroup算子</p>
+</li>
+<li><p>连接<br>join算子<br>leftOutJoin 和 rightOutJoin算子</p>
+</li>
+</ol>
+</li>
+</ol>
+<ol start="3">
+<li><p>Action算子</p>
+<ol>
+<li><p>无输出<br>foreach算子</p>
+</li>
+<li><p>HDFS算子<br>saveAsTextFile算子<br>saveAsObjectFile算子</p>
+</li>
+<li><p>Scala集合和数据类型<br>collect算子<br>collectAsMap算子<br>reduceByKeyLocally算子<br>lookup算子<br>count算子<br>top算子<br>reduce算子<br>fold算子<br>aggregate算子<br>countByValue<br>countByKey</p>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="11-RDD的缓存级别"><a href="#11-RDD的缓存级别" class="headerlink" title="11. RDD的缓存级别"></a>11. RDD的缓存级别</h3><ol>
+<li>NONE：什么类型都不是</li>
+<li>DISK_ONLY：磁盘</li>
+<li>DISK_ONLY_2：磁盘；双副本</li>
+<li>MEMORY_ONLY：内存；反序列化；把RDD作为反序列化的方式存储，假如RDD的内容存不下，剩余的分区在以后需要时会重新计算，不会刷到磁盘上</li>
+<li>MEMORY_ONLY_2：内存；反序列化；双副本。</li>
+<li>MEMORY_ONLY_SER：内存；序列化；这种序列化方式，每一个partition以字节数据存储，好处是能带来更好的空间存储，但CPU耗费高</li>
+<li>MEMORY_ONLY_SER_2：内存；序列化；双副本</li>
+<li>MEMORY_AND_DISK：内存 + 磁盘；反序列化；双副本；RDD以反序列化的方式存内存，假如RDD的内容存不下，剩余的会存到磁盘</li>
+<li>MEMORY_AND_DISK_2：内存 + 磁盘；反序列化；双副本</li>
+<li>MEMORY_AND_DISK_SER：内存 + 磁盘；序列化</li>
+<li>MEMORY_AND_DISK_SER_2：内存 + 磁盘；序列化；双副本</li>
+</ol>
+<h3 id="12-RDD懒加载是什么意思"><a href="#12-RDD懒加载是什么意思" class="headerlink" title="12. RDD懒加载是什么意思"></a>12. RDD懒加载是什么意思</h3><p>Transformation 操作是延迟计算的，也就是说从一个RDD转换生成另一个RDD的转换操作不是马上执行，需要等到有Acion操作的时候才会真正触发运算,这也就是懒加载。</p>
+<h3 id="13-讲一下spark的几种部署方式"><a href="#13-讲一下spark的几种部署方式" class="headerlink" title="13. 讲一下spark的几种部署方式"></a>13. 讲一下spark的几种部署方式</h3><p>目前,除了local模式为本地调试模式以为, Spark支持三种分布式部署方式，分别是standalone、spark on mesos和 spark on YARN。</p>
+<ol>
+<li><p>Standalone模式<br>即独立模式，自带完整的服务，可单独部署到一个集群中，无需依赖任何其他资源管理系统。从一定程度上说，该模式是其他两种的基础。目前Spark在standalone模式下是没有任何单点故障问题的，这是借助zookeeper实现的，思想类似于Hbase master单点故障解决方案。</p>
+</li>
+<li><p>Spark On YARN模式<br>spark on yarn 的支持两种模式：<br>yarn-cluster：适用于生产环境；<br>yarn-client：适用于交互、调试，希望立即看到app的输出<br>yarn-cluster和yarn-client的区别在于yarn appMaster，每个yarn app实例有一个appMaster进程，是为app启动的第一个container；负责从ResourceManager请求资源，获取到资源后，告诉NodeManager为其启动container。yarn-cluster和yarn-client模式内部实现还是有很大的区别。如果你需要用于生产环境，那么请选择yarn-cluster；而如果你仅仅是Debug程序，可以选择yarn-client。</p>
+</li>
+<li><p>Spark On Mesos模式<br>略</p>
+</li>
+</ol>
+<h3 id="14-Spark-on-yarn模式下的cluster模式和client模式有什么区别"><a href="#14-Spark-on-yarn模式下的cluster模式和client模式有什么区别" class="headerlink" title="14. Spark on yarn模式下的cluster模式和client模式有什么区别"></a>14. Spark on yarn模式下的cluster模式和client模式有什么区别</h3><ol>
+<li>yarn-cluster适用于生产环境。而yarn-client适用于交互和调试，也就是希望快速地看到application的输出。</li>
+<li>yarn-cluster 和 yarn-client 模式的区别其实就是 Application Master 进程的区别，yarn-cluster 模式下，driver 运行在 AM(Application Master)中，它负责向 YARN 申请资源，并监督作业的运行状况。当用户提交了作业之后，就可以关掉 Client，作业会继续在 YARN 上运行。然而 yarn-cluster 模式不适合运行交互类型的作业。而 yarn-client 模式下，Application Master 仅仅向 YARN 请求 executor，Client 会和请求的container 通信来调度他们工作，也就是说 Client 不能离开。</li>
+</ol>
+<h3 id="15-spark运行原理，从提交一个jar到最后返回结果"><a href="#15-spark运行原理，从提交一个jar到最后返回结果" class="headerlink" title="15. spark运行原理，从提交一个jar到最后返回结果"></a>15. spark运行原理，从提交一个jar到最后返回结果</h3><ol>
+<li>spark-submit提交代码，执行new SparkContext(), 在SparkContext里构造DAGScheduler和TaskScheduler。</li>
+<li>TaskScheduler会通过后台的一个进程，连接master，向master注册Application。</li>
+<li>Master接收到Application请求后，会使用相应的资源调用算法。在Worker上为这个Application启动多个Executor。</li>
+<li>Executor启动后，会自己反向注册到TaskScheduler中。所有Executor都注册到Driver上之后，SparkContext结束初始化，接下来往下执行我们自己的代码。</li>
+<li>每执行到一个 Action，就会创建一个 Job。Job 会提交给 DAGScheduler。</li>
+<li>DAGScheduler 会将 Job划分为多个 stage，然后每个 stage 创建一个 TaskSet。</li>
+<li>TaskScheduler 会把每一个 TaskSet 里的 Task，提交到 Executor 上执行。</li>
+<li>Executor 上有线程池，每接收到一个 Task，就用 TaskRunner 封装，然后从线程池里取出一个线程执行这个 task。(TaskRunner 将我们编写的代码，拷贝，反序列化，执行 Task，每个 Task 执行 RDD 里的一个 partition)</li>
+</ol>
+<h3 id="16-Spark的stage是如何划分的"><a href="#16-Spark的stage是如何划分的" class="headerlink" title="16. Spark的stage是如何划分的"></a>16. Spark的stage是如何划分的</h3><p>stage的划分依据就是看是否产生了shuffle（即宽依赖），遇到一个shuffle操作就划分为前后两个stage。</p>
+<h3 id="17-Spark2-0为什么放弃了akka而用netty"><a href="#17-Spark2-0为什么放弃了akka而用netty" class="headerlink" title="17. Spark2.0为什么放弃了akka而用netty"></a>17. Spark2.0为什么放弃了akka而用netty</h3><ol>
+<li>很多Spark用户也使用Akka，但是由于Akka不同版本之间无法互相通信，这就要求用户必须使用跟Spark完全一样的Akka版本，导致用户无法升级Akka。</li>
+<li>Spark的Akka配置是针对Spark自身来调优的，可能跟用户自己代码中的Akka配置冲突。</li>
+<li>Spark用的Akka特性很少，这部分特性很容易自己实现。同时，这部分代码量相比Akka来说少很多，debug比较容易。如果遇到什么bug，也可以自己马上fix，不需要等Akka上游发布新版本。而且，Spark升级Akka本身又因为第一点会强制要求用户升级他们使用的Akka，对于某些用户来说是不现实的。</li>
+</ol>
+<h3 id="18-Spark的各种HA，master-worker-executor的ha"><a href="#18-Spark的各种HA，master-worker-executor的ha" class="headerlink" title="18. Spark的各种HA，master/worker/executor的ha"></a>18. Spark的各种HA，master/worker/executor的ha</h3><ul>
+<li><p>Master异常<br>spark可以在集群运行时启动一个或多个standby Master,当 Master 出现异常时,会根据规则启动某个standby master接管,在standlone模式下有如下几种配置</p>
+<ul>
+<li><p>ZOOKEEPER<br>集群数据持久化到zk中,当master出现异常时,zk通过选举机制选出新的master,新的master接管是需要从zk获取持久化信息</p>
+</li>
+<li><p>FILESYSTEM<br>集群元数据信息持久化到本地文件系统, 当master出现异常时,只需要在该机器上重新启动master,启动后新的master获取持久化信息并根据这些信息恢复集群状态</p>
+</li>
+<li><p>CUSTOM<br>自定义恢复方式,对 standloneRecoveryModeFactory 抽象类 进行实现并把该类配置到系统中,当master出现异常时,会根据用户自定义行为恢复集群</p>
+</li>
+<li><p>None<br>不持久化集群的元数据, 当 master出现异常时, 新启动的Master 不进行恢复集群状态,而是直接接管集群</p>
+</li>
+</ul>
+</li>
+<li><p>Worker异常<br>Worker以定时发送心跳给Master，让Master知道Worker的实时状态，当Worker出现超时，Master 调用 timeOutDeadWorker 方法进行处理,在处理时根据 Worker 运行的是 Executor 和 Driver 分别进行处理。<br>如果是Executor, Master先把该 Worker 上运行的Executor 发送信息ExecutorUpdate给对应的Driver,告知Executor已经丢失,同时把这些Executor从其应用程序列表删除, 另外, 相关Executor的异常也需要处理<br>如果是Driver, 则判断是否设置重新启动,如果需要,则调用Master.shedule方法进行调度,分配合适节点重启Driver, 如果不需要重启, 则删除该应用程序</p>
+</li>
+<li><p>Executor异常<br>Executor发生异常时由ExecutorRunner捕获该异常并发送ExecutorStateChanged信息给Worker<br>Worker接收到消息时, 在Worker的 handleExecutorStateChanged 方法中, 根据Executor状态进行信息更新,同时把Executor状态发送给Master<br>Master在接受Executor状态变化消息之后,如果发现其是异常退出,会尝试可用的Worker节点去启动Executor</p>
+</li>
+</ul>
+<h3 id="19-spark的内存管理机制-spark-1-6前后分析对比-spark2-0-做出来哪些优化"><a href="#19-spark的内存管理机制-spark-1-6前后分析对比-spark2-0-做出来哪些优化" class="headerlink" title="19. spark的内存管理机制,spark 1.6前后分析对比, spark2.0 做出来哪些优化"></a>19. spark的内存管理机制,spark 1.6前后分析对比, spark2.0 做出来哪些优化</h3><h3 id="20-讲一下spark中的广播变量"><a href="#20-讲一下spark中的广播变量" class="headerlink" title="20. 讲一下spark中的广播变量"></a>20. 讲一下spark中的广播变量</h3><p>broadcast 就是将数据从一个节点发送到其他各个节点上去。这样的场景很多，比如 driver 上有一张表，其他节点上运行的 task 需要 lookup 这张表，那么 driver 可以先把这张表 copy 到这些节点，这样 task 就可以在本地查表了。</p>
+<ul>
+<li><p>为什么broadcast是只读变量<br>这就涉及到一致性的问题，如果变量可以被更新，name一旦变量被某个节点更新，其他的节点要不要一块更新？如果多个节点同事更新，更新顺序是什么？怎么做同步？为了避免维护数据一致性问题，Spark 目前只支持 broadcast 只读变量。</p>
+</li>
+<li><p>为什么broadcast到节点而不是到每个task<br>因为每个task是一个线程，而且同在一个进程运行tasks都属于同一个application。因此每个节点（executor）上放一份就可以被所有task共享。</p>
+</li>
+<li><p>怎么实现broadcast<br>Driver先建一个本地文件夹用于存放需要broadcast的data，并启动一个可以访问该文件的HttpServer。当调用val bdata = sc.broadcast(data)时就把data写入文件夹，同时写入driver自己的blockManger中（StorageLevel 为内存＋磁盘）。如果func用到了 bdata，那么driver submitTask() 的时候会将bdata一同func进行序列化得到 serialized task，<strong>注意序列化的时候不会序列化bdata中包含的data。</strong>上一章讲到 serialized task从driverActor传递到executor时使用Akka的传消息机制，消息不能太大，而实际的data可能很大，所以这时候还不能broadcast data。</p>
+<blockquote>
+<p>driver 为什么会同时将 data 放到磁盘和 blockManager 里面？放到磁盘是为了让 》HttpServer 访问到，放到 blockManager 是为了让 driver program 自身使用 bdata 时方便（其实我觉得不放到 blockManger 里面也行）。<br><strong>那么什么时候传送真正的 data？</strong>在 executor 反序列化 task 的时候，会同时反序列化 task 中的 bdata 对象，这时候会调用 bdata 的 readObject() 方法。该方法先去本地 blockManager 那里询问 bdata 的 data 在不在 blockManager 里面，如果不在就使用下面的两种 fetch 方式之一去将 data fetch 过来。得到 data 后，将其存放到 blockManager 里面，这样后面运行的 task 如果需要 bdata 就不需要再去 fetch data 了。如果在，就直接拿来用了。</p>
+</blockquote>
+</li>
+</ul>
+<p>下面探讨 broadcast data 时候的两种实现方式：</p>
+<ul>
+<li>HttpBroadcast<br>无</li>
+<li>TorrentBroadcast<br>无</li>
+</ul>
+<h3 id="21-什么是数据倾斜，怎样去处理数据倾斜"><a href="#21-什么是数据倾斜，怎样去处理数据倾斜" class="headerlink" title="21. 什么是数据倾斜，怎样去处理数据倾斜"></a>21. 什么是数据倾斜，怎样去处理数据倾斜</h3><p><a href="https://juejin.cn/post/6844903837505945608#heading-9" target="_blank" rel="noopener">参考文章：Spark学习——数据倾斜</a><br><a href="https://blog.csdn.net/qq_35394891/article/details/82260907" target="_blank" rel="noopener">[spark 面试]数据倾斜</a><br>数据倾斜是一种很常见的问题，比方WordCount中某个Key对应的数据量非常大，就会产生数据倾斜，导致两个后果：</p>
+<ul>
+<li>OOM（单或少数的节点）</li>
+<li>拖慢整个Job执行时间（其他已经完成的节点都在等未完成的节点）</li>
+</ul>
+<p>数据倾斜主要分为两类：聚合倾斜和join倾斜</p>
+<ul>
+<li><p>聚合倾斜</p>
+<ul>
+<li>双重聚合（局部聚合+全局聚合）<ul>
+<li>场景：对RDD进行reduceByKey等聚合类shuffle算子，SparkSQL的groupBy做分组聚合这两种情况。</li>
+<li>思路：首先通过map给每个key打上n以内的随机数的前缀并进行局部聚合，即(hello, 1) (hello, 1) (hello, 1) (hello, 1)变为(1_hello, 1) (1_hello, 1) (2_hello, 1)，并进行reduceByKey的局部聚合，然后再次map将key的前缀随机数去掉再次进行全局聚合。</li>
+<li>原理: 对原本相同的key进行随机数附加，变成不同key，让原本一个task处理的数据分摊到多个task做局部聚合，规避单task数据过量。之后再去随机前缀进行全局聚合；</li>
+<li>优点：效果非常好（对聚合类Shuffle操作的倾斜问题）；</li>
+<li>缺点：范围窄（仅适用于聚合类的Shuffle操作，join类的Shuffle还需其它方案）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>join倾斜</p>
+<ul>
+<li><p>将reduce join转化为map join</p>
+<ul>
+<li>场景: 对RDD或Spark SQL使用join类操作或语句，且join操作的RDD或表比较小（百兆或1,2G）； </li>
+<li>思路: 使用broadcast和map类算子实现join的功能替代原本的join，彻底规避shuffle。对较小RDD直接collect到内存，并创建broadcast变量；并对另外一个RDD执行map类算子，在该算子的函数中，从broadcast变量（collect出的较小RDD）与当前RDD中的每条数据依次比对key，相同的key执行你需要方式的join；</li>
+<li>原理: 若RDD较小，可采用广播小的RDD，并对大的RDD进行map，来实现与join同样的效果。简而言之，用broadcast-map代替join，规避join带来的shuffle（无Shuffle无倾斜）； </li>
+<li>优点：效果很好（对join操作导致的倾斜），根治；</li>
+<li>缺点：适用场景小（大表+小表），广播（driver和executor节点都会驻留小表数据）小表也耗内存</li>
+</ul>
+</li>
+<li><p>采样倾斜key并分拆join操作</p>
+<ul>
+<li>场景：两个较大的（无法采用方案五）RDD/Hive表进行join时，且一个RDD/Hive表中少数key数据量过大，另一个RDD/Hive表的key分布较均匀（RDD中两者之一有一个更倾斜）； </li>
+<li>思路:<ul>
+<li>对更倾斜rdd1进行采样（RDD.sample）并统计出数据量最大的几个key；</li>
+<li>对这几个倾斜的key从原本rdd1中拆出形成一个单独的rdd1_1，并打上0~n的随机数前缀，被拆分的原rdd1的另一部分（不包含倾斜key）又形成一个新rdd1_2；</li>
+<li>对rdd2过滤出rdd1倾斜的key，得到rdd2_1，并将其中每条数据扩n倍，对每条数据按顺序附加0~n的前缀，被拆分出key的rdd2也独立形成另一个rdd2_2； 【个人认为，这里扩了n倍，最后union完还需要将每个倾斜key对应的value减去(n-1)】</li>
+<li>将加了随机前缀的rdd1_1和rdd2_1进行join（此时原本倾斜的key被打散n份并被分散到更多的task中进行join）； 【个人认为，这里应该做两次join，两次join中间有一个map去前缀】</li>
+<li>另外两个普通的RDD（rdd1_2、rdd2_2）照常join；</li>
+<li>最后将两次join的结果用union结合得到最终的join结果。 原理：对join导致的倾斜是因为某几个key，可将原本RDD中的倾斜key拆分出原RDD得到新RDD，并以加随机前缀的方式打散n份做join，将倾斜key对应的大量数据分摊到更多task上来规避倾斜；</li>
+</ul>
+</li>
+<li>优点: 前提是join导致的倾斜（某几个key倾斜），避免占用过多内存（只需对少数倾斜key扩容n倍）； </li>
+<li>缺点: 对过多倾斜key不适用。</li>
+</ul>
+</li>
+<li><p>用随机前缀和扩容RDD进行join</p>
+<ul>
+<li>场景：RDD中有大量key导致倾斜； </li>
+<li>思路：与方案六类似<ul>
+<li>查看RDD/Hive表中数据分布并找到造成倾斜的RDD/表；</li>
+<li>对倾斜RDD中的每条数据打上n以内的随机数前缀；</li>
+<li>对另外一个正常RDD的每条数据扩容n倍，扩容出的每条数据依次打上0到n的前缀；</li>
+<li>对处理后的两个RDD进行join。</li>
+</ul>
+</li>
+<li>原理: 与方案六只有唯一不同在于这里对不倾斜RDD中所有数据进行扩大n倍，而不是找出倾斜key进行扩容； </li>
+<li>优点: 对join类的数据倾斜都可处理，效果非常显著； </li>
+<li>缺点: 缓解，扩容需要大内存</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="22-分析一下一段spark代码中哪些部分在Driver端执行-哪些部分在Worker端执行"><a href="#22-分析一下一段spark代码中哪些部分在Driver端执行-哪些部分在Worker端执行" class="headerlink" title="22. 分析一下一段spark代码中哪些部分在Driver端执行,哪些部分在Worker端执行"></a>22. 分析一下一段spark代码中哪些部分在Driver端执行,哪些部分在Worker端执行</h3><p>Driver Program是用户编写的提交给Spark集群执行的application，它包含两部分</p>
+<ul>
+<li>作为驱动： Driver与Master、Worker协作完成application进程的启动、DAG划分、计算任务封装、计算任务分发到各个计算节点(Worker)、计算资源的分配等。</li>
+<li>计算逻辑本身，当计算任务在Worker执行时，执行计算逻辑完成application的计算任务</li>
+</ul>
+<p>一般来说transformation算子均是在worker上执行的,其他类型的代码在driver端执行</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/大数据/" rel="tag"><i class="fa fa-tag"></i> 大数据</a>
+            
+              <a href="/tags/Spark/" rel="tag"><i class="fa fa-tag"></i> Spark</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2022/01/21/Netty核心模块组件梳理/" rel="next" title="Netty核心模块组件梳理">
+                  <i class="fa fa-chevron-left"></i> Netty核心模块组件梳理
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2022/08/24/Hadoop常见知识点/" rel="prev" title="Hadoop常见知识点">
+                  Hadoop常见知识点 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc" data-target="post-toc-wrap">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-spark运行架构"><span class="nav-number">1.</span> <span class="nav-text">1. spark运行架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-一个spark程序的执行流程"><span class="nav-number">2.</span> <span class="nav-text">2.一个spark程序的执行流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-spark的shuffle介绍"><span class="nav-number">3.</span> <span class="nav-text">3. spark的shuffle介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Spark的-partitioner-都有哪些"><span class="nav-number">4.</span> <span class="nav-text">4. Spark的 partitioner 都有哪些?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-coalesce和repartition区别"><span class="nav-number">5.</span> <span class="nav-text">5. coalesce和repartition区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-coalesce如果不进行shuffle为什么会导致数据倾斜"><span class="nav-number">6.</span> <span class="nav-text">6. coalesce如果不进行shuffle为什么会导致数据倾斜</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-Spark有哪几种join"><span class="nav-number">7.</span> <span class="nav-text">7. Spark有哪几种join</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-RDD有哪些特点"><span class="nav-number">8.</span> <span class="nav-text">8. RDD有哪些特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-讲一下宽依赖以及窄依赖"><span class="nav-number">9.</span> <span class="nav-text">9. 讲一下宽依赖以及窄依赖</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-窄依赖"><span class="nav-number">9.1.</span> <span class="nav-text">1.窄依赖</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-宽依赖"><span class="nav-number">9.2.</span> <span class="nav-text">2.宽依赖</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-为什么spark将依赖分位窄依赖和宽依赖"><span class="nav-number">9.3.</span> <span class="nav-text">3.为什么spark将依赖分位窄依赖和宽依赖</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-Spark中的算子有哪些"><span class="nav-number">10.</span> <span class="nav-text">10. Spark中的算子有哪些</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-RDD的缓存级别"><span class="nav-number">11.</span> <span class="nav-text">11. RDD的缓存级别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-RDD懒加载是什么意思"><span class="nav-number">12.</span> <span class="nav-text">12. RDD懒加载是什么意思</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-讲一下spark的几种部署方式"><span class="nav-number">13.</span> <span class="nav-text">13. 讲一下spark的几种部署方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-Spark-on-yarn模式下的cluster模式和client模式有什么区别"><span class="nav-number">14.</span> <span class="nav-text">14. Spark on yarn模式下的cluster模式和client模式有什么区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15-spark运行原理，从提交一个jar到最后返回结果"><span class="nav-number">15.</span> <span class="nav-text">15. spark运行原理，从提交一个jar到最后返回结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#16-Spark的stage是如何划分的"><span class="nav-number">16.</span> <span class="nav-text">16. Spark的stage是如何划分的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#17-Spark2-0为什么放弃了akka而用netty"><span class="nav-number">17.</span> <span class="nav-text">17. Spark2.0为什么放弃了akka而用netty</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#18-Spark的各种HA，master-worker-executor的ha"><span class="nav-number">18.</span> <span class="nav-text">18. Spark的各种HA，master/worker/executor的ha</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#19-spark的内存管理机制-spark-1-6前后分析对比-spark2-0-做出来哪些优化"><span class="nav-number">19.</span> <span class="nav-text">19. spark的内存管理机制,spark 1.6前后分析对比, spark2.0 做出来哪些优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#20-讲一下spark中的广播变量"><span class="nav-number">20.</span> <span class="nav-text">20. 讲一下spark中的广播变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#21-什么是数据倾斜，怎样去处理数据倾斜"><span class="nav-number">21.</span> <span class="nav-text">21. 什么是数据倾斜，怎样去处理数据倾斜</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#22-分析一下一段spark代码中哪些部分在Driver端执行-哪些部分在Worker端执行"><span class="nav-number">22.</span> <span class="nav-text">22. 分析一下一段spark代码中哪些部分在Driver端执行,哪些部分在Worker端执行</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.png"
+      alt="随我">
+  <p class="site-author-name" itemprop="name">随我</p>
+  <div class="site-description" itemprop="description">用心做自己喜欢的事</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">129</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">98</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/ZhangJia97" title="GitHub &rarr; https://github.com/ZhangJia97" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:isuiwo@qq.com" title="E-Mail &rarr; mailto:isuiwo@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      友链
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://wqf1234.github.io/" title="https://wqf1234.github.io/" rel="noopener" target="_blank">AC的博客</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/qq_38542085" title="https://blog.csdn.net/qq_38542085" rel="noopener" target="_blank">随我的CSDN</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2023</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">随我</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.7.1</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共164.9k字</span>
+</div>
+
+<div class="BbeiAn-info">
+    <a target="_blank" href="http://beian.miit.gov.cn" rel="nofollow">豫ICP备18013715号-1</a> <!--a标签中增加nofollow属性，避免爬虫出站。-->
+</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.3.0"></script><script src="/js/motion.js?v=7.3.0"></script>
+<script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

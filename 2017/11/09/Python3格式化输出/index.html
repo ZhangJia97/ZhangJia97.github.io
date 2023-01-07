@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.ico?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.ico?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.ico?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.ico?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="本文总结了常见的字符串输入数据格式类型以及字符串格式控制">
+<meta name="keywords" content="Python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python3格式化输出">
+<meta property="og:url" content="http://suiwo.xyz/2017/11/09/Python3格式化输出/index.html">
+<meta property="og:site_name" content="随我的博客">
+<meta property="og:description" content="本文总结了常见的字符串输入数据格式类型以及字符串格式控制">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2023-01-07T16:05:21.327Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python3格式化输出">
+<meta name="twitter:description" content="本文总结了常见的字符串输入数据格式类型以及字符串格式控制">
+  <link rel="alternate" href="/atom.xml" title="随我的博客" type="application/atom+xml">
+  <link rel="canonical" href="http://suiwo.xyz/2017/11/09/Python3格式化输出/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Python3格式化输出 | 随我的博客</title>
+  <meta name="generator" content="Hexo 3.7.1">
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a href="https://github.com/ZhangJia97" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">随我的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录学习的点滴</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2017/11/09/Python3格式化输出/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="随我">
+      <meta itemprop="description" content="用心做自己喜欢的事">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="随我的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Python3格式化输出
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2017-11-09 23:21:22" itemprop="dateCreated datePublished" datetime="2017-11-09T23:21:22+08:00">2017-11-09</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <div class="post-description">本文总结了常见的字符串输入数据格式类型以及字符串格式控制</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="python格式化字符串有-和-两种-字符串格式控制符"><a href="#python格式化字符串有-和-两种-字符串格式控制符" class="headerlink" title="python格式化字符串有%和{}两种 字符串格式控制符."></a>python格式化字符串有%和{}两种 字符串格式控制符.</h2><hr>
+<h3 id="字符串输入数据格式类型-格式操作符号"><a href="#字符串输入数据格式类型-格式操作符号" class="headerlink" title="字符串输入数据格式类型(%格式操作符号)"></a>字符串输入数据格式类型(%格式操作符号)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">%%	百分号标记</span><br><span class="line">%c	字符及其ASCII码</span><br><span class="line">%s	字符串</span><br><span class="line">%d	有符号整数(十进制)</span><br><span class="line">%u	无符号整数(十进制)</span><br><span class="line">%o	无符号整数(八进制)</span><br><span class="line">%x	无符号整数(十六进制)</span><br><span class="line">%X	无符号整数(十六进制大写字符)</span><br><span class="line">%e	浮点数字(科学计数法)</span><br><span class="line">%E	浮点数字(科学计数法，用E代替e)</span><br><span class="line">%f	浮点数字(用小数点符号)</span><br><span class="line">%g	浮点数字(根据值的大小采用%e或%f)</span><br><span class="line">%G	浮点数字(类似于%g)</span><br><span class="line">%p	指针(用十六进制打印值的内存地址)</span><br><span class="line">%n	存储输出字符的数量放进参数列表的下一个变量中</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="字符串格式控制-name-flag-width-precision-type"><a href="#字符串格式控制-name-flag-width-precision-type" class="headerlink" title="字符串格式控制%[(name)][flag][width][.][precision]type"></a>字符串格式控制%[(name)][flag][width][.][precision]type</h3><h4 id="name-可为空，数字-占位-命名-传递参数名-不能以数字开头-以字典格式映射格式化，其为键名"><a href="#name-可为空，数字-占位-命名-传递参数名-不能以数字开头-以字典格式映射格式化，其为键名" class="headerlink" title="name:可为空，数字(占位),命名(传递参数名,不能以数字开头)以字典格式映射格式化，其为键名"></a>name:可为空，数字(占位),命名(传递参数名,不能以数字开头)以字典格式映射格式化，其为键名</h4><h4 id="flag-标记格式限定符号-包含-和0-表示右对齐-会显示正负号-左对齐-前面默认为填充空格-即默认右对齐-，0表示填充0，-表示八进制时前面补充0-16进制数填充0x-二进制填充0b"><a href="#flag-标记格式限定符号-包含-和0-表示右对齐-会显示正负号-左对齐-前面默认为填充空格-即默认右对齐-，0表示填充0，-表示八进制时前面补充0-16进制数填充0x-二进制填充0b" class="headerlink" title="flag:标记格式限定符号,包含+-#和0,+表示右对齐(会显示正负号),-左对齐,前面默认为填充空格(即默认右对齐)，0表示填充0，#表示八进制时前面补充0,16进制数填充0x,二进制填充0b"></a>flag:标记格式限定符号,包含+-#和0,+表示右对齐(会显示正负号),-左对齐,前面默认为填充空格(即默认右对齐)，0表示填充0，#表示八进制时前面补充0,16进制数填充0x,二进制填充0b</h4><h4 id="width-宽度-最短长度-包含小数点-小于width时会填充"><a href="#width-宽度-最短长度-包含小数点-小于width时会填充" class="headerlink" title="width:宽度(最短长度,包含小数点,小于width时会填充)"></a>width:宽度(最短长度,包含小数点,小于width时会填充)</h4><h4 id="precision-小数点后的位数-与C相同"><a href="#precision-小数点后的位数-与C相同" class="headerlink" title="precision:小数点后的位数,与C相同"></a>precision:小数点后的位数,与C相同</h4><h4 id="type-输入格式类型，请看上面"><a href="#type-输入格式类型，请看上面" class="headerlink" title="type:输入格式类型，请看上面"></a>type:输入格式类型，请看上面</h4><h4 id="还有一种format-spec格式"><a href="#还有一种format-spec格式" class="headerlink" title="还有一种format_spec格式"></a>还有一种format_spec格式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;[name][:][[fill]align][sign][#][0][width][,][.precision][type]&#125;</span><br><span class="line">用&#123;&#125;包裹name命名传递给format以命名=值 写法,非字典映射,其他和上面相同</span><br><span class="line"></span><br><span class="line">fill =  &lt;any character&gt;　　#fill是表示可以填写任何</span><br><span class="line">align =  &quot;&lt;&quot; | &quot;&gt;&quot; | &quot;=&quot; | &quot;^&quot;　　#align是对齐方式，&lt;是左对齐， &gt;是右对齐，^是居中对齐。</span><br><span class="line">sign  =  &quot;+&quot; | &quot;-&quot; | &quot; &quot;　　#sign是符号， +表示正号， -表示负号</span><br><span class="line">width =  integer　　#width是数字宽度，表示总共输出多少位数字</span><br><span class="line">precision =  integer　　#precision是小数保留位数</span><br><span class="line">type =  &quot;b&quot; | &quot;c&quot; | &quot;d&quot; | &quot;e&quot; | &quot;E&quot; | &quot;f&quot; | &quot;F&quot; | &quot;g&quot; | &quot;G&quot; | &quot;n&quot; | &quot;o&quot; | &quot;s&quot; | &quot;x&quot; | &quot;X&quot; | &quot;%&quot;　　#type是输出数字值是的表示方式</span><br><span class="line">比如b是二进制表示；比如E是指数表示；比如X是十六进制表示例子</span><br></pre></td></tr></table></figure>
+<hr>
+<p>###例子<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">print(<span class="string">"&#123;:,&#125;"</span>.format(<span class="number">123456</span>))<span class="comment">#输出1234,56</span></span><br><span class="line"></span><br><span class="line">print(<span class="string">"&#123;a:w^8&#125;"</span>.format(a=<span class="string">"8"</span>))<span class="comment">#输出www8wwww,填充w</span></span><br><span class="line"></span><br><span class="line">print(<span class="string">"%.5f"</span> %<span class="number">5</span>)<span class="comment">#输出5.000000</span></span><br><span class="line"></span><br><span class="line">print(<span class="string">"%-7s3"</span> %(<span class="string">"python"</span>))<span class="comment">#输出python 3</span></span><br><span class="line"></span><br><span class="line">print(<span class="string">"%.3e"</span> %<span class="number">2016</span>)<span class="comment">#输出2.016e+03,也可以写大E</span></span><br><span class="line"></span><br><span class="line">print(<span class="string">"%d %s"</span> %(<span class="number">123456</span>,<span class="string">"myblog"</span>))<span class="comment">#输出123456 myblog</span></span><br><span class="line"></span><br><span class="line">print(<span class="string">"%(what)s is %(year)d"</span> % &#123;<span class="string">"what"</span>:<span class="string">"this year"</span>,<span class="string">"year"</span>:<span class="number">2016</span>&#125;)<span class="comment">#输出this year is 2016</span></span><br><span class="line"> </span><br><span class="line">print(<span class="string">"&#123;0&#125;&#123;1&#125;"</span>.format(<span class="string">"hello"</span>,<span class="string">"fun"</span>))<span class="comment">#输出hellofun,这与CSharp的格式化字符(占位符)相似</span></span><br><span class="line"></span><br><span class="line">print(<span class="string">"&#123;&#125;&#123;&#125;&#123;&#125;"</span>.format(<span class="string">"spkk"</span>,<span class="string">"."</span>,<span class="string">"cn"</span>))<span class="comment">#输出spkk.cn</span></span><br><span class="line"></span><br><span class="line">print(<span class="string">"&#123;a[0]&#125;&#123;a[1]&#125;&#123;a[2]&#125;"</span>.format(a=[<span class="string">"spkk"</span>,<span class="string">"."</span>,<span class="string">"cn"</span>]))<span class="comment">#输出spkk.cn</span></span><br><span class="line"></span><br><span class="line">print(<span class="string">"&#123;dict[host]&#125;&#123;dict[dot]&#125;&#123;dict[domain]&#125;"</span>.format(dict=&#123;<span class="string">"host"</span>:<span class="string">"www"</span>,<span class="string">"domain"</span>:<span class="string">"spkk.cn"</span>,<span class="string">"dot"</span>:<span class="string">"."</span>&#125;))<span class="comment">#输出www.spkk.cn</span></span><br><span class="line"></span><br><span class="line">print(<span class="string">"&#123;a&#125;&#123;b&#125;"</span>.format(a=<span class="string">"python"</span>,b=<span class="string">"3"</span>))<span class="comment">#输出python3</span></span><br><span class="line"> </span><br><span class="line">print(<span class="string">"&#123;who&#125; &#123;doing&#125; &#123;0&#125;"</span>.format(<span class="string">"python"</span>,doing=<span class="string">"like"</span>,who=<span class="string">"I"</span>))<span class="comment">#输出I like python</span></span><br></pre></td></tr></table></figure></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Python/" rel="tag"><i class="fa fa-tag"></i> Python</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2017/11/09/Tensorflow中一些常见的函数/" rel="next" title="Tensorflow中一些常见的函数">
+                  <i class="fa fa-chevron-left"></i> Tensorflow中一些常见的函数
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2017/11/09/Python字符串前缀-u和r的区别/" rel="prev" title="Python字符串前缀 u和r的区别">
+                  Python字符串前缀 u和r的区别 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc" data-target="post-toc-wrap">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#python格式化字符串有-和-两种-字符串格式控制符"><span class="nav-number">1.</span> <span class="nav-text">python格式化字符串有%和{}两种 字符串格式控制符.</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串输入数据格式类型-格式操作符号"><span class="nav-number">1.1.</span> <span class="nav-text">字符串输入数据格式类型(%格式操作符号)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串格式控制-name-flag-width-precision-type"><span class="nav-number">1.2.</span> <span class="nav-text">字符串格式控制%[(name)][flag][width][.][precision]type</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#name-可为空，数字-占位-命名-传递参数名-不能以数字开头-以字典格式映射格式化，其为键名"><span class="nav-number">1.2.1.</span> <span class="nav-text">name:可为空，数字(占位),命名(传递参数名,不能以数字开头)以字典格式映射格式化，其为键名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#flag-标记格式限定符号-包含-和0-表示右对齐-会显示正负号-左对齐-前面默认为填充空格-即默认右对齐-，0表示填充0，-表示八进制时前面补充0-16进制数填充0x-二进制填充0b"><span class="nav-number">1.2.2.</span> <span class="nav-text">flag:标记格式限定符号,包含+-#和0,+表示右对齐(会显示正负号),-左对齐,前面默认为填充空格(即默认右对齐)，0表示填充0，#表示八进制时前面补充0,16进制数填充0x,二进制填充0b</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#width-宽度-最短长度-包含小数点-小于width时会填充"><span class="nav-number">1.2.3.</span> <span class="nav-text">width:宽度(最短长度,包含小数点,小于width时会填充)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#precision-小数点后的位数-与C相同"><span class="nav-number">1.2.4.</span> <span class="nav-text">precision:小数点后的位数,与C相同</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#type-输入格式类型，请看上面"><span class="nav-number">1.2.5.</span> <span class="nav-text">type:输入格式类型，请看上面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#还有一种format-spec格式"><span class="nav-number">1.2.6.</span> <span class="nav-text">还有一种format_spec格式</span></a></li></ol></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.png"
+      alt="随我">
+  <p class="site-author-name" itemprop="name">随我</p>
+  <div class="site-description" itemprop="description">用心做自己喜欢的事</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">129</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">98</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/ZhangJia97" title="GitHub &rarr; https://github.com/ZhangJia97" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:isuiwo@qq.com" title="E-Mail &rarr; mailto:isuiwo@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      友链
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://wqf1234.github.io/" title="https://wqf1234.github.io/" rel="noopener" target="_blank">AC的博客</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/qq_38542085" title="https://blog.csdn.net/qq_38542085" rel="noopener" target="_blank">随我的CSDN</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2023</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">随我</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.7.1</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共164.9k字</span>
+</div>
+
+<div class="BbeiAn-info">
+    <a target="_blank" href="http://beian.miit.gov.cn" rel="nofollow">豫ICP备18013715号-1</a> <!--a标签中增加nofollow属性，避免爬虫出站。-->
+</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.3.0"></script><script src="/js/motion.js?v=7.3.0"></script>
+<script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
