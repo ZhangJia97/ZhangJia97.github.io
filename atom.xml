@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://suiwo.xyz/"/>
-  <updated>2023-01-07T15:29:27.634Z</updated>
+  <updated>2023-01-07T15:30:44.647Z</updated>
   <id>http://suiwo.xyz/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Flink常见知识点</title>
+    <link href="http://suiwo.xyz/2022/08/26/Flink%E5%B8%B8%E8%A7%81%E7%9F%A5%E8%AF%86%E7%82%B9/"/>
+    <id>http://suiwo.xyz/2022/08/26/Flink常见知识点/</id>
+    <published>2022-08-26T07:11:57.000Z</published>
+    <updated>2023-01-07T15:30:44.647Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="1-讲一下flink的运行架构"><a href="#1-讲一下flink的运行架构" class="headerlink" title="1.讲一下flink的运行架构"></a>1.讲一下flink的运行架构</h3><p>当flink集群启动后，首先会启动一个JobManager和一个或者多个TaskManager。有Client提交任务给JobManager，JobManager在调度任务到各个TaskManager去执行，然后 TaskManager 将心跳和统计信息汇报给 JobManager。TaskManager 之间以流的形式进行数据的传输。上述三者均为独立的 JVM 进程。</p><ul><li>Client 为提交 Job 的客户端，可以是运行在任何机器上（与 JobManager 环境连通即可）。提交 Job 后，Client 可以结束进程（Streaming的任务），也可以不结束并等待结果返回。</li><li>JobManager 主要负责调度 Job 并协调 Task 做 checkpoint，职责上很像 Storm 的 Nimbus。从 Client 处接收到 Job 和 JAR 包等资源后，会生成优化后的执行计划，并以 Task 的单元调度到各个 TaskManager 去执行。</li><li>TaskManager 在启动的时候就设置好了槽位数（Slot），每个 slot 能启动一个 Task，Task 为线程。从 JobManager 处接收需要部署的 Task，部署启动后，与自己的上游建立 Netty 连接，接收数据并处理。</li></ul><h3 id="2-讲一下flink的作业执行流程"><a href="#2-讲一下flink的作业执行流程" class="headerlink" title="2.讲一下flink的作业执行流程"></a>2.讲一下flink的作业执行流程</h3><ul><li><p>以yarn模式Per-job方式为例概述作业提交执行流程<br>当执行executor() 之后,会首先在本地client 中将代码转化为可以提交的 JobGraph如果提交为Per-Job模式,则首先需要启动AM, client会首先向资源系统申请资源, 在yarn下即为申请container开启AM, 如果是Session模式的话则不需要这个步骤</p></li><li><p>Yarn分配资源, 开启AM</p></li><li>Client将Job提交给Dispatcher</li><li>Dispatcher 会开启一个新的 JobManager线程</li><li>JM 向Flink 自己的 Resourcemanager申请slot资源来执行任务</li><li>RM 向 Yarn申请资源来启动 TaskManger (Session模式跳过此步)</li><li>Yarn 分配 Container 来启动 taskManger (Session模式跳过此步)</li><li>Flink 的 RM 向 TM 申请 slot资源来启动 task</li><li>TM 将待分配的 slot 提供给 JM</li><li>JM 提交 task, TM 会启动新的线程来执行任务,开始启动后就可以通过 shuffle模块进行 task之间的数据交换</li></ul>]]></content>
+    
+    <summary type="html">
+    
+      本文将对Flink中常遇到的知识点和面试题进行总结。
+    
+    </summary>
+    
+      <category term="大数据" scheme="http://suiwo.xyz/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+    
+      <category term="Flink" scheme="http://suiwo.xyz/tags/Flink/"/>
+    
+      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+  </entry>
   
   <entry>
     <title>Kafka常见知识点</title>
@@ -58,9 +82,9 @@
       <category term="大数据" scheme="http://suiwo.xyz/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
     
-      <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
-    
       <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+      <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
     
       <category term="HDFS" scheme="http://suiwo.xyz/tags/HDFS/"/>
     
@@ -184,9 +208,9 @@
       <category term="大数据" scheme="http://suiwo.xyz/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
     
-      <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
-    
       <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+      <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
     
       <category term="Hive" scheme="http://suiwo.xyz/tags/Hive/"/>
     
@@ -210,9 +234,9 @@
       <category term="大数据" scheme="http://suiwo.xyz/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
     
-      <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
-    
       <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+      <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
     
       <category term="Hive" scheme="http://suiwo.xyz/tags/Hive/"/>
     
@@ -236,9 +260,9 @@
       <category term="大数据" scheme="http://suiwo.xyz/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
     
-      <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
-    
       <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+      <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
     
       <category term="Hive" scheme="http://suiwo.xyz/tags/Hive/"/>
     
@@ -262,9 +286,9 @@
       <category term="大数据" scheme="http://suiwo.xyz/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
     
-      <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
-    
       <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+      <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
     
       <category term="Hive" scheme="http://suiwo.xyz/tags/Hive/"/>
     
@@ -288,9 +312,9 @@
       <category term="大数据" scheme="http://suiwo.xyz/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
     
-      <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
-    
       <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+      <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
     
       <category term="Hive" scheme="http://suiwo.xyz/tags/Hive/"/>
     
@@ -314,9 +338,9 @@
       <category term="大数据" scheme="http://suiwo.xyz/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
     
-      <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
-    
       <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+      <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
     
       <category term="Hive" scheme="http://suiwo.xyz/tags/Hive/"/>
     
@@ -340,9 +364,9 @@
       <category term="大数据" scheme="http://suiwo.xyz/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
     
-      <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
-    
       <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+      <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
     
       <category term="Hive" scheme="http://suiwo.xyz/tags/Hive/"/>
     
@@ -366,11 +390,11 @@
       <category term="大数据" scheme="http://suiwo.xyz/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
     
+      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
       <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
     
       <category term="Flume" scheme="http://suiwo.xyz/tags/Flume/"/>
-    
-      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
   </entry>
   
@@ -392,11 +416,11 @@
       <category term="大数据" scheme="http://suiwo.xyz/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
     
+      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
       <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
     
       <category term="Flume" scheme="http://suiwo.xyz/tags/Flume/"/>
-    
-      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
   </entry>
   
@@ -418,11 +442,11 @@
       <category term="大数据" scheme="http://suiwo.xyz/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
     
+      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
       <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
     
       <category term="Flume" scheme="http://suiwo.xyz/tags/Flume/"/>
-    
-      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
   </entry>
   
@@ -444,11 +468,11 @@
       <category term="大数据" scheme="http://suiwo.xyz/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
     
+      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
       <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
     
       <category term="Flume" scheme="http://suiwo.xyz/tags/Flume/"/>
-    
-      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
   </entry>
   
@@ -470,11 +494,11 @@
       <category term="大数据" scheme="http://suiwo.xyz/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
     
+      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
       <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
     
       <category term="Flume" scheme="http://suiwo.xyz/tags/Flume/"/>
-    
-      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
   </entry>
   
@@ -496,39 +520,11 @@
       <category term="大数据" scheme="http://suiwo.xyz/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
     
-      <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
-    
       <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+      <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
     
       <category term="Hive" scheme="http://suiwo.xyz/tags/Hive/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>YARN集群搭建</title>
-    <link href="http://suiwo.xyz/2020/04/20/YARN%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/"/>
-    <id>http://suiwo.xyz/2020/04/20/YARN集群搭建/</id>
-    <published>2020-04-20T13:21:40.000Z</published>
-    <updated>2020-04-20T13:45:50.000Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote><p>本文主要是记录集群搭建流程，具体细节较为简略</p></blockquote><h3 id="一、YARN简介"><a href="#一、YARN简介" class="headerlink" title="一、YARN简介"></a>一、YARN简介</h3><p>Apache Hadoop YARN （Yet Another Resource Negotiator，另一种资源协调者）是一种新的 Hadoop 资源管理器，它是一个通用资源管理系统，可为上层应用提供统一的资源管理和调度，它的引入为集群在利用率、资源统一管理和数据共享等方面带来了巨大好处。</p><h3 id="二、集群规划"><a href="#二、集群规划" class="headerlink" title="二、集群规划"></a>二、集群规划</h3><table><thead><tr><th>主机名</th><th>作用</th></tr></thead><tbody><tr><td>hadoop11</td><td>NameNode &amp; DataNode &amp; NodeManager</td></tr><tr><td>hadoop12</td><td>DataNode &amp; ResourceManager &amp; NodeManager</td></tr><tr><td>hadoop13</td><td>NameNode &amp; DataNode &amp; NodeManager</td></tr></tbody></table><h3 id="三、搭建集群"><a href="#三、搭建集群" class="headerlink" title="三、搭建集群"></a>三、搭建集群</h3><ol><li>修改主机名以及<code>host</code>映射并重启机器</li><li>配置<code>ssh</code>免密登录</li><li>配置<code>JAVA</code>环境变量</li><li>安装Hadoop<br>(1). 修改<code>hadoop-env.sh</code><br>(2). 修改<code>core-site.xml</code><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>fs.defaultFS<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>hdfs://hadoop11:9000<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>hadoop.tmp.dir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>/home/zhangjia/hadoop-2.9.2/data<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure></li></ol><p>(3). 修改<code>hdfs-site.xml</code><br>不需要修改，默认配置即可<br>(4). 修改mapred-site.xml<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>mapreduce.framework.name<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>yarn<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure></p><p>(5). 修改<code>yarn-site.xml</code><br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.nodemanager.aux-services<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>mapreduce_shuffle<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.hostname<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>hadoop12<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure></p><p>(6). 配置<code>slaves</code>文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hadoop11</span><br><span class="line">hadoop12</span><br><span class="line">hadoop13</span><br></pre></td></tr></table></figure></p><p>(7). 格式化NameNode<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hdfs namenode -format</span><br></pre></td></tr></table></figure></p><p>(8). 启动HDFS集群<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">start-dfs.sh</span><br></pre></td></tr></table></figure></p><p>(9). 启动YARN集群(只可以在ResourceManager节点启动)<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">start-yarn.sh</span><br></pre></td></tr></table></figure></p><p>(10). 可以在 <a href="http://hadoop12:8088查看当前YARN启动情况" target="_blank" rel="noopener">http://hadoop12:8088查看当前YARN启动情况</a></p>]]></content>
-    
-    <summary type="html">
-    
-      Apache Hadoop YARN （Yet Another Resource Negotiator，另一种资源协调者）是一种新的 Hadoop 资源管理器，它是一个通用资源管理系统，可为上层应用提供统一的资源管理和调度，它的引入为集群在利用率、资源统一管理和数据共享等方面带来了巨大好处。
-    
-    </summary>
-    
-      <category term="大数据" scheme="http://suiwo.xyz/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
-    
-    
-      <category term="Hadoop" scheme="http://suiwo.xyz/tags/Hadoop/"/>
-    
-      <category term="大数据" scheme="http://suiwo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
-    
-      <category term="HDFS" scheme="http://suiwo.xyz/tags/HDFS/"/>
-    
-      <category term="YARN" scheme="http://suiwo.xyz/tags/YARN/"/>
     
   </entry>
   
