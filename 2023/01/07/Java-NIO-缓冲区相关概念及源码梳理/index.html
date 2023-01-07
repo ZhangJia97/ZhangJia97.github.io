@@ -71,7 +71,7 @@
 <meta property="og:image" content="http://suiwo.xyz/images/Java-NIO-缓冲区相关概念及源码梳理/E9421FD9-DA4B-4E4E-83E1-DABC5017BB6C_4_5005_c.jpeg">
 <meta property="og:image" content="http://suiwo.xyz/images/Java-NIO-缓冲区相关概念及源码梳理/370474B0-530E-48AF-B7D3-3AB0235AB516_4_5005_c.jpeg">
 <meta property="og:image" content="http://suiwo.xyz/images/Java-NIO-缓冲区相关概念及源码梳理/BD8A5C19-D9A9-4440-B63B-861E9C01091E_4_5005_c.jpeg">
-<meta property="og:updated_time" content="2023-01-07T16:44:44.217Z">
+<meta property="og:updated_time" content="2023-01-07T16:58:20.018Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java-NIO-缓冲区相关概念及源码梳理">
 <meta name="twitter:description" content="本文是对Java NIO一书中缓冲区这一章节的总结，并将相关源码进行了注释和解读。">
@@ -308,7 +308,7 @@
 </blockquote>
 <p>执行get和put的注意事项</p>
 <blockquote>
-<p>对于put()，如果运算会导致位置超出上界，就会抛出BufferOverflowException异常。对于get()，如果位置不小于上界，就会抛出BufferUnderflowException异常。绝对存取不会影响缓冲区的位置属性，但是如果您所提供的索引超出范围(负数或不小于上界)，也将抛出IndexOutOfBoundsException异常。</p>
+<p>对于put()，如果运算会导致位置超出上界，就会抛出<code>BufferOverflowException</code>异常。对于get()，如果位置不小于上界，就会抛出<code>BufferUnderflowException</code>异常。绝对存取不会影响缓冲区的位置属性，但是如果您所提供的索引超出范围(负数或不小于上界)，也将抛出<code>IndexOutOfBoundsException</code>异常。</p>
 </blockquote>
 <h3 id="4-写入"><a href="#4-写入" class="headerlink" title="4. 写入"></a>4. 写入</h3><p>写入到具体位置可以使用<code>buffer.put(0,(byte)&#39;M&#39;)</code>这种方式接入。而<code>buffer.put((byte)&#39;w&#39;)</code>方法不会收到影响，他总是在最后一个位置上写入数据。</p>
 <h3 id="5-翻转"><a href="#5-翻转" class="headerlink" title="5. 翻转"></a>5. 翻转</h3><p>对于翻转我们可以使用<code>buffer.limit(buffer.position()).position(0);</code>来进行翻转，<br>他执行的逻辑就是先将buffer的上界设置为当前buffer的容量，同时将标记重置。然后将当前读/写的位置重置为起始位置。</p>
