@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.ico?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.ico?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.ico?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.ico?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="本文是对Java NIO一书中通道这一章节的总结，并将相关源码进行了注释和解读。">
+<meta name="keywords" content="Java,NIO">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java-NIO-选择器基础">
+<meta property="og:url" content="http://suiwo.xyz/2023/01/31/Java-NIO-选择器基础/index.html">
+<meta property="og:site_name" content="随我的博客">
+<meta property="og:description" content="本文是对Java NIO一书中通道这一章节的总结，并将相关源码进行了注释和解读。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://suiwo.xyz/images/Java-NIO-选择器基础/DFA58E8E-B318-4500-8586-1EE727FE799A.jpeg">
+<meta property="og:image" content="http://suiwo.xyz/images/Java-NIO-选择器基础/E52403D6-B524-467C-910F-558BA440D573.jpeg">
+<meta property="og:image" content="http://suiwo.xyz/images/Java-NIO-选择器基础/BFD754BA-9094-48D1-9BC1-C9B1045D7028.jpeg">
+<meta property="og:updated_time" content="2023-01-31T13:56:08.225Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java-NIO-选择器基础">
+<meta name="twitter:description" content="本文是对Java NIO一书中通道这一章节的总结，并将相关源码进行了注释和解读。">
+<meta name="twitter:image" content="http://suiwo.xyz/images/Java-NIO-选择器基础/DFA58E8E-B318-4500-8586-1EE727FE799A.jpeg">
+  <link rel="alternate" href="/atom.xml" title="随我的博客" type="application/atom+xml">
+  <link rel="canonical" href="http://suiwo.xyz/2023/01/31/Java-NIO-选择器基础/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Java-NIO-选择器基础 | 随我的博客</title>
+  <meta name="generator" content="Hexo 3.7.1">
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a href="https://github.com/ZhangJia97" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">随我的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录学习的点滴</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://suiwo.xyz/2023/01/31/Java-NIO-选择器基础/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="随我">
+      <meta itemprop="description" content="用心做自己喜欢的事">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="随我的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Java-NIO-选择器基础
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2023-01-31 18:47:58" itemprop="dateCreated datePublished" datetime="2023-01-31T18:47:58+08:00">2023-01-31</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <div class="post-description">本文是对Java NIO一书中通道这一章节的总结，并将相关源码进行了注释和解读。</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="一、选择器基础"><a href="#一、选择器基础" class="headerlink" title="一、选择器基础"></a>一、选择器基础</h3><p>从基础层面上看，选择器提供了询问通道是否已经准备好执行每个I/O操作的能力。在与SelectableChannel联合使用时，选择器提供了这种服务。就绪选择的真正意义在于潜在的大量的通道可以同时进行就绪准备的检查。调用者可以轻松地决定多个通道的哪一个准备好要运行。<br>对于选择有两种方法被激发：</p>
+<ol>
+<li>selector线程处于休眠状态，等待有一个或多个通道处于就绪状态</li>
+<li>周期性轮询选择器，看在上次之后是否有新就绪的通道</li>
+</ol>
+<p>在开发中每次询问每个通道是否就绪的时候需要遍历每一个候选通道并按照顺序进行检查是有问题的。这会使得在检查每个通道是够就绪时都至少进行一次系统调用，这种代价是十分昂贵的，但是主要的问题是，这种检查不是原子性的，可能列表中的某一个通道在被遍历检查后达到就绪状态，但是在下一次轮询之前我们无法感知到变化。而且除了不断地遍历之外没有其他的选择。</p>
+<p>这就是为什么传统的监控多个Socket的解决方案就是通过多线程，使得线程可以在read()调用中阻塞直到可用。这就是使用阻塞的线程作为socket监控器，并将java虚拟机的线程调度当作了通知机制。而线程的增长会使得系统的复杂性飙升，性能损耗严重。</p>
+<h4 id="1-1-选择器、可选择通道、选择键类"><a href="#1-1-选择器、可选择通道、选择键类" class="headerlink" title="1.1 选择器、可选择通道、选择键类"></a>1.1 选择器、可选择通道、选择键类</h4><h5 id="1-1-1-选择器-Selector"><a href="#1-1-1-选择器-Selector" class="headerlink" title="1.1.1 选择器(Selector)"></a>1.1.1 选择器(Selector)</h5><p>选择器类管理者一个被注册的通道集合的信息和他们的就绪状态。通道是和选择器一起被注册的，并通过选择器来更新通道的就绪状态。当这么做时可以选择将激发的选择器线程挂起，直到有就绪的通道。<br>下面我们看一下Selector的源码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Selector</span> <span class="keyword">implements</span> <span class="title">Closeable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Initializes a new instance of this class.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="title">Selector</span><span class="params">()</span> </span>&#123; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 创建了一个Selector</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Selector <span class="title">open</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SelectorProvider.provider().openSelector();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 返回当前选择器是否打开</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">boolean</span> <span class="title">isOpen</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 返回当前通道的Provider</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> SelectorProvider <span class="title">provider</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 返回当前所有注册在selector中channel的selectionKey</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Set&lt;SelectionKey&gt; <span class="title">keys</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 返回注册在selector中等待IO操作(及有事件发生)channel的selectionKey。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Set&lt;SelectionKey&gt; <span class="title">selectedKeys</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 非阻塞，只要有通道就绪就立刻返回。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">selectNow</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 和select()一样，但最长阻塞时间为timeout毫秒。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">select</span><span class="params">(<span class="keyword">long</span> timeout)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 阻塞到至少有一个通道在你注册的事件上就绪了。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">select</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 过调用Selector对象的wakeup（）方法让处在阻塞状态的select()方法立刻返回。该方法使得选择器上的第一个还没有返回的选择操作立即返回。如果当前没有进行中的选择操作，那么下一次对select()方法的一次调用将立即返回。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Selector <span class="title">wakeup</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 关闭当前选择器</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h6 id="1-1-1-1-常见的集中键集合"><a href="#1-1-1-1-常见的集中键集合" class="headerlink" title="1.1.1.1 常见的集中键集合"></a>1.1.1.1 常见的集中键集合</h6><blockquote>
+<p>在一个刚初始化的 Selector 对象中，下面这几种集合都是空的。</p>
+</blockquote>
+<ol>
+<li><p>已注册的键的集合(Registered key set)<br>返回的是所有与选择器关联的已经注册的键的集合。并不是所有注册过的键都是仍然有效。可以通过keys()方法返回，并且可能是空的。返回的这个键集合不可以直接进行修改，进行修改会抛出java.lang.UnsupportedOperationException</p>
+</li>
+<li><p>已选择的键的集合(Selected key set)<br>已选择键的集合是已注册键的集合的子集。这个集合返回的是被判断为已经准备好的通道的集合。并且包含于键的interest集合中的操作。这个集合通过selectedKeys()方法返回(并有可能是空的)。键可以直接从这个集合中移除，但是不能添加。添加会抛出java.lang.UnsupportedOperationException</p>
+</li>
+<li><p>已Ready的键的集合(Selected Ready key set)<br>ready集合是已选择键的子集。每个键都关联一个已经准备好至少一种操作的通道。每个键都有一个内嵌的 ready集合，指示了所关联的通道已经准备好的操作。</p>
+</li>
+<li><p>已取消的键的集合(Cancelled key set)<br>已取消的键的集合是已注册键的子集。这个集合包含了cancel()方法被调用过的键（这个键已经被无效化），但是他们还没有被注销。这个集合是选择器对象的私有对象，无法直接访问。</p>
+<blockquote>
+<p>使用内部的已取消的键的集合来延迟注销，是一种防止线程在取消键时阻塞，并防止与正在进行的选择操作冲突的优化。注销通道是一个潜在的代价很高的操作，这可能需要重新分配资源(请记住，键是与通道相关的，并且可能与它们相关的通道对象之间有复杂的交互)。清理已取消的键，并在选择操作之前和之后立即注销通道，可以消除它们可能正好在选择的过程中执行的潜在棘手问题。这是另一个兼顾健壮性的折中方案。</p>
+</blockquote>
+</li>
+</ol>
+<h6 id="1-1-1-2"><a href="#1-1-1-2" class="headerlink" title="1.1.1.2"></a>1.1.1.2</h6><h5 id="1-1-2-可选择通道-SelectableChannel"><a href="#1-1-2-可选择通道-SelectableChannel" class="headerlink" title="1.1.2 可选择通道(SelectableChannel)"></a>1.1.2 可选择通道(SelectableChannel)</h5><p>这个抽象类提供了通道的可选择性需要的方法，继承了这个抽象类的类可以被注册到Selector对象上。同时可以指定对那个对选择器而言，哪些操作是感兴趣的。一个通道可以注册到多个选择器上，这么做的话，在更新 interest 集合为指定的值的同时，将返回与之前相同的选择键。而对于一个选择器，一个通道只能被注册一次。通道在被注册到一个选择器上之前，必须先设置为非阻塞模式(通过调用 configureBlocking(false))。<br>一个例外的情形是当您试图将一个通道注册到一个相关的键已经被取消的选择器上，而通道仍然处于被注册的状态的时候。通道不会在键被取消的时候立即注销。直到下一次操作发生为止，它们仍然会处于被注册的状态。在这种情况下，未检查的CancelledKeyException将会被抛出。请务必在键可能被取消的情况下检查SelectionKey对象的状态。</p>
+<p>下面我们看一下SelectableChannel的源码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">SelectableChannel</span></span></span><br><span class="line"><span class="class">    <span class="keyword">extends</span> <span class="title">AbstractInterruptibleChannel</span></span></span><br><span class="line"><span class="class">    <span class="keyword">implements</span> <span class="title">Channel</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Initializes a new instance of this class.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="title">SelectableChannel</span><span class="params">()</span> </span>&#123; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 返回创建此通道的Provider</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> SelectorProvider <span class="title">provider</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 返回此通道支持的操作</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">validOps</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Internal state:</span></span><br><span class="line">    <span class="comment">//   keySet, may be empty but is never null, typ. a tiny array</span></span><br><span class="line">    <span class="comment">//   boolean isRegistered, protected by key set</span></span><br><span class="line">    <span class="comment">//   regLock, lock object to prevent duplicate registrations</span></span><br><span class="line">    <span class="comment">//   boolean isBlocking, protected by regLock</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 告知此通道当前是否已注册到任何选择器。新创建的通道未注册。</span></span><br><span class="line"><span class="comment">     * 由于密钥取消和通道取消注册之间存在固有的延迟，在所有密钥被取消之后，通道可能会保持注册一段时间。通道在关闭后还可以保持注册一段时间。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">boolean</span> <span class="title">isRegistered</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// sync(keySet) &#123; return isRegistered; &#125;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 返回注册键</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> SelectionKey <span class="title">keyFor</span><span class="params">(Selector sel)</span></span>;</span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// sync(keySet) &#123; return findKey(sel); &#125;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 将通道注册到选择器上，并关联一个附件</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> SelectionKey <span class="title">register</span><span class="params">(Selector sel, <span class="keyword">int</span> ops, Object att)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> ClosedChannelException</span>;</span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// sync(regLock) &#123;</span></span><br><span class="line">    <span class="comment">//   sync(keySet) &#123; look for selector &#125;</span></span><br><span class="line">    <span class="comment">//   if (channel found) &#123; set interest ops -- may block in selector;</span></span><br><span class="line">    <span class="comment">//                        return key; &#125;</span></span><br><span class="line">    <span class="comment">//   create new key -- may block somewhere in selector;</span></span><br><span class="line">    <span class="comment">//   sync(keySet) &#123; add key; &#125;</span></span><br><span class="line">    <span class="comment">//   attach(attachment);</span></span><br><span class="line">    <span class="comment">//   return key;</span></span><br><span class="line">    <span class="comment">// &#125;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 将通道注册到选择器上，并关联一个附件</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> SelectionKey <span class="title">register</span><span class="params">(Selector sel, <span class="keyword">int</span> ops)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> ClosedChannelException</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> register(sel, ops, <span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 调整阻塞模式</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> SelectableChannel <span class="title">configureBlocking</span><span class="params">(<span class="keyword">boolean</span> block)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> IOException</span>;</span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// sync(regLock) &#123;</span></span><br><span class="line">    <span class="comment">//   sync(keySet) &#123; throw IBME if block &amp;&amp; isRegistered; &#125;</span></span><br><span class="line">    <span class="comment">//   change mode;</span></span><br><span class="line">    <span class="comment">// &#125;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 查看通道阻塞模式</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">boolean</span> <span class="title">isBlocking</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取锁对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Object <span class="title">blockingLock</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="1-1-3-选择键-SelectionKey"><a href="#1-1-3-选择键-SelectionKey" class="headerlink" title="1.1.3 选择键(SelectionKey)"></a>1.1.3 选择键(SelectionKey)</h5><p>选择键封装了特定的通道和特定选择器的注册关系。选择捡对象被Selectable.register()返回并提供一个表示这种注册关系的标记。同时选择键也存储了当前注册关系关系的通道操作，以及通道已经准备好的操作。</p>
+<p>下面我们看一下SelectionKey的源码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">SelectionKey</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 返回对应的通道</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> SelectableChannel <span class="title">channel</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 返回对应的选择器</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Selector <span class="title">selector</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 返回当前key是否可用</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">boolean</span> <span class="title">isValid</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 取消当前关联关系</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">cancel</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 返回当前键关心的操作</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">interestOps</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 设置当前键关心的操作</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> SelectionKey <span class="title">interestOps</span><span class="params">(<span class="keyword">int</span> ops)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 返回当前键已经就绪的操作</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">readyOps</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> OP_READ = <span class="number">1</span> &lt;&lt; <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> OP_WRITE = <span class="number">1</span> &lt;&lt; <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> OP_CONNECT = <span class="number">1</span> &lt;&lt; <span class="number">3</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> OP_ACCEPT = <span class="number">1</span> &lt;&lt; <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 判断当前通道是否已经准备好读操作</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">isReadable</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (readyOps() &amp; OP_READ) != <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 判断当前通道是否已经准备好写操作</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">isWritable</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (readyOps() &amp; OP_WRITE) != <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 判断当前通道是否已经连接好</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">isConnectable</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (readyOps() &amp; OP_CONNECT) != <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 判断当前通道是否已经准备好接受socket连接</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">isAcceptable</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (readyOps() &amp; OP_ACCEPT) != <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 关联的附件</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> Object attachment = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> AtomicReferenceFieldUpdater&lt;SelectionKey,Object&gt;</span><br><span class="line">        attachmentUpdater = AtomicReferenceFieldUpdater.newUpdater(</span><br><span class="line">            SelectionKey.class, Object.class, <span class="string">"attachment"</span></span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 设置关联对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Object <span class="title">attach</span><span class="params">(Object ob)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> attachmentUpdater.getAndSet(<span class="keyword">this</span>, ob);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取关联对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Object <span class="title">attachment</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> attachment;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="二、创建选择器"><a href="#二、创建选择器" class="headerlink" title="二、创建选择器"></a>二、创建选择器</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Selector selector = Selector.open();</span><br><span class="line">channel1.register(selector, SelectionKey.OP_READ);</span><br><span class="line">channel2.register(selector, SelectionKey.OP_WRITE);</span><br><span class="line">channel3.register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);</span><br><span class="line"><span class="comment">// Wait up to 10 seconds for a channel to become ready</span></span><br><span class="line">readyCount = selector.select(<span class="number">10000</span>);</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Selector对象是通过调用静态工厂方法open()来实例化的。选择器不是像通道或流(stream)那样的基本I/O对象:数据从来没有通过它们进行传递。类方法open()向SPI发出请求，通过默认的 SelectorProvider对象获取一个新的实例。通过调用一个自定义的SelectorProvider对象的openSelector()方法来创建一个Selector实例也是可行的。大多数情况下，您不需要关心SPI，只需要调用open()方法来创建新的Selector对象。</p>
+</blockquote>
+<h3 id="三、使用选择器"><a href="#三、使用选择器" class="headerlink" title="三、使用选择器"></a>三、使用选择器</h3><h4 id="3-1-选择过程"><a href="#3-1-选择过程" class="headerlink" title="3.1 选择过程"></a>3.1 选择过程</h4><p>执行任何一种形式的select()中的任何一种方法，选择器都会执行下面这些步骤</p>
+<ol>
+<li>已取消的键的集合将会被检查。如果他是非空，每个已取消的键的集合中的键将从另外两个中移除，并且相关的通道将会被注销。这个步骤结束后，已取消的键的集合将会是空的。</li>
+<li>已注册的键的集合中的键的interest集合将被检查。这个步骤中的执行过后，对interest集合的改动不会影响剩余的检查过程。一旦就绪条件被定下来，底层操作系统将会进行查询，以确定每个通道所关心的操作的真实就绪状态。依赖于特定的select()方法调用，如果没有通道已经准备好，线程可能会在这是进行阻塞，通常会有一个超时值。直到系统调用完成为止。这个过程可能会使得调用线程睡眠一段时间。然后当前通道的就绪状态将确定下来。对于那些还没准备好的通道将不会执行任何的操作。对于操作系统指示至少已经准备好的interest集合中的一种操作的通道，将执行以下两种操作中的一种：<br> a. 如果通道的键还没有处于已选择的键的集合中，那么键的ready集合将被清空，然后表示操作系统发现的当前通道已经准备好的操作的比特掩码将会被设置。<br> b. 如果键在已选择的键的集合中。键的ready集合将被表示操作系统发现当前已经准备好的操作的比特掩码会更新。所有之前的已经不再是就绪状态的操作不会被清除，一旦键 被放置于选择器的已选择的键的集合中，它的ready集合将是累积的。比特位只会被设置，不会被清理。<br>3.步骤2可能会花费很长时间，特别是所激发的线程处于休眠状态时。与该选择器相关的键可能会同时被取消。当步骤2结束时，步骤1将重新执行，以完成任意一个在选择进行的过程中，键已经被取消的通道的注销。<br>4.select操作返回的值是ready集合在步骤2中被修改的键的数量，而不是已选择的键的集合中的通道的总数。返回值不是已准备好的通道的总数，而是从上一个select()调用之后进入就绪状态的通道的数量。之前的调用中就绪的，并且在本次调用中仍然就绪的通道不会被计入，而那些在前一次调用中已经就绪但已经不再处于就绪状态的通道也不会被计入。这些通道可能仍然在已选择的键的集合中，但不会被计入返回值中。返回值可能是0。</li>
+</ol>
+<h4 id="3-2-停止选择过程"><a href="#3-2-停止选择过程" class="headerlink" title="3.2 停止选择过程"></a>3.2 停止选择过程</h4><p>在Selector类中提供了三种从被阻塞的select()方法中优雅退出的能力。</p>
+<blockquote>
+<p>请注意这些方法中的任意一个都不会关闭任何一个相关的通道。中断一个选择器与中断一个通道是不一样的</p>
+</blockquote>
+<h5 id="3-2-1-wakeup"><a href="#3-2-1-wakeup" class="headerlink" title="3.2.1 wakeup()"></a>3.2.1 wakeup()</h5><p>调用Selector对象的wakeup()方法将使得选择器上的第一个还没有返回的选择操作立即返 回。如果当前没有在进行中的选择，那么下一次对select()方法的一种形式的调用将立即返回。后续的选择操作将正常进行。在选择操作之间多次调用wakeup()方法与调用它一次没有什么不同。<br>有时这种延迟的唤醒行为并不是您想要的。您可能只想唤醒一个睡眠中的线程，而使得后续的选择继续正常地进行。您可以通过在调用wakeup()方法后调用 selectNow()方法来绕过这个问题。<br>尽管如此，如果您将您的代码构造为合理地关注于返回值和执行选择集合，那么即使下一个select()方法的调用在没有通道就绪时就立即返回，也应该不会有什么不同。不管怎么说，您应该为可能发生的事件做好准备。</p>
+<h5 id="3-2-2-close"><a href="#3-2-2-close" class="headerlink" title="3.2.2 close()"></a>3.2.2 close()</h5><p>如果选择器的close()方法被调用，那么任何一个在选择操作中阻塞的线程都将被唤醒，就像wakeup()方法被调用了一样。与选择器相关的通道将被注销，而键将被取消。</p>
+<h5 id="3-2-2-interrupt"><a href="#3-2-2-interrupt" class="headerlink" title="3.2.2 interrupt()"></a>3.2.2 interrupt()</h5><p>如果睡眠中的线程的interrupt()方法被调用，它的返回状态将被设置。如果被唤醒的线程之后将试图在通道上执行I/O操作，通道将立即关闭，然后线程将捕捉到一个异常。</p>
+<h4 id="3-3-使用简单选择器"><a href="#3-3-使用简单选择器" class="headerlink" title="3.3 使用简单选择器"></a>3.3 使用简单选择器</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SelectSockets</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> SelectSockets().run();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> (<span class="keyword">final</span> ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();</span><br><span class="line">             <span class="keyword">final</span> Selector selector = Selector.open()) &#123;</span><br><span class="line">            serverSocketChannel.bind(<span class="keyword">new</span> InetSocketAddress(<span class="number">8080</span>));</span><br><span class="line">            serverSocketChannel.configureBlocking(<span class="keyword">false</span>);</span><br><span class="line">            serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);</span><br><span class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">                <span class="keyword">final</span> <span class="keyword">int</span> n = selector.select();</span><br><span class="line">                <span class="keyword">if</span> (n == <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">final</span> Iterator&lt;SelectionKey&gt; iterator = selector.selectedKeys().iterator();</span><br><span class="line">                <span class="keyword">while</span> (iterator.hasNext()) &#123;</span><br><span class="line">                    <span class="keyword">final</span> SelectionKey key = iterator.next();</span><br><span class="line">                    <span class="keyword">if</span> (key.isAcceptable()) &#123;</span><br><span class="line">                        <span class="keyword">final</span> ServerSocketChannel server = (ServerSocketChannel) key.channel();</span><br><span class="line">                        <span class="keyword">final</span> SocketChannel socketChannel = server.accept();</span><br><span class="line">                        System.out.println(<span class="string">"接收到连接, IP: "</span> + socketChannel.socket().getRemoteSocketAddress().toString());</span><br><span class="line">                        socketChannel.configureBlocking(<span class="keyword">false</span>);</span><br><span class="line">                        socketChannel.register(selector, SelectionKey.OP_READ);</span><br><span class="line">                    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (key.isReadable()) &#123;</span><br><span class="line">                        <span class="keyword">this</span>.readDataFromSocket(key);</span><br><span class="line">                    &#125;</span><br><span class="line">                    iterator.remove();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">readDataFromSocket</span><span class="params">(SelectionKey key)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> SocketChannel channel = (SocketChannel) key.channel();</span><br><span class="line">        <span class="keyword">final</span> ByteBuffer buffer = ByteBuffer.allocate(<span class="number">128</span>);</span><br><span class="line">        channel.read(buffer);</span><br><span class="line">        buffer.flip();</span><br><span class="line">        System.out.println(<span class="string">"从 [ "</span> + channel.socket().getRemoteSocketAddress().toString() + <span class="string">" ] 接收到消息: "</span> + <span class="keyword">new</span> String(buffer.array(), <span class="number">0</span>, buffer.remaining()));</span><br><span class="line">        buffer.clear();</span><br><span class="line">        buffer.put(<span class="string">"Hi i'm here"</span>.getBytes(StandardCharsets.UTF_8));</span><br><span class="line">        buffer.flip();</span><br><span class="line">        channel.write(buffer);</span><br><span class="line">        channel.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>在循环的底部，我们通过调用Iterator(迭代器)对象的remove()方法，将键从已选择的键的集合中移除。键可以直接从selectKeys()返回的Set中移除，但同时需要用Iterator来检查集合，您需要使用迭代器的remove()方法来避免破坏迭代器内部的状态。</p>
+</blockquote>
+<h4 id="3-4-选择器的并发性分析"><a href="#3-4-选择器的并发性分析" class="headerlink" title="3.4 选择器的并发性分析"></a>3.4 选择器的并发性分析</h4><ol>
+<li>选择器对象是线程安全的，但是他们包含的键集合不是。</li>
+<li>通过keys()和selectKeys()返回的键的集合是Selector对象内部的私有的Set对象集合的直接引用。这些集合可能在任意时间被改变。</li>
+<li>可注册键的集合是只读的，修改会抛出java.lang.UnsupportedOperationException。查看过程中如果底层的set被修改，则会抛出java.util.ConcurrentModificationException</li>
+<li>如果想避免并发访问选择器的键的集合的问题，可以现在Selector上进行同步，再在已注册键的集合上进行同步，最后是已选择键的集合。这样就可以合理的进行同步访问了。在多线程的场景下，如果您需要对任何一个键的集合进行修改，都需要按照这种顺序。锁的过程非常重要。如果竞争的线程没有以相同的顺序请求锁，就会有死锁的潜在隐患。</li>
+<li>Selector类的close()和select()方法的同步方式是一样的，因此也有一直阻塞的可能性。在选择过程还在进行的过程中，所有对close()调用都会被阻塞，直到选择过程结束，或者执行选择的线程进入睡眠。</li>
+<li>执行选择的线程将会在执行关闭的线程获得锁时立即被唤醒并关闭选择器。</li>
+<li>在不进行同步的情况下，任何时候都有可能关闭一个通道或者取消一个键，然后导致键的状态以及相关通道发生意料之外的改变。一个特定的键的集合中的一个键的存在并不保证键仍然是有效的，或者它相关的通道仍然是打开的。</li>
+<li>关闭通道不应该是一个耗时的操作。NIO设计者们特别想要组织这种可能性：一个线程在关闭一个处于选择操作中的通道时，被阻塞与无限期的等待。</li>
+</ol>
+<h4 id="3-5-使用多线程来实现选择器"><a href="#3-5-使用多线程来实现选择器" class="headerlink" title="3.5 使用多线程来实现选择器"></a>3.5 使用多线程来实现选择器</h4><p>在单cpu的系统中，只有一个线程运行可以消除线程间的上下文切换带来的系统额外开销。但是在多cpu的系统中。只有一个线程轮流处理时，就会有n-1个cpu处于空闲状态。一个更好的策略是对所有的可选择通道使用一个选择器，并将对就绪通道的服务委托给其他线程。您只用一个线程监控通道的就绪状态并使用一个协调好的工作线程池来处理共接收到的数据。根据部署的条件，线程池的大小是可以调整的(或者它自己进行动态的调整)。</p>
+<h5 id="3-5-1-定义线程池"><a href="#3-5-1-定义线程池" class="headerlink" title="3.5.1 定义线程池"></a>3.5.1 定义线程池</h5><p>首先我们定义一个线程池，通过这个线程池来获取可用线程<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WorkerThreadPool</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> List&lt;WorkerThread&gt; idle = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">WorkerThreadPool</span><span class="params">(<span class="keyword">int</span> poolSize)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; poolSize; i++) &#123;</span><br><span class="line">            <span class="keyword">final</span> WorkerThread thread = <span class="keyword">new</span> WorkerThread(<span class="keyword">this</span>);</span><br><span class="line">            thread.setName(<span class="string">"Worker "</span> + i);</span><br><span class="line">            thread.start();</span><br><span class="line">            idle.add(thread);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> WorkerThread <span class="title">getWorker</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        WorkerThread thread = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">synchronized</span> (idle) &#123;</span><br><span class="line">            <span class="keyword">if</span> (idle.size() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                thread = idle.remove(<span class="number">0</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> thread;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">returnWorker</span><span class="params">(WorkerThread thread)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (idle) &#123;</span><br><span class="line">            idle.add(thread);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="3-5-2-定义执行线程类"><a href="#3-5-2-定义执行线程类" class="headerlink" title="3.5.2 定义执行线程类"></a>3.5.2 定义执行线程类</h5><p>定义实际的线程执行类，用来执行实际的通道读操作<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WorkerThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ByteBuffer buffer = ByteBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> WorkerThreadPool pool;</span><br><span class="line">    <span class="keyword">private</span> SelectionKey key;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">WorkerThread</span><span class="params">(WorkerThreadPool pool)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.pool = pool;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="keyword">this</span>.getName() + <span class="string">" is ready"</span>);</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">// 等待线程被唤醒然后读取数据</span></span><br><span class="line">                <span class="keyword">this</span>.wait();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">                <span class="keyword">this</span>.interrupt();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (key == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(<span class="keyword">this</span>.getName() + <span class="string">" has bean awakened"</span>);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">this</span>.drainChannel(key);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                System.out.println(<span class="string">"Caught '"</span> + e + <span class="string">"' closing channel"</span>);</span><br><span class="line">                <span class="comment">// Close channel and nudge selector</span></span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    key.channel().close();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (IOException ex) &#123;</span><br><span class="line">                    ex.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">                key.selector().wakeup();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 读取完成后将key重新置空</span></span><br><span class="line">            key = <span class="keyword">null</span>;</span><br><span class="line">            <span class="comment">// 将工作线程重新放入线程池</span></span><br><span class="line">            <span class="keyword">this</span>.pool.returnWorker(<span class="keyword">this</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 因为在serviceChannel方法之前已经将OP_READ忽略，所以在完成读操作后重新启用OP_READ，并调用选择器的wakeup方法，这样选择器就会继续监控当前通道</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">drainChannel</span><span class="params">(SelectionKey key)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> SocketChannel channel = (SocketChannel) key.channel();</span><br><span class="line">        <span class="keyword">int</span> count;</span><br><span class="line">        buffer.clear();</span><br><span class="line">        <span class="keyword">while</span> ((count = channel.read(buffer)) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            buffer.flip();</span><br><span class="line">            System.out.println(<span class="string">"从 [ "</span> + channel.socket().getRemoteSocketAddress().toString() + <span class="string">" ] 接收到消息: "</span> + <span class="keyword">new</span> String(buffer.array(), <span class="number">0</span>, buffer.remaining()));</span><br><span class="line">        &#125;</span><br><span class="line">        channel.write(ByteBuffer.wrap(<span class="string">"Hi i'm here"</span>.getBytes(StandardCharsets.UTF_8)));</span><br><span class="line">        <span class="keyword">if</span> (count &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            channel.close();</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 完成读操作后，再将read操作作为关注操作</span></span><br><span class="line">        key.interestOps(key.interestOps() | SelectionKey.OP_READ);</span><br><span class="line">        key.selector().wakeup();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 当前方法和run方法都是同步的，所以在同一时间只有有一个key被线程执行。</span></span><br><span class="line"><span class="comment">     * 在唤醒工作线程之前，我们先将key的interest集合中的read操作移除。使选择器忽略当前通道的度准备状态。避免被重复读取</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">serviceChannel</span><span class="params">(SelectionKey key)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.key = key;</span><br><span class="line">        <span class="comment">// 避免选择器再循环时再一次关注到read变化</span></span><br><span class="line">        key.interestOps(key.interestOps() &amp; (~SelectionKey.OP_READ));</span><br><span class="line">        <span class="comment">// 唤醒阻塞的线程</span></span><br><span class="line">        <span class="keyword">this</span>.notify();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="3-5-3-修改代码读函数实现多线程"><a href="#3-5-3-修改代码读函数实现多线程" class="headerlink" title="3.5.3 修改代码读函数实现多线程"></a>3.5.3 修改代码读函数实现多线程</h5><p>接下来我们对读操作的函数进行修改，使用多线程来读操作<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SelectSocketThread</span> <span class="keyword">extends</span> <span class="title">SelectSockets</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> WorkerThreadPool pool = <span class="keyword">new</span> WorkerThreadPool(<span class="number">5</span>);</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] argv)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> SelectSocketThread().go(argv);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">readDataFromSocket</span><span class="params">(SelectionKey key)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> WorkerThread worker = pool.getWorker();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (worker == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">// 没有可用线程，直接返回，等待选择器循环调用到此方法，直到有可用线程</span></span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//调用this将唤醒工作线程，然后返回</span></span><br><span class="line">        worker.serviceChannel(key);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="3-6-实现单线程Reactor模式"><a href="#3-6-实现单线程Reactor模式" class="headerlink" title="3.6 实现单线程Reactor模式"></a>3.6 实现单线程Reactor模式</h4><p>之前我们实现的都是简单的多路复用网络，下面我们通过reactor模式来优化服务端的设计。<br>首先我们需要抽象出来三种组件</p>
+<ol>
+<li>Readtor线程: 负责响应IO时间并将实际的处理分发给Handler或者Acceptor处理器。</li>
+<li>Handler处理器: 负责执行读写操作</li>
+<li>Acceptor处理器: 负责执行客户端连接的建立</li>
+</ol>
+<p><img src="/images/Java-NIO-选择器基础/DFA58E8E-B318-4500-8586-1EE727FE799A.jpeg" alt="img"></p>
+<h5 id="3-6-1-Handler组件"><a href="#3-6-1-Handler组件" class="headerlink" title="3.6.1 Handler组件"></a>3.6.1 Handler组件</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Handler</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> SocketChannel channel;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Handler</span><span class="params">(SocketChannel channel)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.channel = channel;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">final</span> ByteBuffer buffer = ByteBuffer.allocate(<span class="number">128</span>);</span><br><span class="line">            channel.read(buffer);</span><br><span class="line">            buffer.flip();</span><br><span class="line">            System.out.println(<span class="string">"从 [ "</span> + channel.socket().getRemoteSocketAddress().toString() + <span class="string">" ] 接收到消息: "</span> + <span class="keyword">new</span> String(buffer.array(), <span class="number">0</span>, buffer.remaining()));</span><br><span class="line">            channel.write(ByteBuffer.wrap(<span class="string">"Hi i'm reactor server"</span>.getBytes(StandardCharsets.UTF_8)));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="3-6-2-Acceptor组件"><a href="#3-6-2-Acceptor组件" class="headerlink" title="3.6.2 Acceptor组件"></a>3.6.2 Acceptor组件</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Acceptor</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ServerSocketChannel serverSocketChannel;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Selector selector;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Acceptor</span><span class="params">(ServerSocketChannel serverSocketChannel, Selector selector)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.serverSocketChannel = serverSocketChannel;</span><br><span class="line">        <span class="keyword">this</span>.selector = selector;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">final</span> SocketChannel channel = serverSocketChannel.accept();</span><br><span class="line">            System.out.println(<span class="string">"客户端已连接，IP地址为："</span> + channel.getRemoteAddress());</span><br><span class="line">            channel.configureBlocking(<span class="keyword">false</span>);</span><br><span class="line">            <span class="comment">// 这里在注册时，创建好对应的Handler，这样在Reactor中分发的时候就可以直接调用Handler了</span></span><br><span class="line">            channel.register(selector, SelectionKey.OP_READ, <span class="keyword">new</span> Handler(channel));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="3-6-3-Reactor组件"><a href="#3-6-3-Reactor组件" class="headerlink" title="3.6.3 Reactor组件"></a>3.6.3 Reactor组件</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Reactor</span> <span class="keyword">implements</span> <span class="title">Closeable</span>, <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ServerSocketChannel serverSocketChannel;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Selector selector;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Reactor</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.serverSocketChannel = ServerSocketChannel.open();</span><br><span class="line">        <span class="keyword">this</span>.selector = Selector.open();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span>(<span class="keyword">final</span> Reactor reactor = <span class="keyword">new</span> Reactor()) &#123;</span><br><span class="line">            reactor.run();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            serverSocketChannel.bind(<span class="keyword">new</span> InetSocketAddress(<span class="number">8080</span>));</span><br><span class="line">            serverSocketChannel.configureBlocking(<span class="keyword">false</span>);</span><br><span class="line">            <span class="comment">// 这里在注册时，创建好对应的Acceptor，这样在Reactor中分发的时候就可以直接调用Acceptor了</span></span><br><span class="line">            serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT, <span class="keyword">new</span> Acceptor(serverSocketChannel, selector));</span><br><span class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">                <span class="keyword">final</span> <span class="keyword">int</span> count = selector.select();</span><br><span class="line">                System.out.println(<span class="string">"监听到 "</span> + count + <span class="string">" 个对象"</span>);</span><br><span class="line">                <span class="keyword">final</span> Set&lt;SelectionKey&gt; selectionKeys = selector.selectedKeys();</span><br><span class="line">                <span class="keyword">final</span> Iterator&lt;SelectionKey&gt; iterator = selectionKeys.iterator();</span><br><span class="line">                <span class="keyword">while</span> (iterator.hasNext()) &#123;</span><br><span class="line">                    <span class="keyword">this</span>.dispatch(iterator.next());</span><br><span class="line">                    iterator.remove();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dispatch</span><span class="params">(SelectionKey key)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> Object attach = key.attachment();</span><br><span class="line">        <span class="keyword">if</span> (attach <span class="keyword">instanceof</span> Runnable) &#123;</span><br><span class="line">            <span class="comment">// 由于Handler和Acceptor都实现自Runnable接口，这里就统一调用一下</span></span><br><span class="line">            ((Runnable) attach).run();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        serverSocketChannel.close();</span><br><span class="line">        selector.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="3-6-4-单线程Reactor总结"><a href="#3-6-4-单线程Reactor总结" class="headerlink" title="3.6.4 单线程Reactor总结"></a>3.6.4 单线程Reactor总结</h5><p>通过Reactor模式我们成功将Selector选择，连接建立，读写操作分离成不同的组件。使得逻辑代码分工更加清晰方便维护。但是单线程始终没有办法应对大量的请求，如果请求量上去了，单线程还是不够用。下面我们对代码进行修改，实现多线程处理。</p>
+<h4 id="3-7-实现多线程Reactor模式"><a href="#3-7-实现多线程Reactor模式" class="headerlink" title="3.7 实现多线程Reactor模式"></a>3.7 实现多线程Reactor模式</h4><h5 id="3-7-1-单Reactor模式"><a href="#3-7-1-单Reactor模式" class="headerlink" title="3.7.1 单Reactor模式"></a>3.7.1 单Reactor模式</h5><p>首先我们看一下多线程情况下的架构<br><img src="/images/Java-NIO-选择器基础/E52403D6-B524-467C-910F-558BA440D573.jpeg" alt="img"></p>
+<p>对于这种改动我们的修改很简单，就是稍微修改一下Handler类就可以<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Handler</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ExecutorService POOL = Executors.newFixedThreadPool(<span class="number">10</span>);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> SocketChannel channel;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Handler</span><span class="params">(SocketChannel channel)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.channel = channel;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">final</span> ByteBuffer buffer = ByteBuffer.allocate(<span class="number">128</span>);</span><br><span class="line">            channel.read(buffer);</span><br><span class="line">            buffer.flip();</span><br><span class="line">            POOL.submit(() -&gt; &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    System.out.println(<span class="string">"从 [ "</span> + channel.socket().getRemoteSocketAddress().toString() + <span class="string">" ] 接收到消息: "</span> + <span class="keyword">new</span> String(buffer.array(), <span class="number">0</span>, buffer.remaining()));</span><br><span class="line">                    channel.write(ByteBuffer.wrap(<span class="string">"Hi i'm reactor server"</span>.getBytes(StandardCharsets.UTF_8)));</span><br><span class="line">                &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="3-7-2-一主多从Reactor模式"><a href="#3-7-2-一主多从Reactor模式" class="headerlink" title="3.7.2 一主多从Reactor模式"></a>3.7.2 一主多从Reactor模式</h5><p>我们还可以继续进行细分，现在是一个Reactor处理所有的操作请求，我们可以将其设计成Reactor的一主多从，让主Reactor处理Accept操作，而从Reactor处理其他的操作。</p>
+<p><img src="/images/Java-NIO-选择器基础/BFD754BA-9094-48D1-9BC1-C9B1045D7028.jpeg" alt="img"></p>
+<p>作为主Reactor的代码不需要进行修改。<br>我们需要创建一个从Reactor类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SubReactor</span> <span class="keyword">implements</span> <span class="title">Closeable</span>, <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Selector selector;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Integer POOL_SIZE = <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 线程池大小为4，表示从Reactor的大小为4</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ExecutorService POOL = Executors.newFixedThreadPool(POOL_SIZE);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> SubReactor[] reactors = <span class="keyword">new</span> SubReactor[POOL_SIZE];</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> selectedIndex = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SubReactor</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.selector = Selector.open();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">for</span> (Integer i = <span class="number">0</span>; i &lt; POOL_SIZE; i++) &#123;</span><br><span class="line">                <span class="keyword">final</span> SubReactor subReactor;</span><br><span class="line">                subReactor = <span class="keyword">new</span> SubReactor();</span><br><span class="line">                reactors[i] = subReactor;</span><br><span class="line">                POOL.submit(subReactor);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">static</span> Selector <span class="title">nextSelector</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> Selector selector = reactors[selectedIndex++].selector;</span><br><span class="line">        selectedIndex = selectedIndex &amp; POOL_SIZE;</span><br><span class="line">        <span class="keyword">return</span> selector;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">                <span class="keyword">final</span> <span class="keyword">int</span> count = selector.select();</span><br><span class="line">                System.out.println(<span class="string">"监听到 "</span> + count + <span class="string">" 个对象"</span>);</span><br><span class="line">                <span class="keyword">final</span> Set&lt;SelectionKey&gt; selectionKeys = selector.selectedKeys();</span><br><span class="line">                <span class="keyword">final</span> Iterator&lt;SelectionKey&gt; iterator = selectionKeys.iterator();</span><br><span class="line">                <span class="keyword">while</span> (iterator.hasNext()) &#123;</span><br><span class="line">                    <span class="keyword">this</span>.dispatch(iterator.next());</span><br><span class="line">                    iterator.remove();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dispatch</span><span class="params">(SelectionKey key)</span></span>&#123;</span><br><span class="line">        Object att = key.attachment();</span><br><span class="line">        <span class="keyword">if</span>(att <span class="keyword">instanceof</span> Runnable) &#123;</span><br><span class="line">            ((Runnable) att).run();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        selector.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后我们修改一下Acceptor类<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Acceptor</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ServerSocketChannel serverSocketChannel;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Acceptor</span><span class="params">(ServerSocketChannel serverSocketChannel)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.serverSocketChannel = serverSocketChannel;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">final</span> SocketChannel channel = serverSocketChannel.accept();</span><br><span class="line">            System.out.println(<span class="string">"客户端已连接，IP地址为："</span> + channel.getRemoteAddress());</span><br><span class="line">            channel.configureBlocking(<span class="keyword">false</span>);</span><br><span class="line">            <span class="keyword">final</span> Selector selector = SubReactor.nextSelector();</span><br><span class="line">            <span class="comment">// 在注册前唤醒，防止卡死</span></span><br><span class="line">            selector.wakeup();</span><br><span class="line">            <span class="comment">// 这里在注册时，创建好对应的Handler，这样在Reactor中分发的时候就可以直接调用Handler了</span></span><br><span class="line">            channel.register(selector, SelectionKey.OP_READ, <span class="keyword">new</span> Handler(channel));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Java/" rel="tag"><i class="fa fa-tag"></i> Java</a>
+            
+              <a href="/tags/NIO/" rel="tag"><i class="fa fa-tag"></i> NIO</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2023/01/17/Java-NIO-通道相关概念及源码梳理/" rel="next" title="Java-NIO-通道相关概念及源码梳理">
+                  <i class="fa fa-chevron-left"></i> Java-NIO-通道相关概念及源码梳理
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc" data-target="post-toc-wrap">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、选择器基础"><span class="nav-number">1.</span> <span class="nav-text">一、选择器基础</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-选择器、可选择通道、选择键类"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 选择器、可选择通道、选择键类</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-1-选择器-Selector"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1.1 选择器(Selector)</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-1-1-1-常见的集中键集合"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">1.1.1.1 常见的集中键集合</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-1-1-2"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">1.1.1.2</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-2-可选择通道-SelectableChannel"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.1.2 可选择通道(SelectableChannel)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-3-选择键-SelectionKey"><span class="nav-number">1.1.3.</span> <span class="nav-text">1.1.3 选择键(SelectionKey)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、创建选择器"><span class="nav-number">2.</span> <span class="nav-text">二、创建选择器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、使用选择器"><span class="nav-number">3.</span> <span class="nav-text">三、使用选择器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-选择过程"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 选择过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-停止选择过程"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 停止选择过程</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#3-2-1-wakeup"><span class="nav-number">3.2.1.</span> <span class="nav-text">3.2.1 wakeup()</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-2-2-close"><span class="nav-number">3.2.2.</span> <span class="nav-text">3.2.2 close()</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-2-2-interrupt"><span class="nav-number">3.2.3.</span> <span class="nav-text">3.2.2 interrupt()</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-使用简单选择器"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 使用简单选择器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-选择器的并发性分析"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 选择器的并发性分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5-使用多线程来实现选择器"><span class="nav-number">3.5.</span> <span class="nav-text">3.5 使用多线程来实现选择器</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#3-5-1-定义线程池"><span class="nav-number">3.5.1.</span> <span class="nav-text">3.5.1 定义线程池</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-5-2-定义执行线程类"><span class="nav-number">3.5.2.</span> <span class="nav-text">3.5.2 定义执行线程类</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-5-3-修改代码读函数实现多线程"><span class="nav-number">3.5.3.</span> <span class="nav-text">3.5.3 修改代码读函数实现多线程</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-6-实现单线程Reactor模式"><span class="nav-number">3.6.</span> <span class="nav-text">3.6 实现单线程Reactor模式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#3-6-1-Handler组件"><span class="nav-number">3.6.1.</span> <span class="nav-text">3.6.1 Handler组件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-6-2-Acceptor组件"><span class="nav-number">3.6.2.</span> <span class="nav-text">3.6.2 Acceptor组件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-6-3-Reactor组件"><span class="nav-number">3.6.3.</span> <span class="nav-text">3.6.3 Reactor组件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-6-4-单线程Reactor总结"><span class="nav-number">3.6.4.</span> <span class="nav-text">3.6.4 单线程Reactor总结</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-7-实现多线程Reactor模式"><span class="nav-number">3.7.</span> <span class="nav-text">3.7 实现多线程Reactor模式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#3-7-1-单Reactor模式"><span class="nav-number">3.7.1.</span> <span class="nav-text">3.7.1 单Reactor模式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-7-2-一主多从Reactor模式"><span class="nav-number">3.7.2.</span> <span class="nav-text">3.7.2 一主多从Reactor模式</span></a></li></ol></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.png"
+      alt="随我">
+  <p class="site-author-name" itemprop="name">随我</p>
+  <div class="site-description" itemprop="description">用心做自己喜欢的事</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">132</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">101</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/ZhangJia97" title="GitHub &rarr; https://github.com/ZhangJia97" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:isuiwo@qq.com" title="E-Mail &rarr; mailto:isuiwo@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      友链
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://wqf1234.github.io/" title="https://wqf1234.github.io/" rel="noopener" target="_blank">AC的博客</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/qq_38542085" title="https://blog.csdn.net/qq_38542085" rel="noopener" target="_blank">随我的CSDN</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2023</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">随我</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.7.1</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共190.3k字</span>
+</div>
+
+<div class="BbeiAn-info">
+    <a target="_blank" href="http://beian.miit.gov.cn" rel="nofollow">豫ICP备18013715号-1</a> <!--a标签中增加nofollow属性，避免爬虫出站。-->
+</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.3.0"></script><script src="/js/motion.js?v=7.3.0"></script>
+<script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

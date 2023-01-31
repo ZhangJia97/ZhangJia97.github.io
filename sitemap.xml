@@ -2,16 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://suiwo.xyz/2023/01/17/Java-NIO-%E9%80%9A%E9%81%93%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5%E5%8F%8A%E6%BA%90%E7%A0%81%E6%A2%B3%E7%90%86/</loc>
+    <loc>http://suiwo.xyz/2023/01/31/Java-NIO-%E9%80%89%E6%8B%A9%E5%99%A8%E5%9F%BA%E7%A1%80/</loc>
     
-    <lastmod>2023-01-17T15:05:46.585Z</lastmod>
+    <lastmod>2023-01-31T13:56:08.225Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://suiwo.xyz/2022/03/30/%E5%9F%BA%E4%BA%8EJUnit%E5%92%8CMockito%E7%9A%84%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/</loc>
     
-    <lastmod>2023-01-15T14:38:05.544Z</lastmod>
+    <lastmod>2023-01-17T15:09:06.022Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://suiwo.xyz/2023/01/17/Java-NIO-%E9%80%9A%E9%81%93%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5%E5%8F%8A%E6%BA%90%E7%A0%81%E6%A2%B3%E7%90%86/</loc>
+    
+    <lastmod>2023-01-17T15:05:46.585Z</lastmod>
     
   </url>
   
